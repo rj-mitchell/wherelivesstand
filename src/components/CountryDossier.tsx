@@ -36,7 +36,8 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
   return (
     <Dialog labelledBy="dossier-title" onClose={onClose} variant="sheet" closeLabel="Close the dossier">
       <div className="flex-1 overflow-y-auto">
-        <header className="px-5 sm:px-7 pt-6 pb-4 border-b border-rule bg-sheet">
+        {/* A div, not a header: inside the dialog a header would be read as a second banner landmark */}
+        <div className="px-5 sm:px-7 pt-6 pb-4 border-b border-rule bg-sheet">
           <p className="caps text-gilt-text">Country dossier</p>
           <h2 id="dossier-title" tabIndex={-1} className="text-3xl mt-1 pr-12 outline-none">
             {c.name}
@@ -68,7 +69,7 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
               Compare with another country
             </Link>
           </div>
-        </header>
+        </div>
 
         <div className="px-5 sm:px-7 py-6 space-y-9">
           {ranked && (
@@ -132,7 +133,7 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                       <tr key={cat.id} className="border-b border-faint">
                         <th scope="row" className="py-1.5 pr-2 text-left font-normal">{cat.name}</th>
                         <td className="py-1.5 px-2" aria-hidden="true">
-                          <div className="h-2 bg-faint">
+                          <div className="keep-colours h-2 bg-faint">
                             <div className="h-full bg-heather" style={{ width: `${v ?? 0}%` }} />
                           </div>
                         </td>

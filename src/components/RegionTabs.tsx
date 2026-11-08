@@ -50,14 +50,16 @@ export const RegionTabs: React.FC<{ region: RegionId; onRegion: (region: RegionI
 
   return (
     <div className="relative min-w-0">
-      <div ref={row} onScroll={measure} role="group" aria-label="Show a region" className="relative flex gap-1 overflow-x-auto region-tabs">
+      {/* Padded by the width of the focus ring, and pulled back by as much, so a focused tab's ring isn't cut off
+          by the scrolling row (the faded edges sit out over the padding too, index.css) */}
+      <div ref={row} onScroll={measure} role="group" aria-label="Show a region" className="relative flex gap-1 overflow-x-auto region-tabs p-1.5 -m-1.5">
         {REGIONS.map(r => (
           <button
             key={r.id}
             type="button"
             aria-pressed={region === r.id}
             onClick={() => onRegion(r.id)}
-            className={`shrink-0 whitespace-nowrap min-h-[36px] px-2.5 text-sm border cursor-pointer ${region === r.id ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
+            className={`press shrink-0 whitespace-nowrap min-h-[36px] px-2.5 text-sm border cursor-pointer ${region === r.id ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
           >
             {r.name}
           </button>

@@ -66,7 +66,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
           type="button"
           onClick={() => setSort(s => ({ key, desc: s.key === key ? !s.desc : false }))}
           title={title ? `Sort by ${title}` : undefined}
-          className={`inline-flex items-center gap-0.5 font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
+          className={`inline-flex items-center gap-0.5 min-h-6 font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
         >
           <span>{label}</span>
           <Icon name={active ? (sort.desc ? 'up' : 'down') : 'sort'} className={`w-3.5 h-3.5 ${active ? '' : 'opacity-50'}`} />
@@ -111,7 +111,8 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto border-t-2 border-ink">
+      {/* On a phone the table scrolls sideways, fading at the end with more columns off screen */}
+      <div className="mt-4 overflow-x-auto scroll-fade-x border-t-2 border-ink">
         <table className="w-full text-sm border-collapse min-w-[44rem]">
           <caption className="visually-hidden">
             Overall and dimension scores for each ranked country{region !== 'global' ? ` in ${regionName}` : ''}, under the current weights

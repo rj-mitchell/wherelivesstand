@@ -88,7 +88,8 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
   const zoomBy = (f: number) => setPosition(p => ({ ...p, zoom: Math.max(1, Math.min(8, p.zoom * f)) }));
 
   return (
-    <figure className="m-0" aria-labelledby="map-caption">
+    // Positioned, so that the skip link below shows over the map when it is focused, not at the top of the page
+    <figure className="relative m-0" aria-labelledby="map-caption">
       {/* One row: the region tabs scroll sideways on a phone, with a faded edge where more lie off the row; the
           zoom buttons stay at the end */}
       <div className="flex items-center justify-between gap-2 mb-2 no-print">
@@ -154,8 +155,11 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
           >
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
-                geographies.map(geo => {
-                  const c = lookup(geo);
+                // In alphabetical order, so that Tab goes through the countries from A to Z (the file runs from Z)
+                geographies
+                  .map(geo => ({ geo, c: lookup(geo) }))
+                  .sort((x, y) => (x.c?.name ?? x.geo.properties?.name ?? '').localeCompare(y.c?.name ?? y.geo.properties?.name ?? ''))
+                  .map(({ geo, c }) => {
                   const parent = c?.isDependency && c.parentIso ? byIso[c.parentIso] : undefined;
                   const target = parent ?? c;
                   const inRegion = c ? isCountryInRegion(parent ?? c, region) : region === 'global';

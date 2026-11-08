@@ -25,7 +25,7 @@ const Lead: React.FC<{ a: number | null | undefined; b: number | null | undefine
   const width = Math.min(50, (Math.abs(d) / 50) * 50);
   return (
     <div>
-      <div className="relative h-2.5 bg-faint" aria-hidden="true">
+      <div className="keep-colours relative h-2.5 bg-faint" aria-hidden="true">
         <span className="absolute inset-y-[-3px] left-1/2 w-px bg-ink" />
         {d !== 0 && <span className={`absolute inset-y-0 ${d > 0 ? 'right-1/2 bg-compare-a' : 'left-1/2 bg-compare-b'}`} style={{ width: `${Math.max(width, 0.8)}%` }} />}
       </div>
@@ -55,7 +55,7 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
   const picker = (which: 'a' | 'b', value: string) => (
     <div className="flex-1 min-w-[12rem]">
       <label htmlFor={`cmp-${which}`} className="flex items-center gap-2 text-sm font-semibold">
-        <span className={`inline-block w-3 h-3 ${which === 'a' ? 'bg-compare-a' : 'bg-compare-b'}`} aria-hidden="true" />
+        <span className={`keep-colours inline-block w-3 h-3 ${which === 'a' ? 'bg-compare-a' : 'bg-compare-b'}`} aria-hidden="true" />
         {which === 'a' ? 'First country' : 'Second country'}
       </label>
       <select
@@ -86,7 +86,8 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
   return (
     <Dialog labelledBy="compare-title" onClose={onClose} variant="centre" closeLabel="Close the comparison">
       <div className="flex-1 overflow-y-auto">
-        <header className="px-5 sm:px-7 pt-6 pb-4 border-b border-rule bg-sheet">
+        {/* A div, not a header: inside the dialog a header would be read as a second banner landmark */}
+        <div className="px-5 sm:px-7 pt-6 pb-4 border-b border-rule bg-sheet">
           <p className="caps text-gilt-text">Compare</p>
           <h2 id="compare-title" tabIndex={-1} className="text-2xl sm:text-3xl mt-1 pr-12 outline-none">
             {a.name} and {b.name}
@@ -110,7 +111,7 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
             Of the indicators both have, {a.name} scores higher on {aheadA}, {b.name} on {aheadB}
             {level ? `, and they are level on ${level}` : ''}.
           </p>
-        </header>
+        </div>
 
         <div className="px-5 sm:px-7 py-6 space-y-8">
           <section aria-labelledby="cmp-dims">
@@ -119,8 +120,8 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
             </h3>
             <div className="overflow-x-auto">
               <p className="sm:hidden mt-3 flex justify-between text-sm font-semibold border-b border-ink pb-1" aria-hidden="true">
-                <span className="flex items-center gap-1.5"><span className="inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
-                <span className="flex items-center gap-1.5">{b.name}<span className="inline-block w-2.5 h-2.5 bg-compare-b" /></span>
+                <span className="flex items-center gap-1.5"><span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
+                <span className="flex items-center gap-1.5">{b.name}<span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-b" /></span>
               </p>
               <table className="mt-3 w-full text-sm border-collapse sm:min-w-[34rem]">
                 <thead>{head}</thead>
@@ -147,8 +148,8 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
             <p className="text-sm text-muted mt-1">Scores out of 100, with each publisher's own figure beneath.</p>
             <div className="overflow-x-auto">
               <p className="sm:hidden mt-3 flex justify-between text-sm font-semibold border-b border-ink pb-1" aria-hidden="true">
-                <span className="flex items-center gap-1.5"><span className="inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
-                <span className="flex items-center gap-1.5">{b.name}<span className="inline-block w-2.5 h-2.5 bg-compare-b" /></span>
+                <span className="flex items-center gap-1.5"><span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
+                <span className="flex items-center gap-1.5">{b.name}<span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-b" /></span>
               </p>
               <table className="mt-3 w-full text-sm border-collapse sm:min-w-[34rem]">
                 <thead>{head}</thead>

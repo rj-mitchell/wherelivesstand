@@ -48,7 +48,9 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = overflow;
-      if (previous && document.contains(previous)) previous.focus({ preventScroll: true });
+      // Back where it was; for a dialog opened from its own address, to the map's heading rather than nowhere
+      const back = previous && previous !== document.body && document.contains(previous) ? previous : document.getElementById('map-title');
+      back?.focus({ preventScroll: true });
     };
   }, [labelledBy]);
 
@@ -61,7 +63,7 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-ink/40" onClick={onClose} aria-hidden="true" />
       <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`${frame} bg-paper flex flex-col outline-none`}>
-        <button type="button" onClick={onClose} className="absolute top-3 right-3 z-10 btn w-10 px-0" aria-label={closeLabel} title={`${closeLabel} (Escape)`}>
+        <button type="button" onClick={onClose} className="absolute top-3 right-3 z-10 btn w-11 min-h-[44px] px-0" aria-label={closeLabel} title={`${closeLabel} (Escape)`}>
           <Icon name="close" className="w-5 h-5" />
         </button>
         {children}

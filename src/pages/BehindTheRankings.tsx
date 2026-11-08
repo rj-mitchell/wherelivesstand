@@ -43,7 +43,7 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
         short, and the traps in combining them.
       </p>
       <nav aria-label="On this page" className="my-6 border-y border-rule py-3 font-sans text-[0.9375rem]">
-        <ul className="!my-0 !pl-0 !list-none flex flex-wrap gap-x-6 gap-y-1">
+        <ul className="!my-0 !pl-0 !list-none flex flex-wrap gap-x-6 gap-y-1 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6">
           <li><a href="#traps">{MACRO_THEMES.length} traps in country rankings</a></li>
           <li><a href="#odd-results">Results that look wrong</a></li>
           <li><a href="#every-index">Every index</a></li>
@@ -126,7 +126,7 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
             <details key={c.id} className="border-b border-rule group" open={q.trim().length > 0}>
               <summary className="py-3 cursor-pointer list-none flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <span className="flex gap-2">
-                  <Icon name="chevron" className="w-4 h-4 mt-1 shrink-0 transition-transform group-open:rotate-90 text-heather" />
+                  <Icon name="chevron" className="w-4 h-4 mt-1 shrink-0 motion-safe:transition-transform group-open:rotate-90 text-heather" />
                   <span>
                   <span className="font-semibold group-open:text-heather">{c.meta.name}</span>
                   <span className="block font-sans text-sm text-muted">

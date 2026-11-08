@@ -78,7 +78,9 @@ Tokens are CSS variables in `src/index.css`, with a dark-mode value for each, fo
 ## The map and rankings view
 
 The map comes first ([DECISIONS.md](DECISIONS.md), 6). Above it there are only the one-line beta banner, the
-compact masthead (the name and endorsement, the navigation and the search, on one row at desktop) and the region
+compact masthead (the name and endorsement, the navigation and the search, on one row from 1280 pixels wide;
+below that, where the three would not fit without hiding some of the navigation, the navigation has a row of its
+own, which scrolls sideways on a phone and fades at the end with more off screen) and the region
 tabs and zoom buttons, in one row that scrolls sideways on a phone. Where more tabs lie off either end of the
 row, that end fades out under an arrow, which scrolls the row along when tapped, and the chosen region's tab is
 always scrolled into view; on a wide screen every tab fits and neither shows. The page's heading is visually hidden. The
@@ -100,6 +102,6 @@ desktop and under it on phones.
 - **Legend:** drawn by sampling the same function, with ticks where those scores fall, so it cannot disagree with
   the map.
 - **Not ranked:** a hatched pattern, distinct from every step of the scale.
-- **Keyboard:** every country in the data is a button with its name, score and rank; Enter opens the dossier;
+- **Keyboard:** every country in the data is a button with its name, score and rank, and Tab goes through them from A to Z; Enter opens the dossier;
   focus draws an ink outline and shows the hover card. A skip link goes to the table, which lists every ranked
   country and sorts by any column.

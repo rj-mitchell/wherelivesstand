@@ -25,6 +25,17 @@
   --nodata: 228 221 203;       /* #E4DDCB, hatched */
   --nodata-hatch: 176 166 140;
   --land-stroke: 251 248 240;
+  /* The family kit's focus ring (family.css) takes the site's own focus colour, so the footer shelf's links wear
+     the same ring as the rest of the page */
+  --wts-focus: rgb(var(--heather));
+  /* The footer shelf lines up with the page's column: max-w-page (84rem) with px-4, px-8 from md (the kit's
+     --wts-gutter and --wts-shelf-width, family kit 1.3.1) */
+  --wts-gutter: 1rem;
+  --wts-shelf-width: calc(84rem - 2 * var(--wts-gutter));
+}
+
+@media (min-width: 768px) {
+  :root { --wts-gutter: 2rem; }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -53,6 +64,17 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* The page doesn't jump sideways when a dialog locks its scrolling and the scroll bar goes */
+    scrollbar-gutter: stable;
+    /* A long address or code (About, Press) breaks rather than pushing the page wider than a phone */
+    overflow-wrap: break-word;
+  }
+  /* text-wrap-style, not the text-wrap shorthand, so a row kept on one line (white-space: nowrap) stays so */
+  p, li, dd, figcaption {
+    text-wrap-style: pretty;
+  }
+  a, button, summary, [role='button'], input, select, label {
+    touch-action: manipulation;
   }
   body {
     @apply bg-paper text-ink font-sans antialiased;
@@ -72,16 +94,27 @@
     text-underline-offset: 0.15em;
     text-decoration-thickness: 1px;
   }
-  a:hover {
-    @apply text-ink;
+  /* Hover only where there is a real pointer, so a tap doesn't leave it stuck on; a firmer underline when pressed */
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      @apply text-ink;
+      text-decoration-thickness: 2px;
+    }
+  }
+  a:active {
     text-decoration-thickness: 2px;
   }
   ::selection {
     @apply bg-heather-tint text-ink;
   }
+  /* The family's focus ring (the kit's tokens, family/README.md "Shared conventions"), in heather */
   :focus-visible {
-    outline: 3px solid rgb(var(--heather));
-    outline-offset: 2px;
+    outline: var(--wts-focus-width, 3px) solid var(--wts-focus, rgb(var(--heather)));
+    outline-offset: var(--wts-focus-offset, 3px);
+  }
+  /* Behind the rankings' indexes: no disclosure triangle in Safari either (the chevron stands in for it) */
+  summary::-webkit-details-marker {
+    display: none;
   }
   /* iOS zooms into inputs smaller than 16px */
   input, select, textarea {
@@ -110,6 +143,9 @@
   .prose-page {
     @apply font-serif text-base max-w-prose;
   }
+  .prose-page code {
+    overflow-wrap: anywhere;
+  }
   .prose-page p,
   .prose-page ul,
   .prose-page ol {
@@ -136,14 +172,22 @@
   .btn {
     @apply inline-flex items-center justify-center gap-1.5 min-h-[40px] px-3 border border-rule bg-sheet text-ink text-sm font-sans font-semibold no-underline cursor-pointer;
   }
-  .btn:hover {
-    @apply border-heather text-heather;
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      @apply border-heather text-heather;
+    }
+    .btn-primary:hover {
+      @apply bg-heather-strong text-on-heather border-heather-strong;
+    }
+  }
+  .btn:active {
+    @apply border-heather bg-heather-tint;
   }
   .btn-primary {
     @apply bg-heather text-on-heather border-heather;
   }
-  .btn-primary:hover {
-    @apply bg-heather-strong text-on-heather border-heather-strong;
+  .btn-primary:active {
+    @apply bg-heather-strong border-heather-strong;
   }
   .field {
     @apply w-full min-h-[40px] px-3 border border-rule bg-sheet text-ink font-sans placeholder:text-muted;
@@ -159,15 +203,31 @@
     clip: rect(0 0 0 0);
     white-space: nowrap;
   }
+  /* Hidden until focused, however many lines it wraps to on a narrow screen and wherever it sits on the page
+     (the map's skip link shows over the map) */
   .skip-link {
-    @apply absolute left-2 -top-16 z-[100] bg-sheet text-ink border-2 border-ink px-3 py-2 font-sans;
+    @apply absolute left-2 top-2 z-[100] bg-sheet text-ink border-2 border-ink px-3 py-2 font-sans;
   }
-  .skip-link:focus {
-    @apply top-2;
+  .skip-link:not(:focus) {
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0;
+    border: 0;
+  }
+  /* A row that scrolls sideways (the main navigation on a phone, the rankings table) fades out at whichever end
+     has more off screen, where the browser can tie the fade to the scrolling; elsewhere it just scrolls. A
+     focused item scrolls clear of the fade. */
+  .scroll-fade-x {
+    scroll-padding-inline: 2rem;
   }
 }
 
-/* Sliders: a thin rule with a heather thumb */
+/* Sliders: a thin rule with a heather thumb. Taller on a touch screen, for a finger (beside the map on a laptop
+   they stay compact, so the panel's foot stays level with the map's: docs/DECISIONS.md, 6); the focus ring is
+   drawn round the thumb, not the whole row */
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
@@ -176,6 +236,20 @@ input[type='range'] {
   width: 100%;
   height: 20px;
   cursor: pointer;
+}
+@media (pointer: coarse) {
+  input[type='range'] {
+    height: 32px;
+  }
+}
+input[type='range']:focus-visible {
+  outline: none;
+}
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px rgb(var(--heather)), 0 0 0 3px rgb(var(--sheet)), 0 0 0 6px rgb(var(--heather));
+}
+input[type='range']:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px rgb(var(--sheet)), 0 0 0 6px rgb(var(--heather));
 }
 input[type='range']::-webkit-slider-runnable-track {
   height: 4px;
@@ -206,6 +280,40 @@ input[type='range']::-moz-range-thumb {
   background: rgb(var(--heather));
   border: 2px solid rgb(var(--sheet));
 }
+@media (hover: hover) and (pointer: fine) {
+  input[type='range']:hover::-webkit-slider-thumb {
+    background: rgb(var(--heather-strong));
+  }
+  input[type='range']:hover::-moz-range-thumb {
+    background: rgb(var(--heather-strong));
+  }
+}
+/* In forced colours the track's gradient is dropped, so the slider is drawn in system colours */
+@media (forced-colors: active) {
+  input[type='range'] {
+    forced-color-adjust: none;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    background: CanvasText;
+  }
+  input[type='range']::-moz-range-track,
+  input[type='range']::-moz-range-progress {
+    background: CanvasText;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    background: ButtonText;
+    border-color: Canvas;
+    box-shadow: 0 0 0 1px ButtonText;
+  }
+  input[type='range']::-moz-range-thumb {
+    background: ButtonText;
+    border-color: Canvas;
+  }
+  input[type='range']:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
 
 /* The map */
 .map-svg {
@@ -232,20 +340,31 @@ input[type='range']::-moz-range-thumb {
 .rsm-geography.is-selected {
   stroke-width: 1.6px !important;
 }
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .rsm-geography[tabindex='0']:hover {
     stroke: rgb(var(--ink)) !important;
     stroke-width: 1.2px !important;
   }
 }
 
-/* Dialogs slide in, unless the reader prefers less motion */
+/* Dialogs slide in, unless the reader prefers less motion (the family kit's easing and duration) */
 @keyframes sheet-in {
   from { transform: translateX(24px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
-.sheet-in {
-  animation: sheet-in 0.18s ease-out;
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-in {
+    animation: sheet-in calc(var(--wts-duration, 160ms) + 40ms) var(--wts-ease-out, ease-out);
+  }
+  /* Buttons give a little as they are pressed */
+  .btn,
+  .press {
+    transition: transform 120ms var(--wts-ease-out, ease-out);
+  }
+  .btn:active,
+  .press:active {
+    transform: scale(0.97);
+  }
 }
 
 /* The region tabs' faded edges (RegionTabs.tsx): more tabs lie off this side of the row */
@@ -260,12 +379,12 @@ input[type='range']::-moz-range-thumb {
   color: rgb(var(--heather));
 }
 .region-more-right {
-  right: 0;
+  right: -6px;
   justify-content: flex-end;
   background: linear-gradient(to right, rgb(var(--paper) / 0), rgb(var(--paper)) 60%);
 }
 .region-more-left {
-  left: 0;
+  left: -6px;
   justify-content: flex-start;
   background: linear-gradient(to left, rgb(var(--paper) / 0), rgb(var(--paper)) 60%);
 }
@@ -276,14 +395,64 @@ input[type='range']::-moz-range-thumb {
   display: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* The fade on rows that scroll sideways (.scroll-fade-x above), tied to the scrolling where the browser can */
+@property --fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes scroll-fade-x {
+  0% { --fade-start: 0px; --fade-end: 2rem; }
+  8% { --fade-start: 2rem; }
+  92% { --fade-end: 2rem; }
+  100% { --fade-start: 2rem; --fade-end: 0px; }
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+    animation: scroll-fade-x linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+
+/* The legend's minor ticks (30 and 80) only where the bar is wide enough for them not to run into their
+   neighbours: on a phone, and beside the weights on a tablet or small laptop */
+.legend-ticks {
+  container-type: inline-size;
+}
+@container (max-width: 30rem) {
+  .legend-tick-minor {
+    display: none;
+  }
+}
+
+/* Forced colours: the selected tab or preset, the current page and the bars and legend keep their meaning when
+   the system's colours replace the site's */
+@media (forced-colors: active) {
+  [aria-pressed='true'] {
+    forced-color-adjust: none;
+    background: SelectedItem;
+    color: SelectedItemText;
+    border-color: SelectedItem;
+  }
+  .nav-tab:not([aria-current]) {
+    border-bottom-width: 0;
+    padding-bottom: calc(0.5rem + 3px);
+  }
+  .nav-tab[aria-current] {
+    border-bottom-color: LinkText;
+  }
+  .keep-colours {
+    forced-color-adjust: none;
+  }
+  .rsm-geography:focus-visible,
+  .rsm-geography.is-selected {
+    stroke: Highlight !important;
   }
 }
 

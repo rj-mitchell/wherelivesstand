@@ -174,7 +174,7 @@ export default function App({ countries }: { countries: Record<string, CountryDa
   return (
     <NavContext.Provider value={navigate}>
       <a href="#main" className="skip-link">
-        Skip to the main content
+        Skip to main content
       </a>
       <Masthead
         view={s.view}
@@ -195,7 +195,9 @@ export default function App({ countries }: { countries: Record<string, CountryDa
               <div
                 ref={panelRef}
                 style={panelHeight ? { minHeight: panelHeight } : undefined}
-                className="lg:order-none order-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 flex flex-col"
+                // Beside the map it scrolls if the window is short, so it is padded (and pulled back by as much) to
+                // leave room for a focused control's ring, which the scrolling would otherwise cut off
+                className="lg:order-none order-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 lg:pl-3 lg:-ml-3 lg:pt-1.5 lg:-mt-1.5 flex flex-col"
               >
                 <WeightsPanel
                   categories={categories}
@@ -227,7 +229,7 @@ export default function App({ countries }: { countries: Record<string, CountryDa
                     {rankedCount} countries scored on {indicators.length} published indicators. Data last updated{' '}
                     {formatDate(DATA_UPDATED)}.
                   </span>
-                  <button type="button" onClick={copyLink} className="text-heather underline underline-offset-2 hover:text-ink cursor-pointer no-print">
+                  <button type="button" onClick={copyLink} className="min-h-6 text-heather underline underline-offset-2 hover:text-ink active:decoration-2 cursor-pointer no-print">
                     Copy a link to this view
                   </button>
                   <span role="status" className="text-ink">{copied ? 'Link copied.' : ''}</span>
