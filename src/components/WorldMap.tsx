@@ -123,7 +123,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
       <a href="#rankings" className="skip-link">
         Skip the map: go to the table of rankings
       </a>
-      <div className="relative border border-rule bg-sheet" onMouseLeave={() => setHover(null)}>
+      <div id="map-frame" className="relative border border-rule bg-sheet" onMouseLeave={() => setHover(null)}>
         <ComposableMap
           projection="geoMercator"
           width={WIDTH}
@@ -216,7 +216,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
       <MapLegend scale={scale} mode={mode} regionName={regionDef.name} hoverScore={hover?.country && !hover.country.isDependency ? hover.country.compositeScore : null} />
       <figcaption id="map-caption" className="mt-2 text-sm text-muted">
         Select a country, or tab to it and press Enter, for its full record. Hatched: territories, and places too few
-        indices cover. Antarctica, Greenland and the Arctic islands are left off.
+        indices cover.
       </figcaption>
     </figure>
   );
