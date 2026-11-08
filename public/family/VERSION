@@ -1,6 +1,6 @@
 Where They Stand family kit
-kit 1.2.0
+kit 1.2.1
 site lives
 base /family/
-sha256 41a86382b92ad6d651413a6e76e47c3aec13081c6c93fb226db398134f60c68b
+sha256 bd75efd15172e6c62fe5203300caaa6fa65ebb1bcc558d8937bd3056f2c066af
 Written by family/kit/sync.mjs. Don't edit these files: change the kit and sync again.
