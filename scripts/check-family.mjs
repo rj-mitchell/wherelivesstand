@@ -16,7 +16,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const KIT = '1.2.1';
+const KIT = '1.3.0';
 const SITE = 'lives';
 const BASE = '/family/';
 const NEEDED = ['head.html', 'endorsement.html', 'shelf.html', 'favicon.ico', 'family.css', 'fonts.css'];
