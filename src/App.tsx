@@ -1,6 +1,6 @@
 // The app: holds the view, the open dossier or comparison, the weights and the region, and keeps them
 // in the address bar (src/lib/url.ts, docs/URLS.md) so that every view can be linked to and Back works.
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CountryData, IndicatorMeta, MacroCategory, MacroCategoryConfig } from './types';
 import { computeRankings, defaultMacroWeights } from './lib/scoring';
 import { parseUrl, buildUrl, type UrlState, type View } from './lib/url';
@@ -147,6 +147,30 @@ export default function App({ countries }: { countries: Record<string, CountryDa
 
   const countriesWithData = list.filter(c => c.hasData !== false);
 
+  // Beside the map (at desktop widths), the weights panel reaches down to the map's foot, so the two line up;
+  // never shorter than its own content, which then scrolls inside it if the window is too short
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelHeight, setPanelHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    if (s.view !== 'map') return;
+    const measure = () => {
+      const panel = panelRef.current;
+      const frame = document.getElementById('map-frame');
+      if (!panel || !frame || !window.matchMedia('(min-width: 1024px)').matches) return setPanelHeight(null);
+      const height = Math.round(frame.getBoundingClientRect().bottom - panel.getBoundingClientRect().top);
+      setPanelHeight(prev => (prev === height ? prev : height > 0 ? height : null));
+    };
+    measure();
+    const frame = document.getElementById('map-frame');
+    const ro = typeof ResizeObserver !== 'undefined' && frame ? new ResizeObserver(measure) : null;
+    if (ro && frame) ro.observe(frame);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, [s.view]);
+
   return (
     <NavContext.Provider value={navigate}>
       <a href="#main" className="skip-link">
@@ -168,17 +192,19 @@ export default function App({ countries }: { countries: Record<string, CountryDa
               {TAGLINE}: the map and rankings
             </h1>
             <div className="grid lg:grid-cols-[minmax(17rem,22rem)_1fr] gap-x-10 gap-y-8 items-start">
-              <div className="lg:order-none order-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2">
+              <div
+                ref={panelRef}
+                style={panelHeight ? { minHeight: panelHeight } : undefined}
+                className="lg:order-none order-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 flex flex-col"
+              >
                 <WeightsPanel
                   categories={categories}
                   indicators={indicators}
                   macro={s.macro}
                   sub={s.sub}
-                  fine={s.fine}
                   onMacro={(cat: MacroCategory, v: number) => update({ macro: { ...s.macro, [cat]: v } })}
                   onPreset={macro => update({ macro })}
-                  onSub={(id, v) => update({ sub: { ...s.sub, [id]: v } })}
-                  onFine={fine => update({ fine })}
+                  onSub={(id, v) => update({ sub: { ...s.sub, [id]: v }, fine: true })}
                   onReset={() => update({ macro: defaultMacroWeights(), sub: {}, fine: false })}
                 />
               </div>

@@ -40,7 +40,7 @@ export default {
         'compare-b': token('compare-b'),
       },
       letterSpacing: { caps: '0.12em' },
-      maxWidth: { prose: '68ch', page: '84rem' },
+      maxWidth: { prose: '52rem', page: '84rem' },
     },
   },
   plugins: [],

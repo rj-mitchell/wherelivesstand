@@ -9,11 +9,9 @@ interface Props {
   indicators: IndicatorMeta[];
   macro: Record<MacroCategory, number>;
   sub: Record<string, number>;
-  fine: boolean;
   onMacro: (cat: MacroCategory, value: number) => void;
   onPreset: (weights: Record<MacroCategory, number>) => void;
   onSub: (id: string, value: number) => void;
-  onFine: (on: boolean) => void;
   onReset: () => void;
 }
 
@@ -53,14 +51,15 @@ const Dial: React.FC<{
 );
 
 // Compact, so that at a laptop's height the whole panel sits beside the map without scrolling while no
-// dimension is open (docs/DECISIONS.md, 6): no introduction, the presets in a tight grid, and each
-// dimension's indicators behind a small button beside its name.
-export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, sub, fine, onMacro, onPreset, onSub, onFine, onReset }) => {
+// dimension is open (docs/DECISIONS.md, 6): no introduction, the presets three to a row, and each
+// dimension's indicators behind a small button beside its name. Beside the map it is as tall as the map, its
+// dimensions spread evenly (App.tsx gives it the height), so its foot lines up with the map's.
+export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, sub, onMacro, onPreset, onSub, onReset }) => {
   const [open, setOpen] = useState<MacroCategory | null>(null);
   const preset = matchingPreset(macro);
 
   return (
-    <section aria-labelledby="weights-title" className="font-sans">
+    <section aria-labelledby="weights-title" className="font-sans flex-1 flex flex-col">
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="weights-title" className="text-lg">
           Your weights
@@ -73,7 +72,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
 
       <fieldset className="mt-1.5">
         <legend className="visually-hidden">Start from a preset</legend>
-        <div className="flex flex-wrap gap-1">
+        <div className="grid grid-cols-[repeat(3,auto)] gap-1">
           {PRESETS.map(p => {
             const on = preset?.id === p.id;
             return (
@@ -83,7 +82,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
                 aria-pressed={on}
                 title={p.summary}
                 onClick={() => onPreset({ ...p.weights })}
-                className={`grow min-h-[26px] px-1.5 py-0.5 text-[0.8125rem] leading-tight whitespace-nowrap border cursor-pointer ${on ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
+                className={`min-h-[28px] px-1.5 py-0.5 text-[0.8125rem] leading-tight whitespace-nowrap border cursor-pointer ${on ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
               >
                 {p.label}
               </button>
@@ -95,7 +94,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
         </p>
       </fieldset>
 
-      <div className="mt-2 border-t border-rule">
+      <div className="mt-2 border-t border-rule flex-1 flex flex-col justify-around">
         {categories.map(cat => {
           const inCat = indicators.filter(i => i.category === cat.id);
           const expanded = open === cat.id;
@@ -117,18 +116,13 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
               <Dial id={`w-${cat.id}`} label={cat.name} value={macro[cat.id]} onChange={v => onMacro(cat.id, v)} before={toggle} />
               <div id={`w-${cat.id}-more`} hidden={!expanded} className="pb-2">
                 <p className="text-sm text-muted">{cat.description}</p>
+                {/* a dial for each indicator: moving one weights the indicators separately (App.tsx) */}
                 <ul className="mt-1.5 space-y-0.5">
-                  {inCat.map(ind =>
-                    fine ? (
-                      <li key={ind.id} className="pl-3 border-l-2 border-faint">
-                        <Dial id={`s-${ind.id}`} small label={ind.name} value={sub[ind.id] ?? 50} onChange={v => onSub(ind.id, v)} />
-                      </li>
-                    ) : (
-                      <li key={ind.id} className="text-sm pl-3 border-l-2 border-faint">
-                        {ind.name} <span className="text-muted">({ind.source})</span>
-                      </li>
-                    ),
-                  )}
+                  {inCat.map(ind => (
+                    <li key={ind.id} className="pl-3 border-l-2 border-faint" title={ind.source}>
+                      <Dial id={`s-${ind.id}`} small label={ind.name} value={sub[ind.id] ?? 50} onChange={v => onSub(ind.id, v)} />
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -136,10 +130,6 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
         })}
       </div>
 
-      <label className="mt-2 flex items-center gap-2 text-sm cursor-pointer">
-        <input type="checkbox" checked={fine} onChange={e => onFine(e.target.checked)} className="w-4 h-4 accent-[rgb(var(--heather))]" />
-        <span>Weight each indicator separately</span>
-      </label>
     </section>
   );
 };
