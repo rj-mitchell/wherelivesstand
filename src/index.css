@@ -326,7 +326,7 @@ input[type='range']::-moz-range-thumb {
 .rsm-geography {
   transition: fill 0.2s ease-out;
 }
-.rsm-geography[tabindex='0'] {
+.rsm-geography[role='button'] {
   cursor: pointer;
 }
 .rsm-geography:focus {
@@ -341,9 +341,31 @@ input[type='range']::-moz-range-thumb {
   stroke-width: 1.6px !important;
 }
 @media (hover: hover) and (pointer: fine) {
-  .rsm-geography[tabindex='0']:hover {
+  .rsm-geography[role='button']:hover {
     stroke: rgb(var(--ink)) !important;
     stroke-width: 1.2px !important;
+  }
+}
+/* The same outlines drawn again over every neighbour (WorldMap.tsx), so that none is half covered */
+.map-outline {
+  fill: none;
+  stroke: rgb(var(--ink));
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.map-outline-hover {
+  display: none;
+  stroke-width: 1.2px;
+}
+.map-outline-selected {
+  stroke-width: 1.6px;
+}
+.map-outline-focus {
+  stroke-width: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .map-outline-hover {
+    display: inline;
   }
 }
 
@@ -420,6 +442,43 @@ input[type='range']::-moz-range-thumb {
   }
 }
 
+/* The rankings table's pinned columns (RankingsTable.tsx): where the table scrolls sideways, the rank and the
+   country stay at its start on their row's own background (paper, or the selected or hovered row's), with a
+   rule at their edge once other columns have scrolled under them. A focused header scrolls clear of them, and
+   the fade is only at the far end. */
+.table-pinned {
+  --pin-rank: 4rem;
+  scroll-padding-inline-start: calc(var(--pin-rank) + 7.5rem);
+}
+.table-pin {
+  position: sticky;
+  z-index: 1;
+  background-color: inherit;
+}
+.table-pin-rank {
+  inset-inline-start: 0;
+  width: var(--pin-rank);
+  min-width: var(--pin-rank);
+}
+.table-pin-name {
+  inset-inline-start: var(--pin-rank);
+}
+/* A pinned cell's background covers the row's rule under it, so the cell draws that rule itself */
+tbody .table-pin {
+  box-shadow: inset 0 -1px 0 rgb(var(--rule-faint));
+}
+.table-pinned[data-scrolled] .table-pin-name {
+  box-shadow: inset -1px 0 0 rgb(var(--rule));
+}
+.table-pinned[data-scrolled] tbody .table-pin-name {
+  box-shadow: inset -1px 0 0 rgb(var(--rule)), inset 0 -1px 0 rgb(var(--rule-faint));
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-fade-x.table-pinned {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fade-end)), transparent);
+  }
+}
+
 /* The legend's minor ticks (30 and 80) only where the bar is wide enough for them not to run into their
    neighbours: on a phone, and beside the weights on a tablet or small laptop */
 .legend-ticks {
@@ -451,7 +510,9 @@ input[type='range']::-moz-range-thumb {
     forced-color-adjust: none;
   }
   .rsm-geography:focus-visible,
-  .rsm-geography.is-selected {
+  .rsm-geography.is-selected,
+  .map-outline-selected,
+  .map-outline-focus {
     stroke: Highlight !important;
   }
 }

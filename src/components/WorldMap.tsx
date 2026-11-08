@@ -2,8 +2,8 @@
 // densely populated countries such as Europe's are big enough to see and select; Antarctica, Greenland and the
 // far-northern Arctic islands are left out of the geometry (src/data/world-50m.json) because Mercator makes them
 // enormous. Every country in the data is a keyboard stop with a name; Enter opens its dossier.
-import React, { useMemo, useState, useCallback } from 'react';
-import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import React, { useMemo, useState, useCallback, useLayoutEffect, useRef } from 'react';
+import { ComposableMap, Geographies, Geography, ZoomableGroup, type Geo } from 'react-simple-maps';
 import type { ComputedCountry } from '../types';
 import { REGIONS, isCountryInRegion, type RegionId } from '../data/regions';
 import type { ColourScale } from '../lib/colour';
@@ -40,6 +40,11 @@ const SPECIAL_GEOMETRIES: Record<string, string> = {
 const WIDTH = 960;
 const HEIGHT = 520;
 
+// A country drawn smaller than this, in pixels each way, at the current zoom and width (Vatican City on the
+// whole world) is left out of the tab order: focus there would show nothing. It is still in the search and the
+// table, and zooming in brings it back.
+const MIN_FOCUS_PX = 2;
+
 const ordinal = (n: number) => {
   const s = ['th', 'st', 'nd', 'rd'];
   const v = n % 100;
@@ -57,6 +62,33 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
   const regionDef = REGIONS.find(r => r.id === region) ?? REGIONS[0];
   const [position, setPosition] = useState({ coordinates: regionDef.center, zoom: regionDef.zoom });
   const [hover, setHover] = useState<HoverInfo | null>(null);
+  // The country under the pointer and the one with keyboard focus, whose outlines are drawn again on top
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+
+  // Screen pixels per unit of the map's own 960 by 520, to tell which countries are too small to see
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [unitPx, setUnitPx] = useState(1);
+  useLayoutEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+    const measure = () => setUnitPx(frame.clientWidth / WIDTH || 1);
+    measure();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    ro?.observe(frame);
+    return () => ro?.disconnect();
+  }, []);
+  // Each shape's larger side, in map units, worked out once
+  const sizes = useRef(new WeakMap<Geo, number>());
+  const sizeOf = (geo: Geo, bounds: (g: Geo) => [[number, number], [number, number]]) => {
+    let size = sizes.current.get(geo);
+    if (size === undefined) {
+      const [[x0, y0], [x1, y1]] = bounds(geo);
+      size = Number.isFinite(x0) ? Math.max(x1 - x0, y1 - y0) : 0;
+      sizes.current.set(geo, size);
+    }
+    return size;
+  };
 
   // Follow region changes made elsewhere (the table's filter, the address bar)
   const [shownRegion, setShownRegion] = useState(region);
@@ -124,7 +156,11 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
       <a href="#rankings" className="skip-link">
         Skip the map: go to the table of rankings
       </a>
-      <div id="map-frame" className="relative border border-rule bg-sheet" onMouseLeave={() => setHover(null)}>
+      {/* The weights come after the map and the table in the page (they sit beside the map at desktop widths) */}
+      <a href="#weights" className="skip-link">
+        Skip the map: go to your weights
+      </a>
+      <div id="map-frame" ref={frameRef} className="relative border border-rule bg-sheet" onMouseLeave={() => setHover(null)}>
         <ComposableMap
           projection="geoMercator"
           width={WIDTH}
@@ -154,12 +190,13 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
             }}
           >
             <Geographies geography={geoUrl}>
-              {({ geographies }) =>
+              {({ geographies, path }) => {
                 // In alphabetical order, so that Tab goes through the countries from A to Z (the file runs from Z)
-                geographies
+                const sorted = geographies
                   .map(geo => ({ geo, c: lookup(geo) }))
-                  .sort((x, y) => (x.c?.name ?? x.geo.properties?.name ?? '').localeCompare(y.c?.name ?? y.geo.properties?.name ?? ''))
-                  .map(({ geo, c }) => {
+                  .sort((x, y) => (x.c?.name ?? x.geo.properties?.name ?? '').localeCompare(y.c?.name ?? y.geo.properties?.name ?? ''));
+                const outlines: { geo: Geo; kind: 'hover' | 'selected' | 'focus' }[] = [];
+                const paths = sorted.map(({ geo, c }) => {
                   const parent = c?.isDependency && c.parentIso ? byIso[c.parentIso] : undefined;
                   const target = parent ?? c;
                   const inRegion = c ? isCountryInRegion(parent ?? c, region) : region === 'global';
@@ -173,6 +210,10 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
                     fill = '';
                   }
                   const selected = target && target.iso3 === selectedIso;
+                  if (target && geo.rsmKey === hoverKey) outlines.push({ geo, kind: 'hover' });
+                  if (selected) outlines.push({ geo, kind: 'selected' });
+                  if (geo.rsmKey === focusKey) outlines.push({ geo, kind: 'focus' });
+                  const tiny = sizeOf(geo, path.bounds) * position.zoom * unitPx < MIN_FOCUS_PX;
                   const label = c ? describeCountry(c, rankedCount, parent?.name) : undefined;
                   const show = (e: React.MouseEvent | React.FocusEvent) => {
                     if (!c) return setHover({ name: geo.properties?.name ?? 'Unknown', note: 'Not covered by the sources separately; not ranked.', anchor: anchorFrom(e) });
@@ -192,15 +233,27 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
                       geography={geo}
                       fill={fill || undefined}
                       className={`${cls} ${selected ? 'is-selected' : ''}`}
-                      tabIndex={target ? 0 : -1}
+                      tabIndex={target && !tiny ? 0 : -1}
                       role={target ? 'button' : undefined}
                       aria-label={label}
                       aria-hidden={target ? undefined : true}
-                      onMouseEnter={show}
+                      onMouseEnter={e => {
+                        setHoverKey(geo.rsmKey);
+                        show(e);
+                      }}
                       onMouseMove={e => setHover(h => (h ? { ...h, anchor: { x: e.clientX, y: e.clientY } } : h))}
-                      onMouseLeave={() => setHover(null)}
-                      onFocus={show}
-                      onBlur={() => setHover(null)}
+                      onMouseLeave={() => {
+                        setHoverKey(null);
+                        setHover(null);
+                      }}
+                      onFocus={e => {
+                        setFocusKey((e.target as Element).matches(':focus-visible') ? geo.rsmKey : null);
+                        show(e);
+                      }}
+                      onBlur={() => {
+                        setFocusKey(null);
+                        setHover(null);
+                      }}
                       onClick={() => target && onSelect(target.iso3)}
                       onKeyDown={e => {
                         if (target && (e.key === 'Enter' || e.key === ' ')) {
@@ -210,8 +263,23 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
                       }}
                     />
                   );
-                })
-              }
+                });
+                const order = { hover: 0, selected: 1, focus: 2 };
+                return (
+                  <>
+                    {paths}
+                    {/* The hovered, selected and focused countries' outlines again, over every neighbour (the
+                        countries are drawn A to Z, so a neighbour drawn later would cover half of the outline) */}
+                    <g aria-hidden="true">
+                      {outlines
+                        .sort((x, y) => order[x.kind] - order[y.kind])
+                        .map(({ geo, kind }) => (
+                          <path key={`${kind}-${geo.rsmKey}`} d={geo.svgPath} className={`map-outline map-outline-${kind}`} />
+                        ))}
+                    </g>
+                  </>
+                );
+              }}
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>

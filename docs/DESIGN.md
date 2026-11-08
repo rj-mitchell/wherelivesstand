@@ -85,7 +85,18 @@ tabs and zoom buttons, in one row that scrolls sideways on a phone. Where more t
 row, that end fades out under an arrow, which scrolls the row along when tapped, and the chosen region's tab is
 always scrolled into view; on a wide screen every tab fits and neither shows. The page's heading is visually hidden. The
 count of countries, the data date and "Copy a link to this view" sit under the map; the weights are beside it at
-desktop and under it on phones.
+desktop and under it on phones. In the page the map and the table come first and the weights after them, as on a
+phone's screen; from 1024 pixels wide the grid places the weights in the left-hand column, sticky and as tall as the
+map's foot (`App.tsx` measures it). The map has two skip links, shown when focused: to the table and to the weights.
+
+The table of rankings scrolls sideways where it is wider than its column (on a phone or tablet, and beside the weights on a
+laptop narrower than about 1400 pixels). Its rank and country columns stay pinned at the start on their row's own background (paper,
+or the selected or hovered row's), with a rule at their edge once other columns have scrolled under them, so the
+country stays in view; the fade marks only the far end.
+
+The dossier and the comparison are modal: while one is open, everything else on the page is `inert` (out of reach
+of Tab, a screen reader's virtual cursor and the pointer), Tab stays inside it, Escape closes it and focus goes back
+where it was.
 
 ## The map
 
@@ -103,5 +114,10 @@ desktop and under it on phones.
   the map.
 - **Not ranked:** a hatched pattern, distinct from every step of the scale.
 - **Keyboard:** every country in the data is a button with its name, score and rank, and Tab goes through them from A to Z; Enter opens the dossier;
-  focus draws an ink outline and shows the hover card. A skip link goes to the table, which lists every ranked
-  country and sorts by any column.
+  focus draws an ink outline and shows the hover card. A country drawn smaller than 2 pixels each way at the
+  current zoom and width (Vatican City, Monaco or Nauru on the whole world, and more of the smallest on a phone)
+  is left out of the Tab order, since focus there would show nothing; zooming in brings it back, and every
+  country is in the search and the table. A skip link goes to the table, which lists every ranked country and
+  sorts by any column.
+- **Outlines:** the hovered, selected and focused countries' outlines are drawn again over the whole map, so a
+  neighbour drawn after them (the countries are drawn from A to Z) never covers part of the outline.

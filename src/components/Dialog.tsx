@@ -1,5 +1,6 @@
 // A modal dialog: the dossier slides in from the right, the comparison sits in the middle. Escape and
-// the backdrop close it, Tab stays inside it, and focus goes back where it was when it closes.
+// the backdrop close it, Tab stays inside it, the page behind is inert (out of reach of the keyboard, a
+// screen reader's virtual cursor and the pointer), and focus goes back where it was when it closes.
 import React, { useEffect, useRef } from 'react';
 import { Icon } from './Icon';
 
@@ -14,6 +15,7 @@ interface Props {
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea, [tabindex]:not([tabindex="-1"])';
 
 export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLabel, children }) => {
+  const outer = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -24,6 +26,17 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
     (heading ?? panel.current)?.focus({ preventScroll: true });
     const overflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Everything beside the dialog, at each level up to the body, is made inert; only what this dialog made
+    // inert is restored
+    const madeInert: HTMLElement[] = [];
+    for (let node: HTMLElement | null = outer.current; node && node !== document.body; node = node.parentElement) {
+      for (const sibling of Array.from(node.parentElement?.children ?? [])) {
+        if (sibling !== node && sibling instanceof HTMLElement && !sibling.inert) {
+          sibling.inert = true;
+          madeInert.push(sibling);
+        }
+      }
+    }
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -48,6 +61,7 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = overflow;
+      for (const el of madeInert) el.inert = false;
       // Back where it was; for a dialog opened from its own address, to the map's heading rather than nowhere
       const back = previous && previous !== document.body && document.contains(previous) ? previous : document.getElementById('map-title');
       back?.focus({ preventScroll: true });
@@ -60,7 +74,7 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
       : 'fixed inset-0 sm:inset-x-4 sm:inset-y-6 md:inset-y-10 mx-auto max-w-5xl sm:border border-rule';
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div ref={outer} className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-ink/40" onClick={onClose} aria-hidden="true" />
       <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`${frame} bg-paper flex flex-col outline-none`}>
         <button type="button" onClick={onClose} className="absolute top-3 right-3 z-10 btn w-11 min-h-[44px] px-0" aria-label={closeLabel} title={`${closeLabel} (Escape)`}>

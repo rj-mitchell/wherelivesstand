@@ -59,7 +59,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
   const preset = matchingPreset(macro);
 
   return (
-    <section aria-labelledby="weights-title" className="font-sans flex-1 flex flex-col">
+    <section id="weights" aria-labelledby="weights-title" tabIndex={-1} className="font-sans flex-1 flex flex-col scroll-mt-4 outline-none">
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="weights-title" className="text-lg">
           Your weights

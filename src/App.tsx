@@ -191,26 +191,10 @@ export default function App({ countries }: { countries: Record<string, CountryDa
             <h1 id="map-title" tabIndex={-1} className="visually-hidden">
               {TAGLINE}: the map and rankings
             </h1>
+            {/* The map comes first in the page, as on screen on a phone; at desktop widths the grid puts the weights to
+                its left (docs/DECISIONS.md, 6) */}
             <div className="grid lg:grid-cols-[minmax(17rem,22rem)_1fr] gap-x-10 gap-y-8 items-start">
-              <div
-                ref={panelRef}
-                style={panelHeight ? { minHeight: panelHeight } : undefined}
-                // Beside the map it scrolls if the window is short, so it is padded (and pulled back by as much) to
-                // leave room for a focused control's ring, which the scrolling would otherwise cut off
-                className="lg:order-none order-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 lg:pl-3 lg:-ml-3 lg:pt-1.5 lg:-mt-1.5 flex flex-col"
-              >
-                <WeightsPanel
-                  categories={categories}
-                  indicators={indicators}
-                  macro={s.macro}
-                  sub={s.sub}
-                  onMacro={(cat: MacroCategory, v: number) => update({ macro: { ...s.macro, [cat]: v } })}
-                  onPreset={macro => update({ macro })}
-                  onSub={(id, v) => update({ sub: { ...s.sub, [id]: v }, fine: true })}
-                  onReset={() => update({ macro: defaultMacroWeights(), sub: {}, fine: false })}
-                />
-              </div>
-              <div className="order-1 lg:order-none min-w-0">
+              <div className="lg:col-start-2 lg:row-start-1 min-w-0">
                 <h2 className="visually-hidden">Map</h2>
                 <WorldMap
                   byIso={byIso}
@@ -237,6 +221,24 @@ export default function App({ countries }: { countries: Record<string, CountryDa
                 <div className="mt-12">
                   <RankingsTable list={list} categories={categories} region={s.region} onRegion={setRegion} hrefFor={hrefFor} selectedIso={country?.iso3 ?? null} />
                 </div>
+              </div>
+              <div
+                ref={panelRef}
+                style={panelHeight ? { minHeight: panelHeight } : undefined}
+                // Beside the map it scrolls if the window is short, so it is padded (and pulled back by as much) to
+                // leave room for a focused control's ring, which the scrolling would otherwise cut off
+                className="lg:col-start-1 lg:row-start-1 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 lg:pl-3 lg:-ml-3 lg:pt-1.5 lg:-mt-1.5 flex flex-col"
+              >
+                <WeightsPanel
+                  categories={categories}
+                  indicators={indicators}
+                  macro={s.macro}
+                  sub={s.sub}
+                  onMacro={(cat: MacroCategory, v: number) => update({ macro: { ...s.macro, [cat]: v } })}
+                  onPreset={macro => update({ macro })}
+                  onSub={(id, v) => update({ sub: { ...s.sub, [id]: v }, fine: true })}
+                  onReset={() => update({ macro: defaultMacroWeights(), sub: {}, fine: false })}
+                />
               </div>
             </div>
           </div>
