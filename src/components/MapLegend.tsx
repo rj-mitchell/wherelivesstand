@@ -20,7 +20,7 @@ export const MapLegend: React.FC<Props> = ({ scale, mode, regionName, hoverScore
     <div className="mt-3 flex flex-wrap items-end gap-x-8 gap-y-3 text-sm">
       <div className="flex-1 min-w-[16rem] max-w-xl">
         <p className="font-semibold mb-1">
-          Overall score{scale.relative ? `, ${regionName}'s own range (${lo.toFixed(1)} to ${hi.toFixed(1)})` : ''}
+          Overall score{scale.relative ? `, ${regionName}'s own range (${lo.toFixed(1)} to ${hi.toFixed(1)})` : ' under your weights, 0 to 100'}
         </p>
         <div className="relative h-3 border border-rule" style={{ background: legendGradient(mode) }}>
           {hoverScore != null && (
