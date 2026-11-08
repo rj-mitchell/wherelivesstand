@@ -215,10 +215,8 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
       {hover && <HoverCard info={hover} />}
       <MapLegend scale={scale} mode={mode} regionName={regionDef.name} hoverScore={hover?.country && !hover.country.isDependency ? hover.country.compositeScore : null} />
       <figcaption id="map-caption" className="mt-2 text-sm text-muted">
-        Overall score under your weights, from 0 to 100. Select a country, or tab to it and press Enter, for its full
-        record. Hatched areas are not ranked: territories of another country, and places too few indices cover.
-        Antarctica, Greenland and the far-northern Arctic islands are left off the map. Drag to pan; pinch or use the
-        buttons to zoom.
+        Select a country, or tab to it and press Enter, for its full record. Hatched: territories, and places too few
+        indices cover. Antarctica, Greenland and the Arctic islands are left off.
       </figcaption>
     </figure>
   );

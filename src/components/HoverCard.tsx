@@ -1,4 +1,5 @@
-// The small card that follows the pointer (or sits by the focused country) on the map.
+// The small card that follows the pointer (or sits by the focused country) on the map. It is as wide as its
+// longest line, so no line wraps (owner, 8 November 2026); on a screen too narrow for that, a line is cut short.
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import type { ComputedCountry } from '../types';
 
@@ -33,8 +34,8 @@ export const HoverCard: React.FC<{ info: HoverInfo }> = ({ info }) => {
   const c = info.country;
   const ranked = c && !c.isDependency && c.rank != null;
   return (
-    <div ref={ref} aria-hidden="true" className="fixed z-30 pointer-events-none w-72 max-w-[calc(100vw-24px)] bg-sheet border border-ink/70 p-3 text-sm" style={{ left, top }}>
-      <div className="flex items-baseline justify-between gap-3 border-b border-rule pb-1.5 mb-1.5">
+    <div ref={ref} aria-hidden="true" className="fixed z-30 pointer-events-none w-max max-w-[calc(100vw-24px)] whitespace-nowrap bg-sheet border border-ink/70 p-3 text-sm [&_p]:truncate" style={{ left, top }}>
+      <div className="flex items-baseline justify-between gap-6 border-b border-rule pb-1.5 mb-1.5">
         <span className="font-serif font-semibold text-base">{info.name}</span>
         {ranked && <span className="num font-semibold text-lg">{c.compositeScore}</span>}
       </div>
