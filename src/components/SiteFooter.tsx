@@ -10,7 +10,7 @@ export const SiteFooter: React.FC = () => (
     <div className="max-w-page mx-auto px-4 md:px-8 py-8 border-t border-rule text-sm text-muted space-y-4">
       <p className="font-serif text-base text-ink">{INDEPENDENCE_LINE}</p>
       <nav aria-label="About this site">
-        <ul className="flex flex-wrap gap-x-5 gap-y-2">
+        <ul className="flex flex-wrap gap-x-5 gap-y-1 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6">
           <li><Link href="/about">About</Link></li>
           <li><Link href="/method">How it works</Link></li>
           <li><Link href="/corrections">Corrections</Link></li>

@@ -8,7 +8,9 @@
 // - runs axe-core against WCAG 2.2 A and AA, failing on any serious or critical violation (moderate and minor
 //   ones are listed but do not fail the run);
 // - fails on a console error, an uncaught exception, a content-security-policy violation or a request to any
-//   other host.
+//   other host;
+// - checks a few things axe cannot: an open dialog leaves the rest of the page inert; on the map, no country
+//   too small to see (under 2 pixels each way) is a Tab stop, and the map comes before the weights in the page.
 //
 //   npm run check:a11y                    (after npm run build; needs `npx playwright install chromium`)
 //   CHROME_PATH=/usr/bin/google-chrome node scripts/a11y.mjs     to use an installed Chrome instead
@@ -140,6 +142,27 @@ for (const size of SIZES) {
           console.log(`  note  ${label}: ${line}`);
         }
       }
+      problems.push(
+        ...(await page.evaluate(() => {
+          const found = [];
+          const dialog = document.querySelector('[role="dialog"]');
+          if (dialog) {
+            const awake = [...document.getElementById('root').children].filter(el => !el.contains(dialog) && !el.inert);
+            if (awake.length) found.push(`not inert behind the dialog: ${awake.map(el => el.tagName.toLowerCase()).join(', ')}`);
+          }
+          const frame = document.getElementById('map-frame');
+          if (frame && !dialog) {
+            const tiny = [...frame.querySelectorAll('path[tabindex="0"]')].filter(el => {
+              const r = el.getBoundingClientRect();
+              return Math.max(r.width, r.height) < 2;
+            });
+            if (tiny.length) found.push(`Tab stops too small to see on the map: ${tiny.map(el => el.getAttribute('aria-label')?.split(':')[0]).join(', ')}`);
+            const weights = document.getElementById('weights');
+            if (weights && !(frame.compareDocumentPosition(weights) & Node.DOCUMENT_POSITION_FOLLOWING)) found.push('the weights come before the map in the page');
+          }
+          return found;
+        })),
+      );
       if (shots) await page.screenshot({ path: join(shots, `${p.name}-${sizeName}-${scheme}.png`) });
 
       if (problems.length) {

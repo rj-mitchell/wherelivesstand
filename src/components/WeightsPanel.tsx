@@ -59,12 +59,12 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
   const preset = matchingPreset(macro);
 
   return (
-    <section aria-labelledby="weights-title" className="font-sans flex-1 flex flex-col">
+    <section id="weights" aria-labelledby="weights-title" tabIndex={-1} className="font-sans flex-1 flex flex-col scroll-mt-4 outline-none">
       <div className="flex items-baseline justify-between gap-3">
         <h2 id="weights-title" className="text-lg">
           Your weights
         </h2>
-        <button type="button" onClick={onReset} className="inline-flex items-center gap-1 text-sm text-heather hover:text-ink cursor-pointer min-h-[24px]">
+        <button type="button" onClick={onReset} className="press inline-flex items-center gap-1 text-sm text-heather hover:text-ink active:text-ink cursor-pointer min-h-[24px]">
           <Icon name="reset" className="w-3.5 h-3.5" />
           Reset
         </button>
@@ -82,7 +82,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
                 aria-pressed={on}
                 title={p.summary}
                 onClick={() => onPreset({ ...p.weights })}
-                className={`min-h-[28px] px-1.5 py-0.5 text-[0.8125rem] leading-tight whitespace-nowrap border cursor-pointer ${on ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
+                className={`press min-h-[28px] px-1.5 py-0.5 text-[0.8125rem] leading-tight [text-wrap:balance] border cursor-pointer ${on ? 'bg-heather text-on-heather border-heather font-semibold' : 'bg-sheet border-rule hover:border-heather'}`}
               >
                 {p.label}
               </button>
@@ -108,7 +108,7 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
               onClick={() => setOpen(expanded ? null : cat.id)}
               className="shrink-0 inline-flex items-center justify-center w-6 h-6 -ml-1 text-heather hover:text-ink cursor-pointer"
             >
-              <Icon name="chevron" className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+              <Icon name="chevron" className={`w-3.5 h-3.5 motion-safe:transition-transform ${expanded ? 'rotate-90' : ''}`} />
             </button>
           );
           return (

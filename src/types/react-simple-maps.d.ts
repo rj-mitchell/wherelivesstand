@@ -36,12 +36,15 @@ declare module 'react-simple-maps' {
 
   export interface Geo {
     rsmKey: string;
+    /** The projected outline, as the path's d attribute */
+    svgPath: string;
     id?: string | number;
     properties?: { name?: string };
   }
   export interface GeographiesProps {
     geography: string | Record<string, unknown>;
-    children: (props: { geographies: Geo[] }) => React.ReactNode;
+    /** `path` is d3's geoPath for the map's projection, in the map's own units */
+    children: (props: { geographies: Geo[]; path: { bounds: (geo: Geo) => [[number, number], [number, number]] } }) => React.ReactNode;
   }
   export const Geographies: React.FC<GeographiesProps>;
 

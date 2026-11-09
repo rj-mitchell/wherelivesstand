@@ -223,9 +223,9 @@ export const Accessibility: React.FC = () => (
     </p>
     <h2>What you can do</h2>
     <ul>
-      <li>Use the whole site with a keyboard. On the map, each country is a stop with its name and score; Enter opens its dossier. A link before the map skips straight to the table.</li>
-      <li>Read every figure on the map in the table of rankings below it, which you can sort by any column.</li>
-      <li>Close a dossier or the comparison with Escape; focus returns to where you were.</li>
+      <li>Use the whole site with a keyboard. On the map, each country is a stop with its name and score; Enter opens its dossier. Links before the map skip straight to the table or to your weights.</li>
+      <li>Read every figure on the map in the table of rankings below it, which you can sort by any column. On a phone the table scrolls sideways, and the rank and country stay in view.</li>
+      <li>Close a dossier or the comparison with Escape; focus returns to where you were. While one is open, the rest of the page is out of reach, so a screen reader stays inside it.</li>
       <li>Read the map whatever your colour vision: the scale runs from pale to dark in one hue.</li>
       <li>Zoom the page to 200% and more, and use dark mode, which the site follows from your system.</li>
       <li>Copy any figure, name or source from the page.</li>
@@ -238,7 +238,7 @@ export const Accessibility: React.FC = () => (
     </p>
     <h2>Known limits</h2>
     <ul>
-      <li>The map has about two hundred keyboard stops, one per country. Use the skip link, the search box or the table to go straight to a country.</li>
+      <li>The map has about two hundred keyboard stops, one per country. Use the skip links, the search box or the table to go straight to a country. Countries too small to see at the current zoom, such as Vatican City, are not keyboard stops until you zoom in; they are in the search and the table.</li>
       <li>The small territories and islands on the map are hard to hover or tap; they are all in the table and the search.</li>
       <li>The site needs JavaScript to work out the scores. Without it you see only the page titles.</li>
     </ul>

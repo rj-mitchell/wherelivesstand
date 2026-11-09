@@ -4,6 +4,8 @@ const token = name => `rgb(var(--${name}) / <alpha-value>)`;
 
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  // hover: styles only where there is a real pointer, so a tap on a phone doesn't leave them stuck on
+  future: { hoverOnlyWhenSupported: true },
   theme: {
     // Square corners and no shadows: a printed page, not a card stack
     borderRadius: { none: '0', DEFAULT: '2px', full: '9999px' },

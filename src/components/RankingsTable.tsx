@@ -61,12 +61,16 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
     const active = sort.key === key;
     const ariaSort = active ? ((key === 'rank' || key === 'name') !== sort.desc ? 'ascending' : 'descending') : 'none';
     return (
-      <th scope="col" aria-sort={ariaSort} className={`px-1.5 py-2 align-bottom ${key === 'name' ? 'text-left' : 'text-right'}`}>
+      <th
+        scope="col"
+        aria-sort={ariaSort}
+        className={`px-1.5 py-2 align-bottom ${key === 'name' ? 'text-left' : 'text-right'} ${key === 'rank' ? 'table-pin table-pin-rank' : key === 'name' ? 'table-pin table-pin-name' : ''}`}
+      >
         <button
           type="button"
           onClick={() => setSort(s => ({ key, desc: s.key === key ? !s.desc : false }))}
           title={title ? `Sort by ${title}` : undefined}
-          className={`inline-flex items-center gap-0.5 font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
+          className={`inline-flex items-center gap-0.5 min-h-6 font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
         >
           <span>{label}</span>
           <Icon name={active ? (sort.desc ? 'up' : 'down') : 'sort'} className={`w-3.5 h-3.5 ${active ? '' : 'opacity-50'}`} />
@@ -111,13 +115,18 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
         </div>
       </div>
 
-      <div className="mt-4 overflow-x-auto border-t-2 border-ink">
+      {/* On a phone the table scrolls sideways, fading at the end with more columns off screen; the rank and the
+          country stay pinned at the start, with a rule at their edge once the rest has scrolled under them */}
+      <div
+        className="mt-4 overflow-x-auto scroll-fade-x table-pinned border-t-2 border-ink"
+        onScroll={e => e.currentTarget.toggleAttribute('data-scrolled', Math.abs(e.currentTarget.scrollLeft) > 0)}
+      >
         <table className="w-full text-sm border-collapse min-w-[44rem]">
           <caption className="visually-hidden">
             Overall and dimension scores for each ranked country{region !== 'global' ? ` in ${regionName}` : ''}, under the current weights
           </caption>
           <thead className="border-b border-ink">
-            <tr>
+            <tr className="bg-paper">
               {header('rank', region !== 'global' ? 'Rank' : 'Rank', 'rank')}
               {header('name', 'Country', 'name')}
               <th scope="col" className="px-1.5 py-2 text-right align-bottom font-semibold">
@@ -130,8 +139,8 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
           </thead>
           <tbody>
             {rows.map(c => (
-              <tr key={c.iso3} className={`border-b border-faint ${c.iso3 === selectedIso ? 'bg-heather-tint' : 'hover:bg-sheet'}`}>
-                <td className="px-1.5 py-1.5 text-right num text-muted">
+              <tr key={c.iso3} className={`border-b border-faint ${c.iso3 === selectedIso ? 'bg-heather-tint' : 'bg-paper hover:bg-sheet'}`}>
+                <td className="table-pin table-pin-rank px-1.5 py-1.5 text-right num text-muted">
                   {region !== 'global' ? (
                     <>
                       {regionRank.get(c.iso3)}
@@ -142,7 +151,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
                     c.rank
                   )}
                 </td>
-                <th scope="row" className="px-1.5 py-1.5 text-left font-normal">
+                <th scope="row" className="table-pin table-pin-name px-1.5 py-1.5 text-left font-normal">
                   <Link href={hrefFor(c.iso3)} className="text-ink">
                     {c.name}
                   </Link>
