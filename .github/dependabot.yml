@@ -1,0 +1,32 @@
+# Dependency updates: the same shape in every Where They Stand repository (the charity's family/TOOLCHAIN.md).
+# Each Monday Dependabot looks for newer versions and opens a few grouped pull requests, at most three open at a
+# time for each kind of dependency. It proposes; nothing is merged without a review and a green CI run.
+#
+# The Node major version is part of the family's toolchain. It is set once, in family/TOOLCHAIN.md, and changed in
+# every repository in the same week, so it is not Dependabot's to move (it is written in .nvmrc and ci.yml, which
+# Dependabot does not read).
+version: 2
+updates:
+  # The app's packages (package.json and package-lock.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      npm:
+        patterns:
+          - "*"
+
+  # The actions the workflows in .github/workflows/ use
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns:
+          - "*"
