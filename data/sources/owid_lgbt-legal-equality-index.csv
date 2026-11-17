@@ -1,0 +1,207 @@
+entity,code,year,ei_legal
+Afghanistan,AFG,2026,0.46
+Africa,OWID_AFR,2026,18.515268
+Albania,ALB,2026,66.67
+Algeria,DZA,2026,6.81
+Andorra,AND,2026,85.65
+Angola,AGO,2026,50
+Antigua and Barbuda,ATG,2026,59.58
+Argentina,ARG,2026,86.65
+Armenia,ARM,2026,44.55
+Asia,OWID_ASI,2026,37.50335
+Australia,AUS,2026,94.53
+Austria,AUT,2026,86.96
+Azerbaijan,AZE,2026,39.17
+Bahamas,BHS,2026,43.75
+Bahrain,BHR,2026,32.08
+Bangladesh,BGD,2026,15.95
+Barbados,BRB,2026,38.3
+Belarus,BLR,2026,37.73
+Belgium,BEL,2026,94.38
+Belize,BLZ,2026,56.25
+Benin,BEN,2026,38.26
+Bhutan,BTN,2026,56.28
+Bolivia,BOL,2026,86.52
+Bosnia and Herzegovina,BIH,2026,63.06
+Botswana,BWA,2026,60.42
+Brazil,BRA,2026,93.23
+Brunei,BRN,2026,2.55
+Bulgaria,BGR,2026,56.67
+Burkina Faso,BFA,2026,6.67
+Burundi,BDI,2026,9.36
+Cambodia,KHM,2026,40.91
+Cameroon,CMR,2026,3.91
+Canada,CAN,2026,95.74
+Cape Verde,CPV,2026,54.78
+Central African Republic,CAF,2026,27.83
+Chad,TCD,2026,15.46
+Chile,CHL,2026,100
+China,CHN,2026,38.7
+Colombia,COL,2026,91.67
+Comoros,COM,2026,17.07
+Congo,COG,2026,40
+Costa Rica,CRI,2026,84.78
+Cote d'Ivoire,CIV,2026,31.43
+Croatia,HRV,2026,80.42
+Cuba,CUB,2026,86.67
+Cyprus,CYP,2026,78.7
+Czechia,CZE,2026,80
+Democratic Republic of Congo,COD,2026,35
+Denmark,DNK,2026,93.75
+Djibouti,DJI,2026,33.49
+Dominica,DMA,2026,48.84
+Dominican Republic,DOM,2026,43.75
+East Timor,TLS,2026,48.94
+Ecuador,ECU,2026,89.13
+Egypt,EGY,2026,4.68
+El Salvador,SLV,2026,47.73
+Equatorial Guinea,GNQ,2026,38.18
+Eritrea,ERI,2026,6.51
+Estonia,EST,2026,72.5
+Eswatini,SWZ,2026,25.54
+Ethiopia,ETH,2026,10.21
+Europe,OWID_EUR,2026,72.07966
+Fiji,FJI,2026,54.57
+Finland,FIN,2026,86.25
+France,FRA,2026,89.58
+Gabon,GAB,2026,37.5
+Gambia,GMB,2026,1.67
+Georgia,GEO,2026,47.23
+Germany,DEU,2026,100
+Ghana,GHA,2026,12.4
+Greece,GRC,2026,91.67
+Greenland,GRL,2026,93.18
+Grenada,GRD,2026,27.33
+Guatemala,GTM,2026,38.33
+Guinea,GIN,2026,14.67
+Guinea-Bissau,GNB,2026,41.33
+Guyana,GUY,2026,21.56
+Haiti,HTI,2026,45
+High-income countries,OWID_HIC,2026,70.95492
+Honduras,HND,2026,58.33
+Hungary,HUN,2026,57.08
+Iceland,ISL,2026,95.65
+India,IND,2026,48.09
+Indonesia,IDN,2026,13.49
+Iran,IRN,2026,6.81
+Iraq,IRQ,2026,2.73
+Ireland,IRL,2026,80
+Israel,ISR,2026,72.92
+Italy,ITA,2026,73.41
+Jamaica,JAM,2026,23.72
+Japan,JPN,2026,56.82
+Jordan,JOR,2026,27.11
+Kazakhstan,KAZ,2026,33.23
+Kenya,KEN,2026,23.57
+Kiribati,KIR,2026,28.33
+Kuwait,KWT,2026,5.12
+Kyrgyzstan,KGZ,2026,34.42
+Laos,LAO,2026,40
+Latvia,LVA,2026,57.5
+Lebanon,LBN,2026,16.77
+Lesotho,LSO,2026,55.42
+Liberia,LBR,2026,23.56
+Libya,LBY,2026,8
+Liechtenstein,LIE,2026,69.44
+Lithuania,LTU,2026,66.25
+Low-income countries,OWID_LIC,2026,17.689457
+Lower-middle-income countries,OWID_LMC,2026,34.517296
+Luxembourg,LUX,2026,82.4
+Madagascar,MDG,2026,37.78
+Malawi,MWI,2026,11.74
+Malaysia,MYS,2026,8.09
+Maldives,MDV,2026,4.71
+Mali,MLI,2026,6.09
+Malta,MLT,2026,100
+Marshall Islands,MHL,2026,48.84
+Mauritania,MRT,2026,3.83
+Mauritius,MUS,2026,50.22
+Mexico,MEX,2026,84.82
+Micronesia (country),FSM,2026,47.69
+Moldova,MDA,2026,64.07
+Monaco,MCO,2026,55.61
+Mongolia,MNG,2026,61.78
+Montenegro,MNE,2026,74.58
+Morocco,MAR,2026,10.43
+Mozambique,MOZ,2026,54.55
+Myanmar,MMR,2026,12.89
+Namibia,NAM,2026,49.17
+Nauru,NRU,2026,43.33
+Nepal,NPL,2026,71.05
+Netherlands,NLD,2026,87.08
+New Zealand,NZL,2026,95.83
+Nicaragua,NIC,2026,50
+Niger,NER,2026,36
+Nigeria,NGA,2026,6.96
+North America,OWID_NAM,2026,77.58838
+North Korea,PRK,2026,33.66
+North Macedonia,MKD,2026,65.42
+Norway,NOR,2026,89.58
+Oceania,OWID_OCE,2026,74.98412
+Oman,OMN,2026,2.67
+Pakistan,PAK,2026,31.49
+Palau,PLW,2026,46.88
+Panama,PAN,2026,43.48
+Papua New Guinea,PNG,2026,25.73
+Paraguay,PRY,2026,37.92
+Peru,PER,2026,64.19
+Philippines,PHL,2026,49.38
+Poland,POL,2026,58.33
+Portugal,PRT,2026,93.75
+Qatar,QAT,2026,6.22
+Romania,ROU,2026,60
+Russia,RUS,2026,34.7
+Rwanda,RWA,2026,36.67
+Saint Kitts and Nevis,KNA,2026,50
+Saint Lucia,LCA,2026,51.16
+Saint Vincent and the Grenadines,VCT,2026,23.81
+Samoa,WSM,2026,29.74
+San Marino,SMR,2026,62.5
+Sao Tome and Principe,STP,2026,48.89
+Saudi Arabia,SAU,2026,4.89
+Senegal,SEN,2026,5.12
+Serbia,SRB,2026,67.08
+Seychelles,SYC,2026,55.42
+Sierra Leone,SLE,2026,20.33
+Singapore,SGP,2026,38.75
+Slovakia,SVK,2026,64.9
+Slovenia,SVN,2026,80.83
+Solomon Islands,SLB,2026,22.5
+Somalia,SOM,2026,0.46
+South Africa,ZAF,2026,76.67
+South America,OWID_SAM,2026,86.040474
+South Korea,KOR,2026,53.18
+South Sudan,SSD,2026,7.11
+Spain,ESP,2026,99.88
+Sri Lanka,LKA,2026,22.22
+Sudan,SDN,2026,8.86
+Suriname,SUR,2026,59.17
+Sweden,SWE,2026,84.58
+Switzerland,CHE,2026,76.17
+Syria,SYR,2026,9.33
+Taiwan,TWN,2026,68.13
+Tajikistan,TJK,2026,38.22
+Tanzania,TZA,2026,13.4
+Thailand,THA,2026,62.5
+Togo,TGO,2026,5.24
+Tonga,TON,2026,9.05
+Trinidad and Tobago,TTO,2026,25.1
+Tunisia,TUN,2026,12.86
+Turkey,TUR,2026,31.67
+Turkmenistan,TKM,2026,18.02
+Tuvalu,TUV,2026,23.65
+Uganda,UGA,2026,0.56
+Ukraine,UKR,2026,58.18
+United Arab Emirates,ARE,2026,0.43
+United Kingdom,GBR,2026,82.08
+United States,USA,2026,79.72
+Upper-middle-income countries,OWID_UMC,2026,44.208786
+Uruguay,URY,2026,100
+Uzbekistan,UZB,2026,21.2
+Vanuatu,VUT,2026,44.78
+Venezuela,VEN,2026,48.33
+Vietnam,VNM,2026,50
+World,OWID_WRL,2026,42.754494
+Yemen,YEM,2026,4
+Zambia,ZMB,2026,7.87
+Zimbabwe,ZWE,2026,14.48

@@ -1,0 +1,16 @@
+{
+  "name": "Where Lives Stand",
+  "short_name": "Where Lives Stand",
+  "description": "Quality of life, country by country, weighted the way you choose. A Where They Stand project.",
+  "lang": "en-GB",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5F0E3",
+  "theme_color": "#5E3F63",
+  "icons": [
+    { "src": "/family/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/family/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/family/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

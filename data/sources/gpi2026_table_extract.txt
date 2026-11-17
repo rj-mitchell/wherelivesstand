@@ -1,0 +1,121 @@
+
+      VERY HIGH   HIGH     MEDIUM       LOW            VERY LOW    NOT INCLUDED
+
+
+
+
+RANK         COUNTRY          SCORE    CHANGE           RANK      COUNTRY             SCORE CHANGE           RANK   COUNTRY                SCORE CHANGE
+
+  1          Iceland           1.161      ↔              29       Slovakia            1.661   DOWN-LONG 3    56     The Gambia             1.837   UP-LONG 5
+  2          New Zealand       1.343     UP-LONG 1       30       Montenegro          1.672   DOWN-LONG 2    57     South Korea            1.839   DOWN-LONG 6
+  3          Switzerland       1.363     DOWN-LONG 1     31       Qatar               1.676   DOWN-LONG 10   58     Laos                   1.846    ↔
+  4          Slovenia          1.369     UP-LONG 2       32       Timor-Leste         1.681   DOWN-LONG 2    59     Madagascar             1.849   UP-LONG 4
+  5          Ireland           1.371     DOWN-LONG 1     33       Norway              1.688    ↔             60     Oman                    1.85   DOWN-LONG 26
+  6          Austria           1.421     DOWN-LONG 1     34       Mongolia            1.692   UP-LONG 4      61     Kyrgyz Republic        1.853   UP-LONG 8
+  7          Portugal          1.427     UP-LONG 1       35       Italy               1.712     ↔            62     Costa Rica              1.86   DOWN-LONG 14
+  8          Singapore         1.435     DOWN-LONG 1     36       Albania             1.725   UP-LONG 7      63     Namibia                1.872   DOWN-LONG 1
+  9          Finland           1.478     UP-LONG 1       37       Uzbekistan          1.726   UP-LONG 10     64     Paraguay               1.882   UP-LONG 5
+  10         Japan             1.489     UP-LONG 3       38       Equatorial Guinea   1.729   UP-LONG 20     65     Morocco                1.887   UP-LONG 3
+  11         Denmark           1.504     DOWN-LONG 2     39       United Kingdom       1.73   DOWN-LONG 7    66     Turkmenistan           1.903   DOWN-LONG 2
+  12         Malaysia          1.513     DOWN-LONG 1     40       Sweden              1.732   DOWN-LONG 1    67     Sri Lanka               1.91   UP-LONG 14
+  13         Czechia           1.517     DOWN-LONG 1     41       Vietnam             1.738   DOWN-LONG 1    68     Jordan                 1.913   UP-LONG 9
+  14         Canada            1.525     UP-LONG 1       42       Taiwan              1.751   DOWN-LONG 5    69     Indonesia              1.918   DOWN-LONG 3
+  15         Hungary           1.538     DOWN-LONG 1     43       Uruguay             1.754   DOWN-LONG 1    =70    Jamaica                1.919   DOWN-LONG 1
+  16         Bhutan            1.546     UP-LONG 2       44       Kazakhstan          1.771   UP-LONG 5      =70    Serbia                 1.919   UP-LONG 5
+  17         Netherlands       1.566       ↔             45       Romania             1.788   DOWN-LONG 1    72     Argentina              1.922   DOWN-LONG 20
+  18         Mauritius         1.586     UP-LONG 11      46       North Macedonia     1.792   UP-LONG 3      73     United Arab Emirates   1.927    ↔
+  19         Latvia            1.589       ↔             47       Tajikistan          1.799   DOWN-LONG 6    74     Sierra Leone           1.937   UP-LONG 9
+  20         Australia         1.602     UP-LONG 4                Bosnia and                                 75     Senegal                1.939   UP-LONG 12
+                                                         48                            1.81   UP-LONG 9
+  21         Belgium           1.608     DOWN-LONG 5              Herzegovina                                76     Ghana                  1.943   DOWN-LONG 2
+  22         Poland            1.615     UP-LONG 23      49       Kuwait              1.813   DOWN-LONG 13   77     Tunisia                1.947   UP-LONG 19
+  23         Croatia           1.619     UP-LONG 2       50       Botswana            1.823   DOWN-LONG 4    78     Angola                 1.955   UP-LONG 11
+  24         Lithuania          1.62     UP-LONG 3       51       Armenia             1.825   UP-LONG 21     79     Trinidad and Tobago    1.959   DOWN-LONG 12
+  25         Estonia           1.623     DOWN-LONG 5     52       Chile               1.826   UP-LONG 8      80     Cyprus                 1.967   DOWN-LONG 9
+  26         Bulgaria          1.628     DOWN-LONG 4     53       Greece              1.828   UP-LONG 2      81     Panama                 1.976   DOWN-LONG 6
+  27         Spain             1.654     UP-LONG 4       54       Kosovo               1.83    ↔             82     Zambia                 1.992   DOWN-LONG 2
+  28         Germany           1.657     DOWN-LONG 5     55       Moldova             1.836   UP-LONG 1      83     Malawi                 1.994   DOWN-LONG 18
+
+
+
+
+10 10
+RANK   COUNTRY              SCORE CHANGE           RANK   COUNTRY            SCORE CHANGE           RANK   COUNTRY               SCORE CHANGE
+84     Papua New Guinea     2.002   UP-LONG 17     112    Mauritania         2.184   UP-LONG 2      138    Ethiopia              2.648   UP-LONG 1
+85     Guinea-Bissau        2.012   UP-LONG 7      113    Egypt              2.186   UP-LONG 2      139    Mexico                 2.65   UP-LONG 4
+86     Lesotho              2.016   UP-LONG 27     114    Rwanda               2.2   DOWN-LONG 2    140    Iraq                  2.662     ↔
+87     Liberia              2.024   UP-LONG 17     115    Belarus            2.216   UP-LONG 1      141    Colombia              2.735   DOWN-LONG 4
+88     Guatemala            2.025   DOWN-LONG 6    116    Guinea              2.22   UP-LONG 2      =142   Haiti                 2.755   DOWN-LONG 1
+89     Dominican Republic   2.038   DOWN-LONG 10   117    Bangladesh         2.226   UP-LONG 3      =142   Nigeria               2.755   UP-LONG 6
+90     Zimbabwe             2.051   UP-LONG 10     118    China              2.231   DOWN-LONG 11   144    Iran                  2.759   DOWN-LONG 6
+91     Algeria              2.053   DOWN-LONG 5    119    Togo               2.251   UP-LONG 7      145    Chad                  2.769   DOWN-LONG 9
+92     Bolivia              2.054   DOWN-LONG 2           Republic of the                           146    Niger                 2.832   DOWN-LONG 1
+                                                   120                       2.256   DOWN-LONG 15
+93     Côte d'Ivoire        2.061   DOWN-LONG 9           Congo                                     147    North Korea           2.845   ↔
+94     Georgia              2.066   UP-LONG 1      121    El Salvador        2.264   UP-LONG 1      148    Palestine             2.877   UP-LONG 2
+95     Saudi Arabia         2.067   DOWN-LONG 2    122    Benin              2.293   DOWN-LONG 1    149    Burkina Faso          2.882   UP-LONG 3
+96     Cambodia             2.075   DOWN-LONG 8    123    South Africa       2.308   DOWN-LONG 4           Central African
+                                                                                                    150                          2.906   UP-LONG 1
+97     Honduras             2.075   UP-LONG 13     124    Brazil             2.333   UP-LONG 1             Republic
+98     Tanzania              2.08   DOWN-LONG 20   125    Libya              2.361   UP-LONG 3      151    Myanmar               2.911   UP-LONG 2
+99     France               2.083   UP-LONG 3      126    Mozambique         2.383   UP-LONG 1      152    Pakistan              2.919   DOWN-LONG 6
+100    Gabon                2.086   UP-LONG 17     127    India              2.409   DOWN-LONG 3    153    Somalia               2.973   DOWN-LONG 4
+101    Thailand             2.089   DOWN-LONG 7    128    Eritrea            2.412   UP-LONG 3      154    Mali                  2.996     ↔
+102    Philippines          2.092   DOWN-LONG 3    129    Burundi            2.417   UP-LONG 6      155    Syria                 3.067     ↔
+103    Guyana               2.093   DOWN-LONG 12   130    Uganda              2.42   DOWN-LONG 7    156    Yemen                 3.081   UP-LONG 2
+104    Eswatini             2.095   UP-LONG 6      131    Lebanon            2.435   UP-LONG 3      157    Afghanistan           3.106     ↔
+105    Djibouti             2.098   UP-LONG 6      132    Kenya              2.447   UP-LONG 1      158    South Sudan           3.116   DOWN-LONG 2
+106    Nicaragua            2.107   DOWN-LONG 9    133    Venezuela          2.516   DOWN-LONG 4    159    Israel                3.124   UP-LONG 1
+107    Peru                  2.12   DOWN-LONG 1           United States of                          160    Ukraine               3.184   UP-LONG 2
+                                                   134                       2.535   DOWN-LONG 4
+108    Bahrain              2.131     ↔                   America                                          Democratic Republic
+                                                                                                    161                          3.189   ↔
+109    Cuba                 2.139   DOWN-LONG 11   135    Ecuador            2.539   DOWN-LONG 3           of the Congo
+110    Azerbaijan           2.142   DOWN-LONG 8    136    Türkiye            2.605   UP-LONG 8      162    Sudan                 3.195   DOWN-LONG 3
+111    Nepal                2.143   DOWN-LONG 26   137    Cameroon           2.634   UP-LONG 5      163    Russia                3.367   ↔
+
+
+
+
+                                                                                                                                         11
+Global Peace Index 2026 | Measuring peace in a complex world
+
+
+
+
+             Overview
+The 2026 GPI finds that the world became less peaceful for the        improvement of any indicator on the index, and Eastern Europe
+15 th time in the last 18 years, with the average level of country    and Central Asia recorded an average improvement in
+peacefulness deteriorating by 0.7 per cent over the prior year.       peacefulness over the year, after many years of deteriorating
+This is the 12 th consecutive year that global peacefulness has       peacefulness.
+deteriorated. While some indicators, such as neighbouring
+countries relations, are updated to the end of March 2026, the        Figure 1.1 shows the change in the average levels of peacefulness
+cutoff for most indicators is December 2025, meaning that the         for each of the GPI domains, as well as the percentage of
+full impact of the Iran war is not captured by the Index this         countries that improved or deteriorated.
+year.
+                                                                      FIGURE 1.1
+The deterioration occurred during a year in which several             Year-on-year change in GPI score by
+major violent conflicts, such as those in Sudan, Ukraine, and         domain, 2026
+Myanmar, entered their third or fourth year. Rising tensions in       There was a large deterioration on the Ongoing Conflict
+South Asia were reflected in a four-day military exchange             domain.
+between India and Pakistan, the most serious armed clash
+between these two nuclear-armed states since 1971. Total global
+military expenditure rose for the 10 th consecutive year to its
+                                                                            Ongoing Conflict
+highest recorded level, while the number of forcibly displaced
+people worldwide remained above 117 million.
+
+There are now 119 countries that are less peaceful than they                   Overall Score
+were in 2008, the year the GPI was first published, and conflict
+has been the primary driver of the long-run decline. In the past
+year alone, 99 countries recorded a fall in peacefulness
+                                                                         Safety and Security
+compared with just 62 that improved, with the majority of the
+23 GPI indicators deteriorating on average and seven of the
+eight GPI regions also recording a deterioration.
+
+                                                                                Militarisation
+Conflict was again the principal source of the decline. Total
+violent conflict deaths reached just over 181,000 in 2025, with
+20 countries each recording more than 1,000 deaths from                                          0.00   0.01 0.02 0.03 0.04    0.05
+internal conflict, the highest such count since the inception of                                          CHANGE IN SCORE

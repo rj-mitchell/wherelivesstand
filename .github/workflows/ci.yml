@@ -1,0 +1,43 @@
+# Checks every push and pull request. Cloudflare Workers Builds deploys main on its own
+# (docs/DEPLOYMENT.md); this workflow deploys nothing.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # The tests run TypeScript directly, which needs Node 22.18 or later
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Type-check
+        run: npm run typecheck
+      - name: Tests
+        run: npm test
+      - name: The family kit is present and unedited
+        run: npm run check:family
+      - name: Build
+        run: npm run build
+      - name: The build wrote a page for each address, the 404 page and the sitemap
+        run: |
+          for f in index.html 404.html sitemap.xml _redirects about.html method.html privacy.html terms.html \
+                   accessibility.html corrections.html press.html behind-the-rankings.html country/GBR.html favicon.ico \
+                   family/VERSION; do
+            test -s "dist/$f" || { echo "dist/$f is missing"; exit 1; }
+          done
+      - name: Install Chromium for the accessibility check
+        run: npx playwright install --with-deps chromium
+      - name: Accessibility (axe-core, WCAG 2.2 AA) and smoke check of the build
+        # Home, a dossier, the comparison, Behind the rankings, About and Press, at 1280 and 390 pixels, light
+        # and dark. Fails on serious or critical axe findings, console errors, CSP violations or other hosts.
+        run: npm run check:a11y

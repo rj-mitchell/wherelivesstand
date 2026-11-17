@@ -1,0 +1,614 @@
+[
+  {
+    "id": "unodc_homicide",
+    "name": "Intentional homicide rate",
+    "shortName": "Homicide rate",
+    "category": "safety",
+    "source": "UNODC via World Bank WDI",
+    "sourceUrl": "https://data.worldbank.org/indicator/VC.IHR.PSRC.P5",
+    "unit": "per 100k",
+    "description": "Intentional homicides per 100,000 people (UNODC International Homicide Statistics). The most comparable cross-country measure of lethal violence.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      0.218,
+      41.97
+    ],
+    "coverage": 148
+  },
+  {
+    "id": "who_traffic_safety",
+    "name": "Road traffic death rate",
+    "shortName": "Road deaths",
+    "category": "safety",
+    "source": "WHO Global Health Observatory",
+    "sourceUrl": "https://www.who.int/data/gho/data/indicators/indicator-details/GHO/estimated-road-traffic-death-rate-(per-100-000-population)",
+    "unit": "deaths per 100k",
+    "description": "WHO-modelled road traffic deaths per 100,000 people (Global Status Report on Road Safety).",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      2.36,
+      34.055
+    ],
+    "coverage": 183
+  },
+  {
+    "id": "global_peace_index",
+    "name": "Global Peace Index 2026",
+    "shortName": "Peace Index",
+    "category": "safety",
+    "source": "Institute for Economics & Peace (IEP)",
+    "sourceUrl": "https://www.visionofhumanity.org/maps/",
+    "unit": "Score 1-5 (lower = more peaceful)",
+    "description": "23 indicators of societal safety, ongoing domestic and international conflict, and militarisation. Includes terrorism impact.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": true,
+    "goalposts": [
+      1.371,
+      3.124
+    ],
+    "coverage": 161
+  },
+  {
+    "id": "organized_crime_index",
+    "name": "Organised crime: criminality score",
+    "shortName": "Organised crime",
+    "category": "safety",
+    "source": "Global Initiative Against Transnational Organized Crime",
+    "sourceUrl": "https://ocindex.net/",
+    "unit": "Score 1-10 (lower = less crime)",
+    "description": "Expert-assessed scale and influence of 15 criminal markets and 5 types of criminal actor (Global Organized Crime Index 2025).",
+    "tier": 3,
+    "tierLabel": "Expert / Institutional",
+    "inverted": true,
+    "goalposts": [
+      2.712,
+      7.474
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "world_risk_index",
+    "name": "WorldRiskIndex 2026 (disaster risk)",
+    "shortName": "Disaster risk",
+    "category": "safety",
+    "source": "Bündnis Entwicklung Hilft & IFHV Ruhr University Bochum",
+    "sourceUrl": "https://weltrisikobericht.de/en/",
+    "unit": "Risk score 0-100 (lower = safer)",
+    "description": "Exposure to earthquakes, tsunamis, floods, cyclones, drought and sea-level rise, combined with societal vulnerability.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": true,
+    "goalposts": [
+      0.837,
+      38.211
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "ti_cpi",
+    "name": "Corruption Perceptions Index 2025",
+    "shortName": "Anti-corruption",
+    "category": "governance",
+    "source": "Transparency International",
+    "sourceUrl": "https://www.transparency.org/en/cpi/2025",
+    "unit": "Score 0-100 (higher = cleaner)",
+    "description": "Perceived public-sector corruption, aggregated from 13 expert and business surveys.",
+    "tier": 3,
+    "tierLabel": "Expert Perception",
+    "inverted": false,
+    "goalposts": [
+      13.0,
+      80.55
+    ],
+    "coverage": 179
+  },
+  {
+    "id": "wgi_rule_of_law",
+    "name": "Rule of law (WGI)",
+    "shortName": "Rule of law",
+    "category": "governance",
+    "source": "World Bank Worldwide Governance Indicators",
+    "sourceUrl": "https://www.worldbank.org/en/publication/worldwide-governance-indicators",
+    "unit": "Estimate -2.5 to +2.5",
+    "description": "Confidence in and abidance by the rules of society: contract enforcement, property rights, police, courts and crime.",
+    "tier": 3,
+    "tierLabel": "Expert / Institutional",
+    "inverted": false,
+    "goalposts": [
+      -1.853,
+      1.719
+    ],
+    "coverage": 186
+  },
+  {
+    "id": "wgi_gov_effectiveness",
+    "name": "Government effectiveness (WGI)",
+    "shortName": "Government effectiveness",
+    "category": "governance",
+    "source": "World Bank Worldwide Governance Indicators",
+    "sourceUrl": "https://www.worldbank.org/en/publication/worldwide-governance-indicators",
+    "unit": "Estimate -2.5 to +2.5",
+    "description": "Quality of public services and the civil service, and the credibility of policy formulation and implementation.",
+    "tier": 3,
+    "tierLabel": "Expert / Institutional",
+    "inverted": false,
+    "goalposts": [
+      -1.885,
+      1.948
+    ],
+    "coverage": 186
+  },
+  {
+    "id": "wgi_regulatory_quality",
+    "name": "Regulatory quality (WGI)",
+    "shortName": "Regulatory quality",
+    "category": "governance",
+    "source": "World Bank Worldwide Governance Indicators",
+    "sourceUrl": "https://www.worldbank.org/en/publication/worldwide-governance-indicators",
+    "unit": "Estimate -2.5 to +2.5",
+    "description": "Ability of government to formulate and implement sound policies and regulations that permit and promote private-sector development.",
+    "tier": 3,
+    "tierLabel": "Expert / Institutional",
+    "inverted": false,
+    "goalposts": [
+      -1.795,
+      1.653
+    ],
+    "coverage": 186
+  },
+  {
+    "id": "organized_crime_resilience",
+    "name": "Organised crime: resilience score",
+    "shortName": "Crime resilience",
+    "category": "governance",
+    "source": "Global Initiative Against Transnational Organized Crime",
+    "sourceUrl": "https://ocindex.net/",
+    "unit": "Score 1-10 (higher = more resilient)",
+    "description": "Expert-assessed ability to withstand and disrupt organised crime: leadership, transparency, international cooperation, laws, courts, policing, territorial control, anti-money-laundering, regulation, victim support, prevention and civil society (Global Organized Crime Index 2025).",
+    "tier": 3,
+    "tierLabel": "Expert / Institutional",
+    "inverted": false,
+    "goalposts": [
+      1.88,
+      8.0
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "gdp_per_capita_ppp",
+    "name": "GDP per capita (PPP)",
+    "shortName": "GDP per capita",
+    "category": "economy",
+    "source": "World Bank WDI / ICP",
+    "sourceUrl": "https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD",
+    "unit": "current international $",
+    "description": "Gross domestic product per person at purchasing-power parity, i.e. adjusted for local price levels.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      1795.797,
+      103275.672
+    ],
+    "coverage": 181
+  },
+  {
+    "id": "gini_inequality",
+    "name": "Income inequality (Gini)",
+    "shortName": "Income equality",
+    "category": "economy",
+    "source": "World Bank Poverty & Inequality Platform",
+    "sourceUrl": "https://data.worldbank.org/indicator/SI.POV.GINI",
+    "unit": "Gini 0-100 (lower = more equal)",
+    "description": "Gini index of household income or consumption from national surveys. Latest available survey year varies by country.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      24.7,
+      54.19
+    ],
+    "coverage": 149
+  },
+  {
+    "id": "ilo_unemployment",
+    "name": "Unemployment rate",
+    "shortName": "Unemployment",
+    "category": "economy",
+    "source": "ILO modelled estimates via World Bank WDI",
+    "sourceUrl": "https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS",
+    "unit": "% of labour force",
+    "description": "Share of the labour force without work but available for and seeking employment (ILO harmonised definition).",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      0.986,
+      22.394
+    ],
+    "coverage": 180
+  },
+  {
+    "id": "ilo_working_hours",
+    "name": "Average weekly working hours",
+    "shortName": "Working hours",
+    "category": "economy",
+    "source": "International Labour Organization (ILOSTAT)",
+    "sourceUrl": "https://ilostat.ilo.org/topics/working-time/",
+    "unit": "hours per week",
+    "description": "Mean weekly hours actually worked per employed person. Scored 100 at 35 hours or fewer, falling to 0 at 50 hours.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      35,
+      50
+    ],
+    "coverage": 136
+  },
+  {
+    "id": "atlas_economic_complexity",
+    "name": "Economic Complexity Index",
+    "shortName": "Economic complexity",
+    "category": "economy",
+    "source": "Harvard Growth Lab (Atlas of Economic Complexity)",
+    "sourceUrl": "https://atlas.hks.harvard.edu/rankings",
+    "unit": "ECI (HS92)",
+    "description": "Diversity and sophistication of the goods a country exports: a proxy for productive know-how and future growth.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      -2.389,
+      1.426
+    ],
+    "coverage": 144
+  },
+  {
+    "id": "who_hale",
+    "name": "Healthy life expectancy (HALE)",
+    "shortName": "Healthy lifespan",
+    "category": "health",
+    "source": "WHO Global Health Observatory",
+    "sourceUrl": "https://www.who.int/data/gho/data/indicators/indicator-details/GHO/gho-ghe-hale-healthy-life-expectancy-at-birth",
+    "unit": "years",
+    "description": "Average number of years a newborn can expect to live in full health.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      52.555,
+      71.2
+    ],
+    "coverage": 183
+  },
+  {
+    "id": "who_uhc_coverage",
+    "name": "Essential health services coverage",
+    "shortName": "Essential health services",
+    "category": "health",
+    "source": "WHO / World Bank (SDG 3.8.1)",
+    "sourceUrl": "https://www.who.int/data/gho/data/indicators/indicator-details/GHO/uhc-index-of-service-coverage",
+    "unit": "Index 0-100",
+    "description": "Coverage of essential health services (the UN Universal Health Coverage service index): reproductive and child health, infectious and non-communicable disease, service capacity. It does not measure insurance coverage or what care costs.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      36.0,
+      88.4
+    ],
+    "coverage": 185
+  },
+  {
+    "id": "under5_mortality",
+    "name": "Under-5 mortality rate",
+    "shortName": "Child survival",
+    "category": "health",
+    "source": "UN IGME via World Bank WDI",
+    "sourceUrl": "https://data.worldbank.org/indicator/SH.DYN.MORT",
+    "unit": "per 1,000 live births",
+    "description": "Probability of a child dying before age five (UN Inter-agency Group for Child Mortality Estimation).",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      2.4,
+      93.913
+    ],
+    "coverage": 185
+  },
+  {
+    "id": "undp_education",
+    "name": "Education Index (HDI)",
+    "shortName": "Education",
+    "category": "health",
+    "source": "UNDP Human Development Report 2025",
+    "sourceUrl": "https://hdr.undp.org/data-center/documentation-and-downloads",
+    "unit": "Index 0-1",
+    "description": "UNDP education index: average of mean years of schooling (adults) and expected years of schooling (children).",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      0.315,
+      0.933
+    ],
+    "coverage": 185
+  },
+  {
+    "id": "rsf_press_freedom",
+    "name": "World Press Freedom Index 2026",
+    "shortName": "Press freedom",
+    "category": "rights",
+    "source": "Reporters Without Borders (RSF)",
+    "sourceUrl": "https://rsf.org/en/index",
+    "unit": "Score 0-100",
+    "description": "Political, economic, legal, social and safety conditions for journalists, from expert questionnaires and abuse counts.",
+    "tier": 3,
+    "tierLabel": "Expert Rights",
+    "inverted": false,
+    "goalposts": [
+      19.25,
+      87.124
+    ],
+    "coverage": 175
+  },
+  {
+    "id": "vdem_liberal_democracy",
+    "name": "Liberal Democracy Index",
+    "shortName": "Liberal democracy",
+    "category": "rights",
+    "source": "V-Dem Institute (v16)",
+    "sourceUrl": "https://www.v-dem.net/data/the-v-dem-dataset/",
+    "unit": "Index 0-1",
+    "description": "Electoral democracy plus constraints on the executive, judicial independence and protection of individual liberties.",
+    "tier": 3,
+    "tierLabel": "Expert Academic",
+    "inverted": false,
+    "goalposts": [
+      0.024,
+      0.832
+    ],
+    "coverage": 174
+  },
+  {
+    "id": "academic_freedom",
+    "name": "Academic Freedom Index",
+    "shortName": "Academic freedom",
+    "category": "rights",
+    "source": "V-Dem Institute / FAU Erlangen-Nürnberg",
+    "sourceUrl": "https://academic-freedom-index.net/",
+    "unit": "Index 0-1",
+    "description": "Freedom to research and teach, academic exchange, institutional autonomy, campus integrity and freedom of academic expression.",
+    "tier": 3,
+    "tierLabel": "Expert Academic",
+    "inverted": false,
+    "goalposts": [
+      0.056,
+      0.936
+    ],
+    "coverage": 174
+  },
+  {
+    "id": "vdem_religious_freedom",
+    "name": "Freedom of religion",
+    "shortName": "Religious freedom",
+    "category": "rights",
+    "source": "V-Dem Institute (v16)",
+    "sourceUrl": "https://www.v-dem.net/data/the-v-dem-dataset/",
+    "unit": "Latent scale, about -3 to +3",
+    "description": "Expert-coded freedom to choose, practise and change religion, including freedom from state religious repression. Averaged over the last three years, because this single question is rated by only a handful of experts per country.",
+    "tier": 3,
+    "tierLabel": "Expert Academic",
+    "inverted": false,
+    "goalposts": [
+      -2.522,
+      2.486
+    ],
+    "coverage": 174
+  },
+  {
+    "id": "georgetown_wps",
+    "name": "Women, Peace and Security Index 2025",
+    "shortName": "Women's status",
+    "category": "rights",
+    "source": "Georgetown Institute for Women, Peace and Security & PRIO",
+    "sourceUrl": "https://giwps.georgetown.edu/the-index/",
+    "unit": "Index 0-1",
+    "description": "Women's inclusion (education, jobs, finance, politics), justice (legal discrimination, son bias) and security (intimate partner violence, community safety).",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      0.398,
+      0.92
+    ],
+    "coverage": 176
+  },
+  {
+    "id": "lgbtq_equality",
+    "name": "LGBTQ+ legal equality index",
+    "shortName": "LGBTQ+ equality",
+    "category": "rights",
+    "source": "Equaldex Equality Index via Our World in Data",
+    "sourceUrl": "https://ourworldindata.org/grapher/lgbt-legal-equality-index",
+    "unit": "Score 0-100",
+    "description": "Legal status of same-sex relationships, marriage, adoption, discrimination protection, gender-marker changes and conversion therapy.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      2.176,
+      97.551
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "ookla_broadband",
+    "name": "Fixed broadband download speed",
+    "shortName": "Broadband speed",
+    "category": "infrastructure",
+    "source": "Ookla Open Data (Speedtest, Q3 2026)",
+    "sourceUrl": "https://github.com/teamookla/ookla-open-data",
+    "unit": "Mbps (test-weighted mean)",
+    "description": "Test-weighted mean fixed-broadband download speed across all Speedtest map tiles in the country, July–September 2026.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      23.63,
+      412.626
+    ],
+    "coverage": 164
+  },
+  {
+    "id": "itu_internet_penetration",
+    "name": "Internet users",
+    "shortName": "Internet use",
+    "category": "infrastructure",
+    "source": "ITU via World Bank WDI",
+    "sourceUrl": "https://data.worldbank.org/indicator/IT.NET.USER.ZS",
+    "unit": "% of population",
+    "description": "Share of the population that used the internet in the last three months.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      14.108,
+      99.401
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "electricity_access",
+    "name": "Access to electricity",
+    "shortName": "Electricity access",
+    "category": "infrastructure",
+    "source": "World Bank / SDG 7.1.1",
+    "sourceUrl": "https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS",
+    "unit": "% of population",
+    "description": "Share of the population with access to electricity.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      20.85,
+      100.0
+    ],
+    "coverage": 186
+  },
+  {
+    "id": "wb_lpi_infrastructure",
+    "name": "Logistics Performance Index",
+    "shortName": "Logistics",
+    "category": "infrastructure",
+    "source": "World Bank LPI",
+    "sourceUrl": "https://lpi.worldbank.org/",
+    "unit": "Score 1-5",
+    "description": "Efficiency of customs, quality of trade and transport infrastructure, shipment timeliness and tracking, from a survey of logistics professionals.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      2.071,
+      4.1
+    ],
+    "coverage": 167
+  },
+  {
+    "id": "climate_comfort",
+    "name": "Climate comfort (where people live)",
+    "shortName": "Climate comfort",
+    "category": "climate",
+    "source": "Derived from WorldClim 2.1 normals + GeoNames city populations",
+    "sourceUrl": "https://www.worldclim.org/data/worldclim21.html",
+    "unit": "Score 0-100",
+    "description": "Population-weighted climate of every city over 15,000 people. Each month scores 100 minus penalties for daytime highs below 20°C (4/°C) or above 28°C (6/°C), nights below 5°C (2/°C), dew point above 16°C (5/°C) and rain above 100 mm (0.15/mm, max 30); the 12-month average makes up 80%, and sunshine (solar radiation 2.5–6 kWh/m²/day) the other 20%.",
+    "tier": 4,
+    "tierLabel": "Derived Empirical",
+    "inverted": false,
+    "goalposts": [
+      0,
+      100
+    ],
+    "coverage": 184
+  },
+  {
+    "id": "who_pm25",
+    "name": "Air pollution (PM2.5)",
+    "shortName": "Clean air",
+    "category": "environment",
+    "source": "WHO Global Health Observatory (SDG 11.6.2)",
+    "sourceUrl": "https://www.who.int/data/gho/data/themes/air-pollution",
+    "unit": "μg/m³ annual mean",
+    "description": "Population-weighted annual mean concentration of fine particulate matter. WHO guideline: 5 μg/m³.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": true,
+    "goalposts": [
+      5.483,
+      49.887
+    ],
+    "coverage": 185
+  },
+  {
+    "id": "safe_drinking_water",
+    "name": "Safely managed drinking water",
+    "shortName": "Safe water",
+    "category": "environment",
+    "source": "WHO/UNICEF JMP via World Bank WDI",
+    "sourceUrl": "https://data.worldbank.org/indicator/SH.H2O.SMDW.ZS",
+    "unit": "% of population",
+    "description": "Share of people using an improved water source on premises, available when needed and free from contamination.",
+    "tier": 1,
+    "tierLabel": "Technocratic / Empirical",
+    "inverted": false,
+    "goalposts": [
+      12.417,
+      100.0
+    ],
+    "coverage": 134
+  },
+  {
+    "id": "yale_epi",
+    "name": "Environmental Performance Index 2026",
+    "shortName": "Environmental performance",
+    "category": "environment",
+    "source": "Yale & Columbia (EPI)",
+    "sourceUrl": "https://epi.yale.edu/",
+    "unit": "Score 0-100",
+    "description": "58 indicators of environmental health, ecosystem vitality and climate-change mitigation.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      24.005,
+      70.308
+    ],
+    "coverage": 174
+  },
+  {
+    "id": "nd_gain_resilience",
+    "name": "ND-GAIN Climate Adaptation Index",
+    "shortName": "Climate resilience",
+    "category": "environment",
+    "source": "Notre Dame Global Adaptation Initiative",
+    "sourceUrl": "https://gain.nd.edu/our-work/country-index/",
+    "unit": "Score 0-100",
+    "description": "Vulnerability to climate change combined with readiness (economic, governance, social) to adapt.",
+    "tier": 2,
+    "tierLabel": "Normative Consensus",
+    "inverted": false,
+    "goalposts": [
+      29.415,
+      68.544
+    ],
+    "coverage": 183
+  }
+]

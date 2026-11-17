@@ -1,0 +1,92 @@
+[
+  {
+    "id": "safety",
+    "name": "Safety and peace",
+    "description": "Lethal violence, road danger, armed conflict and militarisation, organised crime, and exposure to natural disasters.",
+    "indicators": [
+      "unodc_homicide",
+      "who_traffic_safety",
+      "global_peace_index",
+      "organized_crime_index",
+      "world_risk_index"
+    ]
+  },
+  {
+    "id": "governance",
+    "name": "Governance and rule of law",
+    "description": "Clean government, courts and contracts that work, effective public services, and sound regulation.",
+    "indicators": [
+      "ti_cpi",
+      "wgi_rule_of_law",
+      "wgi_gov_effectiveness",
+      "wgi_regulatory_quality",
+      "organized_crime_resilience"
+    ]
+  },
+  {
+    "id": "rights",
+    "name": "Civil liberties and inclusion",
+    "description": "Press freedom, liberal democracy, academic and religious freedom, women's status, and LGBTQ+ legal equality.",
+    "indicators": [
+      "rsf_press_freedom",
+      "vdem_liberal_democracy",
+      "academic_freedom",
+      "vdem_religious_freedom",
+      "georgetown_wps",
+      "lgbtq_equality"
+    ]
+  },
+  {
+    "id": "economy",
+    "name": "Economy, labour and living costs",
+    "description": "Income levels adjusted for local prices, inequality, joblessness, working hours, and economic sophistication.",
+    "indicators": [
+      "gdp_per_capita_ppp",
+      "gini_inequality",
+      "ilo_unemployment",
+      "ilo_working_hours",
+      "atlas_economic_complexity"
+    ]
+  },
+  {
+    "id": "health",
+    "name": "Health, education and family",
+    "description": "Healthy lifespan, access to essential health care, child survival, and schooling.",
+    "indicators": [
+      "who_hale",
+      "who_uhc_coverage",
+      "under5_mortality",
+      "undp_education"
+    ]
+  },
+  {
+    "id": "infrastructure",
+    "name": "Infrastructure and tech",
+    "description": "Measured broadband speeds, internet use, electricity access, and logistics quality.",
+    "indicators": [
+      "ookla_broadband",
+      "itu_internet_penetration",
+      "electricity_access",
+      "wb_lpi_infrastructure"
+    ]
+  },
+  {
+    "id": "climate",
+    "name": "Weather and climate",
+    "description": "How pleasant the weather is where people live: mild days and nights, low mugginess, moderate rain, and sunshine.",
+    "indicators": [
+      "climate_comfort"
+    ]
+  },
+  {
+    "id": "environment",
+    "name": "Environment and resilience",
+    "description": "Clean air, safe drinking water, environmental performance, and readiness to cope with climate change.",
+    "indicators": [
+      "who_pm25",
+      "safe_drinking_water",
+      "yale_epi",
+      "nd_gain_resilience"
+    ]
+  }
+]

@@ -1,0 +1,632 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Where Lives Stand on the family kit's tokens (public/family/family.css): a white page, light grey panels, and
+   heather, the site's cloth, for the header band, links and the map. Dark mode follows the system setting. */
+:root {
+  color-scheme: light dark;
+  --page: var(--wts-paper-light);
+  --panel: var(--wts-paper);
+  --ink: var(--wts-ink);
+  --ink-muted: var(--wts-ink-muted);
+  --rule: var(--wts-rule);
+  --rule-faint: var(--wts-rule-faint);
+  --band: var(--wts-cloth-lives);
+  --on-band: var(--wts-on-cloth);
+  --heather: var(--wts-cloth-lives-text);
+  --heather-strong: #482E4C;
+  --heather-tint: #EFE7F0;
+  --on-heather: #FFFFFF;
+  --compare-a: var(--heather);
+  --compare-b: var(--wts-ink-muted);
+  --nodata: #E4E8E9;
+  --nodata-hatch: #A3ADB0;
+  --land-stroke: var(--page);
+  --wts-focus: var(--heather);
+  /* The header band, the main column and the footer shelf share one column: max-w-page (84rem) with px-4, px-8
+     from md */
+  --wts-gutter: 1rem;
+  --wts-shelf-width: calc(84rem - 2 * var(--wts-gutter));
+}
+
+@media (min-width: 768px) {
+  :root { --wts-gutter: 2rem; }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --heather-strong: #E6D3E9;
+    --heather-tint: #33283A;
+    --on-heather: #111517;
+    --nodata: #252C30;
+    --nodata-hatch: #566064;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* The page doesn't jump sideways when a dialog locks its scrolling and the scroll bar goes */
+    scrollbar-gutter: stable;
+    /* A long address or code (About, Press) breaks rather than pushing the page wider than a phone */
+    overflow-wrap: break-word;
+  }
+  /* text-wrap-style rather than the text-wrap shorthand, so a row kept on one line (white-space: nowrap) stays so */
+  p, li, dd, figcaption {
+    text-wrap-style: pretty;
+  }
+  a, button, summary, [role='button'], input, select, label {
+    touch-action: manipulation;
+  }
+  body {
+    @apply bg-page text-ink font-sans;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    margin: 0;
+    min-height: 100svh;
+  }
+  h1, h2, h3, h4 {
+    @apply font-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+  a {
+    @apply text-heather underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+  }
+  /* Hover only where there is a real pointer, so a tap doesn't leave it stuck on; a firmer underline when pressed */
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      @apply text-ink;
+      text-decoration-thickness: 2px;
+    }
+  }
+  a:active {
+    text-decoration-thickness: 2px;
+  }
+  ::selection {
+    @apply bg-heather-tint text-ink;
+  }
+  :focus-visible {
+    outline: var(--wts-focus-width, 3px) solid var(--wts-focus, var(--heather));
+    outline-offset: var(--wts-focus-offset, 3px);
+  }
+  /* Behind the rankings' indexes: no disclosure triangle in Safari either (the chevron stands in for it) */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  /* iOS zooms into inputs smaller than 16px */
+  input, select, textarea {
+    font-size: max(16px, 1rem);
+  }
+  img, svg {
+    flex-shrink: 0;
+  }
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Running text is held to about two-thirds of the column; tables and other wide blocks use all of it */
+  .prose-page :is(p, ul, ol, dl, h2, h3, h4, blockquote) {
+    max-width: 52rem;
+  }
+  .prose-page code {
+    overflow-wrap: anywhere;
+  }
+  .prose-page p,
+  .prose-page ul,
+  .prose-page ol {
+    @apply my-4;
+  }
+  .prose-page ul {
+    @apply list-disc pl-6;
+  }
+  .prose-page ol {
+    @apply list-decimal pl-6;
+  }
+  .prose-page li {
+    @apply my-1.5;
+  }
+  .prose-page blockquote {
+    @apply my-4 px-4 py-3 bg-panel;
+  }
+  .prose-page h2 {
+    @apply text-2xl mt-12 mb-3;
+  }
+  .prose-page h3 {
+    @apply text-xl mt-8 mb-2;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 min-h-[40px] px-3 border border-rule bg-panel text-ink text-sm font-sans font-semibold no-underline cursor-pointer;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      @apply border-heather text-heather;
+    }
+  }
+  .btn:active {
+    @apply border-heather bg-heather-tint;
+  }
+  .field {
+    @apply w-full min-h-[40px] px-3 border border-rule bg-panel text-ink font-sans placeholder:text-muted;
+  }
+  .field:focus-visible {
+    outline-offset: 0;
+  }
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  /* Hidden until focused, however many lines it wraps to on a narrow screen and wherever it sits on the page
+     (the map's skip link shows over the map) */
+  .skip-link {
+    @apply absolute left-2 top-2 z-[100] bg-page text-ink border-2 border-ink px-3 py-2 font-sans;
+  }
+  .skip-link:not(:focus) {
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0;
+    border: 0;
+  }
+  /* A row that scrolls sideways (the main navigation on a phone, the rankings table) fades out at whichever end
+     has more off screen, where the browser can tie the fade to the scrolling; elsewhere it just scrolls. A
+     focused item scrolls clear of the fade. */
+  .scroll-fade-x {
+    scroll-padding-inline: 2rem;
+  }
+  /* The phase banner's status, as the hub's project tags */
+  .phase-tag {
+    @apply inline-block rounded bg-ink text-page font-sans font-semibold text-xs px-1.5;
+  }
+}
+
+/* The header: the site's cloth as a band across the page, with the name, the endorsement and the navigation in
+   white */
+.site-band {
+  --wts-focus: var(--on-band);
+  background: var(--band);
+  color: var(--on-band);
+}
+.site-band a {
+  color: inherit;
+}
+.site-band .nav-link {
+  text-decoration-thickness: 1px;
+}
+.site-band .nav-link[aria-current] {
+  font-weight: 600;
+  text-decoration-thickness: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-band a:hover {
+    color: inherit;
+    text-decoration-thickness: 2px;
+  }
+  .site-band .nav-link[aria-current]:hover {
+    text-decoration-thickness: 3px;
+  }
+}
+/* The endorsement's spine is the site's own cloth, so on the band it takes the lifted heather, as the mark's tile
+   does */
+.site-band .wts-spine__cloth {
+  fill: #7F5585;
+}
+@media (prefers-color-scheme: dark) {
+  .site-band .wts-spine__cloth {
+    fill: #5E3F63;
+  }
+}
+.site-name {
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-name:hover {
+    text-decoration: underline;
+  }
+}
+
+/* The dialog's backdrop */
+.backdrop {
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+/* Sliders: a thin rule with a heather thumb. Taller on a touch screen, for a finger (beside the map on a laptop
+   they stay compact, so the panel's foot stays level with the map's: docs/DECISIONS.md); the focus ring is
+   drawn round the thumb rather than the whole row */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  display: block;
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+}
+@media (pointer: coarse) {
+  input[type='range'] {
+    height: 32px;
+  }
+}
+input[type='range']:focus-visible {
+  outline: none;
+}
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px var(--heather), 0 0 0 3px var(--panel), 0 0 0 6px var(--heather);
+}
+input[type='range']:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--panel), 0 0 0 6px var(--heather);
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--heather) var(--fill, 50%), var(--rule) var(--fill, 50%));
+}
+input[type='range']::-moz-range-track {
+  height: 4px;
+  background: var(--rule);
+}
+input[type='range']::-moz-range-progress {
+  height: 4px;
+  background: var(--heather);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--heather);
+  border: 2px solid var(--panel);
+  box-shadow: 0 0 0 1px var(--heather);
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--heather);
+  border: 2px solid var(--panel);
+}
+@media (hover: hover) and (pointer: fine) {
+  input[type='range']:hover::-webkit-slider-thumb {
+    background: var(--heather-strong);
+  }
+  input[type='range']:hover::-moz-range-thumb {
+    background: var(--heather-strong);
+  }
+}
+/* In forced colours the track's gradient is dropped, so the slider is drawn in system colours */
+@media (forced-colors: active) {
+  input[type='range'] {
+    forced-color-adjust: none;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    background: CanvasText;
+  }
+  input[type='range']::-moz-range-track,
+  input[type='range']::-moz-range-progress {
+    background: CanvasText;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    background: ButtonText;
+    border-color: Canvas;
+    box-shadow: 0 0 0 1px ButtonText;
+  }
+  input[type='range']::-moz-range-thumb {
+    background: ButtonText;
+    border-color: Canvas;
+  }
+  input[type='range']:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* The map */
+.map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* One finger scrolls the page; panning is by mouse drag or two fingers */
+  touch-action: pan-x pan-y !important;
+}
+.rsm-geography {
+  transition: fill 0.2s ease-out;
+}
+.rsm-geography[role='button'] {
+  cursor: pointer;
+}
+.rsm-geography:focus {
+  outline: none;
+}
+.rsm-geography:focus-visible,
+.rsm-geography.is-selected {
+  stroke: var(--ink) !important;
+  stroke-width: 2px !important;
+}
+.rsm-geography.is-selected {
+  stroke-width: 1.6px !important;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rsm-geography[role='button']:hover {
+    stroke: var(--ink) !important;
+    stroke-width: 1.2px !important;
+  }
+}
+/* The same outlines drawn again over every neighbour (WorldMap.tsx), so that none is half covered */
+.map-outline {
+  fill: none;
+  stroke: var(--ink);
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+.map-outline-hover {
+  display: none;
+  stroke-width: 1.2px;
+}
+.map-outline-selected {
+  stroke-width: 1.6px;
+}
+.map-outline-focus {
+  stroke-width: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .map-outline-hover {
+    display: inline;
+  }
+}
+
+/* Dialogs slide in, unless the reader prefers less motion (the family kit's easing and duration) */
+@keyframes sheet-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet-in {
+    animation: sheet-in calc(var(--wts-duration, 160ms) + 40ms) var(--wts-ease-out, ease-out);
+  }
+  /* Buttons give a little as they are pressed */
+  .btn,
+  .press {
+    transition: transform 120ms var(--wts-ease-out, ease-out);
+  }
+  .btn:active,
+  .press:active {
+    transform: scale(0.97);
+  }
+}
+
+/* The region tabs' faded edges (RegionTabs.tsx): more tabs lie off this side of the row */
+.region-more {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--heather);
+}
+.region-more-right {
+  right: -6px;
+  justify-content: flex-end;
+  background: linear-gradient(to right, transparent, var(--page) 60%);
+}
+.region-more-left {
+  left: -6px;
+  justify-content: flex-start;
+  background: linear-gradient(to left, transparent, var(--page) 60%);
+}
+.region-tabs {
+  scrollbar-width: none;
+}
+.region-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* The fade on rows that scroll sideways (.scroll-fade-x above), tied to the scrolling where the browser can */
+@property --fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes scroll-fade-x {
+  0% { --fade-start: 0px; --fade-end: 2rem; }
+  8% { --fade-start: 2rem; }
+  92% { --fade-end: 2rem; }
+  100% { --fade-start: 2rem; --fade-end: 0px; }
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade-start), #000 calc(100% - var(--fade-end)), transparent);
+    animation: scroll-fade-x linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+
+/* The rankings table's pinned columns (RankingsTable.tsx): where the table scrolls sideways, the rank and the
+   country stay at its start on their row's own background (the page's, or the selected or hovered row's), with a
+   rule at their edge once other columns have scrolled under them. A focused header scrolls clear of them, and
+   the fade is only at the far end. */
+.table-pinned {
+  --pin-rank: 4rem;
+  scroll-padding-inline-start: calc(var(--pin-rank) + 7.5rem);
+}
+.table-pin {
+  position: sticky;
+  z-index: 1;
+  background-color: inherit;
+}
+.table-pin-rank {
+  inset-inline-start: 0;
+  width: var(--pin-rank);
+  min-width: var(--pin-rank);
+}
+.table-pin-name {
+  inset-inline-start: var(--pin-rank);
+}
+/* A pinned cell's background covers the row's rule under it, so the cell draws that rule itself */
+tbody .table-pin {
+  box-shadow: inset 0 -1px 0 var(--rule-faint);
+}
+.table-pinned[data-scrolled] .table-pin-name {
+  box-shadow: inset -1px 0 0 var(--rule);
+}
+.table-pinned[data-scrolled] tbody .table-pin-name {
+  box-shadow: inset -1px 0 0 var(--rule), inset 0 -1px 0 var(--rule-faint);
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-fade-x.table-pinned {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fade-end)), transparent);
+  }
+}
+
+/* The legend's minor ticks (30 and 80) only where the bar is wide enough for them not to run into their
+   neighbours: on a phone, and beside the weights on a tablet or small laptop */
+.legend-ticks {
+  container-type: inline-size;
+}
+@container (max-width: 30rem) {
+  .legend-tick-minor {
+    display: none;
+  }
+}
+
+/* Forced colours: the selected tab or preset, the current page and the bars and legend keep their meaning when
+   the system's colours replace the site's */
+@media (forced-colors: active) {
+  [aria-pressed='true'] {
+    forced-color-adjust: none;
+    background: SelectedItem;
+    color: SelectedItemText;
+    border-color: SelectedItem;
+  }
+  .keep-colours {
+    forced-color-adjust: none;
+  }
+  .site-band {
+    border-bottom: 1px solid CanvasText;
+  }
+  .site-band .wts-spine__cloth {
+    fill: CanvasText;
+  }
+  .phase-tag {
+    border: 1px solid CanvasText;
+  }
+  .rsm-geography:focus-visible,
+  .rsm-geography.is-selected,
+  .map-outline-selected,
+  .map-outline-focus {
+    stroke: Highlight !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+.rsm-geography {
+  stroke: var(--land-stroke);
+  stroke-width: 0.5px;
+  vector-effect: non-scaling-stroke;
+}
+.map-outside {
+  fill: var(--rule-faint);
+}
+.map-nodata {
+  fill: var(--nodata);
+}
+.map-hatch {
+  stroke: var(--nodata-hatch);
+  stroke-width: 1.4;
+}
+.map-sphere {
+  color: var(--rule);
+}
+
+/* Shown in the HTML until the app has loaded its figures: the header band, then the status */
+.boot__band {
+  background: var(--band);
+  color: var(--on-band);
+}
+.boot__inner {
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: 14px var(--wts-gutter);
+}
+.boot__name {
+  margin: 0;
+  font-family: var(--wts-serif);
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.boot__line {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+}
+.boot__status {
+  padding-block: 32px;
+  color: var(--ink-muted);
+}
+
+/* The picture mark (src/components/Mark.tsx), on the header band: the tile takes the other of the two heathers
+   the mark files use (public/mark-dark.svg's on a light page, public/mark.svg's in dark mode), so it stands clear
+   of the band. In forced colours it is redrawn in the system colours: the tile and the globe in Canvas, the gilt,
+   the rim and the graticule in CanvasText. */
+.site-mark {
+  display: block;
+  flex: none;
+}
+.site-mark__tile {
+  fill: #7F5585;
+}
+@media (prefers-color-scheme: dark) {
+  .site-mark__tile {
+    fill: #5E3F63;
+  }
+}
+@media (forced-colors: active) {
+  .site-mark {
+    forced-color-adjust: none;
+  }
+  .site-mark__tile,
+  .site-mark__globe {
+    fill: Canvas;
+  }
+  .site-mark__tile {
+    stroke: CanvasText;
+    stroke-width: 2;
+  }
+  .site-mark__gilt-line,
+  .site-mark__line {
+    stroke: CanvasText;
+  }
+  .site-mark__gilt {
+    fill: CanvasText;
+  }
+  .site-mark__cell {
+    fill: none;
+  }
+}
