@@ -144,7 +144,7 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
                 </span>
                 <span className="font-sans text-sm whitespace-nowrap">Risk of bias: {c.biasRisk.toLowerCase()}</span>
               </summary>
-              <div className="pb-4 font-sans text-[0.9375rem] space-y-2">
+              <div className="pb-4 font-sans text-[0.9375rem]">
                 <p className="!my-0">{c.whatItMeasures}</p>
                 <p className="!my-0 text-muted text-sm">
                   Kind of data: {(KIND[c.meta.tier] ?? c.meta.tierLabel).toLowerCase()}.
@@ -156,7 +156,7 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
                     </>
                   )}
                 </p>
-                <div className="grid md:grid-cols-3 gap-x-6 gap-y-2">
+                <div className="grid md:grid-cols-3 gap-x-6 gap-y-2 mt-2">
                   <div>
                     <h4 className="font-sans text-base !mt-2">Strengths</h4>
                     {c.pros.map((p, i) => <p key={i} className="!my-1">{p}</p>)}

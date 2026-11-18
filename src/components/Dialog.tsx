@@ -76,7 +76,7 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
   return (
     <div ref={outer} className="fixed inset-0 z-50">
       <div className="absolute inset-0 backdrop" onClick={onClose} aria-hidden="true" />
-      <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`${frame} bg-page flex flex-col outline-none`}>
+      <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`${frame} bg-page flex flex-col outline-hidden`}>
         <button type="button" onClick={onClose} className="absolute top-3 right-3 z-10 btn w-11 min-h-[44px] px-0" aria-label={closeLabel} title={`${closeLabel} (Escape)`}>
           <Icon name="close" className="w-5 h-5" />
         </button>

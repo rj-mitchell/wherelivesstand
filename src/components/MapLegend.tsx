@@ -32,7 +32,7 @@ export const MapLegend: React.FC<Props> = ({ scale, mode, regionName, hoverScore
           {ticks.map((t, i) => (
             // Where the bar is narrow (a phone, or beside the weights on a tablet), 30 and 80 would run into
             // "20 or less" and "90 or more", so they are left out (.legend-tick-minor in index.css)
-            <span key={t} className={`absolute -translate-x-1/2 whitespace-nowrap ${!scale.relative && (t === 30 || t === 80) ? 'legend-tick-minor' : ''}`} style={{ left: pct(t), transform: i === 0 ? 'none' : i === ticks.length - 1 ? 'translateX(-100%)' : undefined }}>
+            <span key={t} className={`absolute -translate-x-1/2 whitespace-nowrap ${!scale.relative && (t === 30 || t === 80) ? 'legend-tick-minor' : ''}`} style={{ left: pct(t), translate: i === 0 ? 'none' : i === ticks.length - 1 ? '-100%' : undefined }}>
               {scale.relative ? t.toFixed(1) : i === 0 ? '20 or less' : i === ticks.length - 1 ? '90 or more' : t}
             </span>
           ))}

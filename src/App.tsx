@@ -184,7 +184,7 @@ export default function App({ countries }: { countries: Record<string, CountryDa
         countries={countriesWithData}
         onSelectCountry={iso => navigate(hrefFor(iso))}
       />
-      <main id="main" tabIndex={-1} className="outline-none">
+      <main id="main" tabIndex={-1} className="outline-hidden">
         {s.view === 'map' && (
           <div className="max-w-page mx-auto px-4 md:px-8 pt-3 md:pt-4">
             {/* The map comes first (docs/DECISIONS.md): the page's heading is for screen readers and the outline */}

@@ -60,7 +60,7 @@ heather, pale to dark, as countries are on the map.
 
 - Source Serif 4 for the site's name and headings.
 - Source Sans 3 for running text, controls, tables and figures, with tabular numerals in tables.
-- Nothing smaller than 13px (`tailwind.config.js` sets the scale).
+- Nothing smaller than 13px (the `@theme` block in `src/index.css` sets the scale).
 - Running text on the text pages is held to 52rem (`.prose-page` in `src/index.css`).
 
 Both typefaces come from the kit and are served from this site; nothing is loaded from another host.

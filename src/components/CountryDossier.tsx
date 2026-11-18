@@ -38,7 +38,7 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
       <div className="flex-1 overflow-y-auto">
         {/* A div: inside the dialog a header element would be read as a second banner landmark */}
         <div className="px-5 sm:px-7 pt-6 pb-5 bg-panel">
-          <h2 id="dossier-title" tabIndex={-1} className="text-3xl pr-12 outline-none">
+          <h2 id="dossier-title" tabIndex={-1} className="text-3xl pr-12 outline-hidden">
             {c.name}
           </h2>
           <p className="text-sm text-muted mt-1">

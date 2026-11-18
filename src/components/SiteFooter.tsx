@@ -8,7 +8,7 @@ import { DATA_UPDATED, formatDate, REPO_URL } from '../config';
 export const SiteFooter: React.FC = () => (
   <footer className="mt-16 no-print">
     {/* The family kit's shelf (public/family/shelf.html): every project, the charity line and its links */}
-    <div className="wts-slot-shelf [&_.wts-shelf]:mt-0" dangerouslySetInnerHTML={{ __html: shelf }} />
+    <div className="wts-slot-shelf [&_.wts-shelf]:mt-0!" dangerouslySetInnerHTML={{ __html: shelf }} />
     <div className="bg-panel text-muted text-sm">
       <div className="max-w-page mx-auto px-4 md:px-8 pb-7">
         <nav aria-label="About this site">

@@ -1,6 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Tailwind's theme: only the site's own colours, type and corners. Colours are CSS custom properties (below), most
+   of them the family kit's, so dark mode swaps them in one place. */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-page: var(--page);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-faint: var(--rule-faint);
+  --color-heather: var(--heather);
+  --color-heather-strong: var(--heather-strong);
+  --color-heather-tint: var(--heather-tint);
+  --color-on-heather: var(--on-heather);
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-compare-a: var(--compare-a);
+  --color-compare-b: var(--compare-b);
+}
+@theme {
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Source Sans 3', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: initial;
+  /* Nothing below 13px */
+  --text-*: initial;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.3rem;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.45rem;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.65rem;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.7rem;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.8rem;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2.15rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 2.6rem;
+  --radius-*: initial;
+  --radius: 3px;
+  --shadow-*: initial;
+  --max-width-prose: 52rem;
+  --max-width-page: 84rem;
+}
+
+/* hover: styles only where there is a real pointer, so a tap on a phone doesn't leave them stuck on */
+@custom-variant hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
 
 /* Where Lives Stand on the family kit's tokens (public/family/family.css): a white page, light grey panels, and
    heather, the site's cloth, for the header band, links and the map. Dark mode follows the system setting. */
@@ -108,6 +163,21 @@
   }
   table {
     font-variant-numeric: tabular-nums;
+  }
+  /* Table cells and options keep the browser's own padding where no utility sets one; search fields draw as plain
+     text fields; buttons show the pointer */
+  td, th {
+    padding: 1px;
+  }
+  option {
+    padding: revert;
+  }
+  [type='search'] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+  }
+  button:not(:disabled), [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 

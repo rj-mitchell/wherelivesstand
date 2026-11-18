@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { readFileSync } from 'node:fs';
 
 // The Where They Stand family kit, synced into public/family/ by the charity's kit/sync.mjs (see
@@ -23,6 +24,6 @@ function familyKit(): Plugin {
 export default defineConfig({
   // Absolute asset paths: pages such as /country/NOR must still find /assets/.
   base: '/',
-  plugins: [react(), familyKit()],
+  plugins: [react(), tailwindcss(), familyKit()],
   server: { port: 3000 },
 });

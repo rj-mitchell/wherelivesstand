@@ -82,7 +82,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
   const regionName = REGIONS.find(r => r.id === region)?.name ?? 'World';
 
   return (
-    <section id="rankings" aria-labelledby="rankings-title" tabIndex={-1} className="scroll-mt-4 outline-none">
+    <section id="rankings" aria-labelledby="rankings-title" tabIndex={-1} className="scroll-mt-4 outline-hidden">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 id="rankings-title" className="text-2xl">
