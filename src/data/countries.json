@@ -42913,28 +42913,6 @@
    ]
   }
  },
- "CYN": {
-  "iso3": "CYN",
-  "numeric": "CYN",
-  "name": "Northern Cyprus",
-  "region": "Europe",
-  "indicators": {},
-  "hasData": false,
-  "dimensions": {
-   "safety": null,
-   "governance": null,
-   "rights": null,
-   "economy": null,
-   "health": null,
-   "infrastructure": null,
-   "climate": null,
-   "environment": null
-  },
-  "coverage": "1/34",
-  "rawFacts": {
-   "note": "Only 1 of 34 indices cover Northern Cyprus, too few to rank it fairly."
-  }
- },
  "CYP": {
   "iso3": "CYP",
   "numeric": "196",

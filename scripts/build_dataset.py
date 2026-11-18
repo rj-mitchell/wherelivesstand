@@ -356,8 +356,14 @@ def percentile(vals, q):
     return s[f] + (s[c] - s[f]) * (k - f)
 
 
+# Places drawn on the map but counted with the country they belong to, and given no page of their own
+# (docs/DECISIONS.md, decision 16). A source's figures for them alone are not used.
+NOT_SEPARATE = {'CYN'}  # Northern Cyprus, counted with Cyprus as Somaliland is with Somalia
+
+
 def main():
     base = json.load(open(os.path.join(OUT, 'countries.json')))  # geography metadata only (names, regions, map ids)
+    base = {k: v for k, v in base.items() if k not in NOT_SEPARATE}
     meta = {k: {f: v[f] for f in ('iso3', 'numeric', 'name', 'region')} | (
         {'isDependency': True, 'parentIso': v['parentIso'], 'parentName': v['parentName']} if v.get('isDependency') else {})
         for k, v in base.items()}

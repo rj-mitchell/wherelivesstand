@@ -36,7 +36,7 @@ export const regionById = (id: string): RegionDefinition | undefined => REGIONS.
 export const MIDDLE_EAST_ISOS = new Set([
   'SAU', 'ARE', 'QAT', 'KWT', 'BHR', 'OMN', 'YEM',
   'ISR', 'PSE', 'JOR', 'LBN', 'SYR', 'IRQ', 'IRN',
-  'TUR', 'CYP', 'CYN', 'EGY',
+  'TUR', 'CYP', 'EGY',
 ]);
 
 export function isCountryInRegion(country: { iso3: string; region: string }, regionId: RegionId): boolean {
@@ -47,7 +47,7 @@ export function isCountryInRegion(country: { iso3: string; region: string }, reg
     case 'middle-east':
       return MIDDLE_EAST_ISOS.has(iso);
     case 'europe':
-      return country.region === 'Europe' || iso === 'CYP' || iso === 'CYN' || iso === 'TUR';
+      return country.region === 'Europe' || iso === 'CYP' || iso === 'TUR';
     case 'north-america':
       return country.region === 'North America' || country.region === 'Americas';
     case 'south-america':

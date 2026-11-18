@@ -19,6 +19,7 @@ over the map. Other forms are accepted and rewritten to it:
 | `/country/gbr` | `/country/GBR` (301, from the server) |
 | `/?country=GBR` | `/country/GBR` (rewritten in the browser) |
 | `/country/FRO`, a territory | `/country/DNK`, the country it belongs to (302): territories are not ranked separately |
+| `/country/CYN`, Northern Cyprus | `/country/CYP` (301): counted with Cyprus since 18 November 2026 ([DECISIONS.md](DECISIONS.md#16-boundaries-on-the-map)) |
 | `/country/ZZZ`, a code the data does not have | "Page not found", status 404 |
 
 ## Links to sister sites

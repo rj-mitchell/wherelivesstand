@@ -1,7 +1,7 @@
 // The world map, coloured by overall score. Mercator (docs/DECISIONS.md), so that small,
 // densely populated countries such as Europe's are big enough to see and select; Antarctica, Greenland and the
-// far-northern Arctic islands are left out of the geometry (src/data/world-50m.json) because Mercator makes them
-// enormous. Every country in the data is a keyboard stop with a name; Enter opens its dossier.
+// far-northern Arctic islands are left out of the geometry (src/data/world-50m.json, built by
+// scripts/build_map.mjs) because Mercator makes them enormous. Every country in the data is a keyboard stop with a name; Enter opens its dossier.
 import React, { useMemo, useState, useCallback, useLayoutEffect, useRef } from 'react';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 import { geoPath, type GeoProjection } from 'd3-geo';
@@ -13,6 +13,7 @@ import { useColourMode } from '../lib/useColourMode';
 import { MapLegend } from './MapLegend';
 import { HoverCard, type HoverInfo } from './HoverCard';
 import { Icon } from './Icon';
+import { Link } from '../lib/nav';
 import { RegionTabs } from './RegionTabs';
 import geoUrl from '../data/world-50m.json?url';
 
@@ -31,12 +32,13 @@ interface Props {
   onRelative: (relative: boolean) => void;
 }
 
-// Natural Earth shapes with no numeric code of their own
+// Natural Earth shapes with no numeric code of their own. Somaliland and Northern Cyprus are counted with
+// Somalia and Cyprus (docs/DECISIONS.md, decision 16); the Golan Heights belong to no country in the data.
 const SPECIAL_GEOMETRIES: Record<string, string> = {
   'Siachen Glacier': 'IND',
   Somaliland: 'SOM',
   Kosovo: 'XKX',
-  'N. Cyprus': 'CYN',
+  'N. Cyprus': 'CYP',
   'Indian Ocean Ter.': 'IOT',
 };
 
@@ -286,7 +288,8 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
       <MapLegend scale={scale} mode={mode} regionName={regionDef.name} hoverScore={hover?.country && !hover.country.isDependency ? hover.country.compositeScore : null} />
       <figcaption id="map-caption" className="mt-2 text-sm text-muted">
         Select a country, or tab to it and press Enter, for its full record. Hatched: territories, and places too few
-        indices cover.
+        indices cover. Boundaries are drawn for illustration and imply no view on the status of any territory or
+        border (<Link href="/method#boundaries">how they are drawn</Link>).
       </figcaption>
     </figure>
   );

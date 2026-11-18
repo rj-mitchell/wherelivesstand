@@ -33,7 +33,8 @@ change to an address needs `src/lib/url.ts`, `test/url.test.ts` and [docs/URLS.m
 - Site text follows the Where They Stand family glossary (`family/GLOSSARY.md` in the charity's private
   repository).
 - Don't edit `public/family/`; it is a copy of the family kit (see [docs/DESIGN.md](docs/DESIGN.md)).
-- Don't edit `SOURCES.md` or `src/data/*.json` by hand; `scripts/build_dataset.py` generates them.
+- Don't edit `SOURCES.md` or `src/data/*.json` by hand; `scripts/build_dataset.py` generates them, and
+  `scripts/build_map.mjs` the map, `src/data/world-50m.json`.
 - Keep comments short and about the code as it is.
 
 ## Commit messages
