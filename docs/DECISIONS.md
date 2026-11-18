@@ -4,10 +4,7 @@ The product decisions behind Where Lives Stand: what was decided, why, and when.
 [DESIGN.md](DESIGN.md), [DATA.md](DATA.md) and [URLS.md](URLS.md). Add new decisions at the end with the next number,
 and keep the numbers, since other documents refer to them.
 
-Decisions 1 to 6 and 15 were made by the project's owner. Decisions 7 to 14 are proposed and await the owner's
-confirmation; once one is confirmed, move it to the first section.
-
-## Made by the owner
+All of them are confirmed by the project's owner.
 
 ### 1. Design
 
@@ -41,14 +38,6 @@ As little as possible sits above the map: the header band, a one-line beta banne
 visible heading or introduction. The weights sit beside the map on a laptop and under it on a phone, compact enough
 that the panel's foot is level with the map's. [DESIGN.md](DESIGN.md#the-map-and-rankings-view) describes the
 layout (6 November 2026, refined 8 November 2026).
-
-### 15. The mark
-
-The site has a picture mark beside its name, as its sister sites do: a desk globe on its stand, in gilt, on a heather
-tile. It is no taller than the name and the endorsement, so that the map stays where decision 6 puts it. The favicons
-show it too, and the press page offers it (6 November 2026; [DESIGN.md](DESIGN.md#the-mark)).
-
-## Proposed, for the owner to confirm
 
 ### 7. Preset names
 
@@ -92,3 +81,9 @@ experts per country and moves a lot from year to year. It is the only averaged v
 The text the site writes (its pages, the methodology and Behind the rankings) is licensed under CC BY 4.0, as on
 Where MPs Stand and Where Landlords Stand, and stated on the terms page. The figures stay under their publishers'
 terms, and the name and mark are not covered (6 November 2026).
+
+### 15. The mark
+
+The site has a picture mark beside its name, as its sister sites do: a desk globe on its stand, in gilt, on a heather
+tile. It is no taller than the name and the endorsement, so that the map stays where decision 6 puts it. The favicons
+show it too, and the press page offers it (6 November 2026; [DESIGN.md](DESIGN.md#the-mark)).
