@@ -1,5 +1,5 @@
 // The header: the site's cloth as a band across the page, holding the picture mark, the name, the family
-// endorsement, the main navigation and the search; then the phase banner. Compact, so that the map comes first
+// endorsement, the main navigation and the search; then the beta banner. Compact, so that the map comes first
 // (docs/DECISIONS.md).
 import React, { useLayoutEffect, useRef } from 'react';
 import type { ComputedCountry } from '../types';
@@ -77,7 +77,7 @@ export const Masthead: React.FC<Props> = ({ view, compareOpen, mapHref, compareH
           </nav>
         </div>
       </div>
-      {/* The phase banner, kept to one line so the map comes first */}
+      {/* The beta banner, kept to one line so the map comes first */}
       <div className="border-b border-rule">
         <p className="max-w-page mx-auto px-4 md:px-8 py-1.5 text-sm flex items-baseline gap-x-2 whitespace-nowrap overflow-hidden">
           <strong className="phase-tag">Beta</strong>

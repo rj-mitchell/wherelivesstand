@@ -190,7 +190,7 @@
   .scroll-fade-x {
     scroll-padding-inline: 2rem;
   }
-  /* The phase banner's status, as the hub's project tags */
+  /* The beta banner's status, as the hub's project tags */
   .phase-tag {
     @apply inline-block rounded bg-ink text-page font-sans font-semibold text-xs px-1.5;
   }
