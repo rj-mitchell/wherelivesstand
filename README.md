@@ -75,7 +75,9 @@ them all, with links, and the indicators that were considered and left out. `dat
 file as downloaded so the dataset can be rebuilt exactly; those copies remain under their publishers' terms, and
 any file whose terms do not allow redistribution will be removed and downloaded at build time instead.
 
-The map is from Natural Earth (public domain), via the world-atlas package (ISC licence). The typefaces are Source
+The map is from Natural Earth (public domain), via the world-atlas package (ISC licence), with Crimea, Western
+Sahara and the Golan Heights drawn as in Natural Earth's point of view for the UK
+([docs/DECISIONS.md](docs/DECISIONS.md#16-boundaries-on-the-map)); `scripts/build_map.mjs` builds it. The typefaces are Source
 Serif 4 and Source Sans 3 (SIL Open Font License).
 
 To report a wrong figure, use the site's [corrections page](https://wherelivesstand.com/corrections).

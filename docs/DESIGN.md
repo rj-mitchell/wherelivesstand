@@ -118,10 +118,16 @@ focus returns to where it was.
 ## The map
 
 - Projection: Mercator ([DECISIONS.md](DECISIONS.md#5-the-maps-projection)). Antarctica, Greenland and the
-  far-northern Arctic islands are left out of the geometry, `src/data/world-50m.json`. These are Svalbard and every
-  Russian and Canadian island lying wholly north of about 66°N, such as Novaya Zemlya, the New Siberian Islands and
-  Canada's Arctic archipelago; `test/map.test.ts` checks they stay out. The world view is 960 by 520, scale 150,
-  rotated 10.6° so that the land is centred; the regional views are in `src/data/regions.ts`.
+  far-northern Arctic islands are left out of the geometry, `src/data/world-50m.json`. These are Svalbard, Jan Mayen,
+  every Russian island lying wholly north of 67°N and every Canadian one wholly north of 60°N, such as Novaya Zemlya,
+  the New Siberian Islands and Canada's Arctic archipelago; `test/map.test.ts` checks they stay out. The world view is
+  960 by 520, scale 150, rotated 10.6° so that the land is centred; the regional views are in `src/data/regions.ts`.
+  St Lawrence Island, which the map's edge at 169.4°W would cut, is moved 2.82° east to lie beside Alaska.
+- Boundaries: Natural Earth's de facto lines, with Crimea, Western Sahara and the Golan Heights as in its point of
+  view for the UK ([DECISIONS.md](DECISIONS.md#16-boundaries-on-the-map)); `scripts/build_map.mjs` builds the file
+  ([DATA.md](DATA.md#the-map)) and `test/map.test.ts` checks a town in each. The caption under the map says the
+  boundaries imply no view on the status of any territory or border, and links to the methodology's account of
+  them.
 - Scale: one hue, heather, by lightness (`src/lib/colour.ts`). In light mode low scores are pale and high scores
   dark; in dark mode the scale flips. Order reads from lightness alone, so it holds for any colour vision. The seven
   sample steps were checked for even lightness steps and contrast with the surface in both modes. The world scale

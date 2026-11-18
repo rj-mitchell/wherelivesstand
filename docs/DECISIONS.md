@@ -87,3 +87,16 @@ terms, and the name and mark are not covered (6 November 2026).
 The site has a picture mark beside its name, as its sister sites do: a desk globe on its stand, in gilt, on a heather
 tile. It is no taller than the name and the endorsement, so that the map stays where decision 6 puts it. The favicons
 show it too, and the press page offers it (6 November 2026; [DESIGN.md](DESIGN.md#the-mark)).
+
+### 16. Boundaries on the map
+
+The map follows Natural Earth's de facto boundaries at 1:50 million, except in three places, which are drawn as in
+Natural Earth's point of view for the United Kingdom (version 5.1.1): Crimea is part of Ukraine; Western Sahara is one
+area, apart from Morocco; and the Golan Heights are apart from Israel, an area of their own that is not ranked. That
+point of view is not used whole: it is published only at 1:10 million, and it draws Kosovo as part of Serbia and
+Abkhazia and South Ossetia apart from Georgia, neither of which is the UK's position. Elsewhere the de facto lines
+stay, as they do in that point of view; Aksai Chin, for example, is drawn as part of China. Northern Cyprus and
+Somaliland keep their own outlines but are counted with Cyprus and Somalia, so Northern Cyprus no longer has a page of
+its own (`/country/CYN` goes to `/country/CYP`). The map's caption and the methodology say that the boundaries are
+drawn for illustration and imply no view on the status of any territory or border. `scripts/build_map.mjs` builds the
+map ([DATA.md](DATA.md#the-map)) (18 November 2026; awaiting the owner's confirmation).

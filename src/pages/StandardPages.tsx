@@ -119,6 +119,16 @@ export const Method: React.FC = () => (
       select; it makes countries far from the equator look bigger than they are, and Antarctica, Greenland and the
       far-northern Arctic islands are left off it for that reason.
     </p>
+    <h2 id="boundaries">Boundaries</h2>
+    <p>
+      The map is drawn from Natural Earth's countries at 1:50 million, which follow the boundaries in force on the
+      ground. Three places are drawn instead as in Natural Earth's version for the United Kingdom: Crimea as part of
+      Ukraine, Western Sahara as one area apart from Morocco, and the Golan Heights apart from Israel. Western Sahara
+      and the Golan Heights are not ranked, since too few indices cover them. Northern Cyprus and Somaliland keep their
+      own outlines, but selecting either opens Cyprus or Somalia: too few sources report them separately to rank
+      them. Elsewhere the lines are Natural Earth's: Aksai Chin, for example, is drawn as part of China, as it is in
+      the version for the United Kingdom too. Boundaries are drawn for illustration and imply no view on the status of any territory or border.
+    </p>
     <div className="method-sources">{renderMarkdown(sourcesMd, { skipTitle: true })}</div>
   </Page>
 );

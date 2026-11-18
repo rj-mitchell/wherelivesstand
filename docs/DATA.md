@@ -36,6 +36,22 @@ Climate comfort is the one derived indicator. It is computed from WorldClim 2.1 
 city of 15,000 or more people (GeoNames), weighted by population, so that it reflects the climate where people live.
 The comfort thresholds are in `scripts/derive_climate.py`.
 
+## The map
+
+`src/data/world-50m.json` is Natural Earth's 1:50m countries (version 4.1, public domain) as packaged by
+world-atlas 2.0.2 (ISC licence), with the far-northern islands and Antarctica left out
+([DESIGN.md](DESIGN.md#the-map)) and three boundaries drawn as in Natural Earth's point of view for the United
+Kingdom (version 5.1.1): Crimea, Western Sahara and the Golan Heights
+([DECISIONS.md](DECISIONS.md#16-boundaries-on-the-map)). To rebuild it:
+
+```bash
+node scripts/build_map.mjs        # needs the npm registry: world-atlas, mapshaper and topojson-server, pinned
+npm test                          # test/map.test.ts checks the islands and the boundaries
+```
+
+The script gives the same file each time. The Golan line in it was traced from Natural Earth's 1:10m UK point of
+view (`ne_10m_admin_0_countries_gbr`), which is not needed to rebuild.
+
 ## Files
 
 | Path | Contents |
@@ -46,3 +62,4 @@ The comfort thresholds are in `scripts/derive_climate.py`.
 | `scripts/derive_climate.py`, `scripts/derive_broadband.py` | Turn WorldClim/GeoNames and Ookla tile data into country values |
 | `src/data/indexBiases.ts` | The commentary on Behind the rankings |
 | `src/lib/scoring.ts` | The scoring in the browser: overall scores, ranks, and each country's strengths and weaknesses |
+| `scripts/build_map.mjs` | Builds the map's geometry, `src/data/world-50m.json` |
