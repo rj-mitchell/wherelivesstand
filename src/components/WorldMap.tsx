@@ -3,7 +3,8 @@
 // far-northern Arctic islands are left out of the geometry (src/data/world-50m.json) because Mercator makes them
 // enormous. Every country in the data is a keyboard stop with a name; Enter opens its dossier.
 import React, { useMemo, useState, useCallback, useLayoutEffect, useRef } from 'react';
-import { ComposableMap, Geographies, Geography, ZoomableGroup, type Geo } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
+import { geoPath, type GeoProjection } from 'd3-geo';
 import type { ComputedCountry } from '../types';
 import { REGIONS, isCountryInRegion, type RegionId } from '../data/regions';
 import type { ColourScale } from '../lib/colour';
@@ -14,6 +15,8 @@ import { HoverCard, type HoverInfo } from './HoverCard';
 import { Icon } from './Icon';
 import { RegionTabs } from './RegionTabs';
 import geoUrl from '../data/world-50m.json?url';
+
+type Geo = React.ComponentProps<typeof Geography>['geography'];
 
 interface Props {
   byIso: Record<string, ComputedCountry>;
@@ -75,10 +78,10 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
   }, []);
   // Each shape's larger side, in map units, worked out once
   const sizes = useRef(new WeakMap<Geo, number>());
-  const sizeOf = (geo: Geo, bounds: (g: Geo) => [[number, number], [number, number]]) => {
+  const sizeOf = (geo: Geo, projection: GeoProjection) => {
     let size = sizes.current.get(geo);
     if (size === undefined) {
-      const [[x0, y0], [x1, y1]] = bounds(geo);
+      const [[x0, y0], [x1, y1]] = geoPath(projection).bounds(geo);
       size = Number.isFinite(x0) ? Math.max(x1 - x0, y1 - y0) : 0;
       sizes.current.set(geo, size);
     }
@@ -101,7 +104,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
   }, [byIso]);
 
   const lookup = useCallback(
-    (geo: { id?: string | number; properties?: { name?: string } }) => {
+    (geo: { id?: string | number; properties?: { name?: string } | null }) => {
       const name = geo.properties?.name ?? '';
       if (geo.id != null && !Number.isNaN(parseInt(String(geo.id), 10))) {
         const c = byNumeric[String(parseInt(String(geo.id), 10))];
@@ -176,7 +179,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
             zoom={position.zoom}
             minZoom={1}
             maxZoom={8}
-            onMoveEnd={p => setPosition(p)}
+            onMoveEnd={({ coordinates, zoom }) => coordinates && setPosition({ coordinates, zoom: zoom ?? 1 })}
             // The wheel scrolls the page (pinch-zoom on a trackpad still zooms); one finger scrolls, two pan
             filterZoomEvent={(e: Event & { ctrlKey?: boolean; touches?: TouchList }) => {
               if (e.type === 'wheel') return Boolean(e.ctrlKey);
@@ -185,7 +188,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
             }}
           >
             <Geographies geography={geoUrl}>
-              {({ geographies, path }) => {
+              {({ geographies, projection }) => {
                 // In alphabetical order, so that Tab goes through the countries from A to Z (the file runs from Z)
                 const sorted = geographies
                   .map(geo => ({ geo, c: lookup(geo) }))
@@ -208,7 +211,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
                   if (target && geo.rsmKey === hoverKey) outlines.push({ geo, kind: 'hover' });
                   if (selected) outlines.push({ geo, kind: 'selected' });
                   if (geo.rsmKey === focusKey) outlines.push({ geo, kind: 'focus' });
-                  const tiny = sizeOf(geo, path.bounds) * position.zoom * unitPx < MIN_FOCUS_PX;
+                  const tiny = sizeOf(geo, projection) * position.zoom * unitPx < MIN_FOCUS_PX;
                   const label = c ? describeCountry(c, rankedCount, parent?.name) : undefined;
                   const show = (e: React.MouseEvent | React.FocusEvent) => {
                     if (!c) return setHover({ name: geo.properties?.name ?? 'Unknown', note: 'Not covered by the sources separately; not ranked.', anchor: anchorFrom(e) });
@@ -269,7 +272,7 @@ export const WorldMap: React.FC<Props> = ({ byIso, rankedCount, scale, region, r
                       {outlines
                         .sort((x, y) => order[x.kind] - order[y.kind])
                         .map(({ geo, kind }) => (
-                          <path key={`${kind}-${geo.rsmKey}`} d={geo.svgPath} className={`map-outline map-outline-${kind}`} />
+                          <path key={`${kind}-${geo.rsmKey}`} d={geo.svgPath ?? undefined} className={`map-outline map-outline-${kind}`} />
                         ))}
                     </g>
                   </>
