@@ -84,3 +84,21 @@ test('no page has an inline style, which the content security policy would block
     assert.ok(!/<[^>]+\sstyle=/.test(read(`${page}.html`)), page);
   }
 });
+
+test('only the map views preload the figures and the map; every page preloads the typefaces', () => {
+  const json = /<link rel="preload" href="\/assets\/(countries|world-50m)-[^"]+\.json"/g;
+  for (const page of ['index', 'compare', 'country/GBR']) assert.equal(read(`${page}.html`).match(json)?.length, 2, page);
+  for (const page of [...TEXT_PAGES, '404']) {
+    const html = read(`${page}.html`);
+    assert.equal(html.match(json), null, page);
+    assert.equal(html.match(/<link rel="preload" href="\/family\/fonts\/[^"]+" as="font"/g)?.length, 2, page);
+  }
+});
+
+
+test('the figures the browser loads are the dataset without its raw values', () => {
+  const file = read('index.html').match(/\/assets\/(countries-[^"]+\.json)/)![1];
+  const served = JSON.parse(read(`assets/${file}`));
+  const expected = JSON.parse(JSON.stringify(countries, (k, v) => (k === 'raw' && typeof v === 'number' ? undefined : v)));
+  assert.deepEqual(served, expected);
+});

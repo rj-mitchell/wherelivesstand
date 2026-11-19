@@ -8,7 +8,9 @@
 //   loaded. A country's description gives its score and rank;
 // - dist/404.html, the app's "page not found", served with status 404 for any other address;
 // - dist/sitemap.xml, dist/_redirects, and dist/favicon.ico (the family kit's, which browsers ask for at the root);
-// - a preload of the figures and the map in every page, so they download alongside the app.
+// - on the map views only, a preload of the figures and the map, so they download alongside the app;
+// - the figures the browser loads (dist/assets/countries-*.json) without the whitespace and the publishers' raw
+//   values, which the app does not use (the scores, ranks and formatted values stay).
 //
 // Plain Node with no dependencies beyond the app's own (React, for the static HTML), so it runs in Cloudflare's
 // build as well as locally.
@@ -31,11 +33,25 @@ const index = read('index.html');
 
 const assets = readdirSync(new URL('assets/', dist));
 const asset = prefix => assets.find(f => f.startsWith(prefix) && f.endsWith('.json'));
-const preloads = ['countries-', 'world-50m-']
+// The map views need the figures and the map soon, but after the stylesheets and typefaces that the static HTML
+// is drawn with (fetchpriority low). The text pages show their static HTML until the app has fetched the figures,
+// so they leave the bandwidth to the page itself.
+const MAP_PRELOADS = ['countries-', 'world-50m-']
   .map(asset)
   .filter(Boolean)
-  .map(f => `<link rel="preload" href="/assets/${f}" as="fetch" crossorigin>`)
+  .map(f => `<link rel="preload" href="/assets/${f}" as="fetch" crossorigin fetchpriority="low">`)
   .join('\n    ');
+// The two typefaces every page's text is set in (the family kit's upright Latin files), so that they arrive with
+// the stylesheets rather than after them and the static HTML isn't redrawn, and shifted, when they do
+const FONT_PRELOADS = [...read('family/fonts.css').matchAll(/url\((fonts\/source-(?:serif-4|sans-3)-normal-latin\.woff2)\)/g)]
+  .map(m => `<link rel="preload" href="/family/${m[1]}" as="font" type="font/woff2" crossorigin>`)
+  .join('\n    ');
+if (!FONT_PRELOADS.includes('serif') || !FONT_PRELOADS.includes('sans')) throw new Error('postbuild: the typefaces were not found in family/fonts.css');
+
+// The served copy of the figures, minified and without the raw values. Its file name keeps the hash of the source
+// file, which this always turns into the same output.
+const figures = asset('countries-');
+write(`assets/${figures}`, JSON.stringify(JSON.parse(read(`assets/${figures}`)), (key, value) => (key === 'raw' && typeof value === 'number' ? undefined : value)));
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
@@ -43,7 +59,7 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&
 const NOSCRIPT =
   '<noscript><p class="boot__inner boot__status">Without JavaScript, this page shows the figures under the balanced weights, every dimension at 50%. Choosing your own weights, the map and the search need JavaScript.</p></noscript>';
 
-function page({ path, title, description, noindex = false, lean = false }) {
+function page({ path, title, description, noindex = false, map = false, lean = false }) {
   let html = index;
   const url = ORIGIN + path;
   const set = (re, value) => {
@@ -66,15 +82,17 @@ function page({ path, title, description, noindex = false, lean = false }) {
     /<div id="root">[\s\S]*<!-- \/app -->\s*<\/div>/,
     `<div id="root" data-prerendered><p id="boot-status" class="boot-status" role="status"></p>${NOSCRIPT}${render(path, { lean })}</div>`,
   );
-  return html.replace('</head>', `    ${preloads}\n  </head>`);
+  // The preloads early in the head, before the stylesheets, so the browser asks for them at once
+  set(/(<meta name="viewport"[^>]*>)/, `$1\n    ${[FONT_PRELOADS, map ? MAP_PRELOADS : ''].filter(Boolean).join('\n    ')}`);
+  return html;
 }
 
 const SITE = 'Where Lives Stand';
 const defaultDescription = `${SITE} ranks ${ranked} countries on quality of life from ${indicators.length} published indicators, weighted the way you choose. A Where They Stand project.`;
 
 const pages = [
-  { path: '/', file: 'index.html', title: `${SITE}: quality of life, country by country`, description: defaultDescription },
-  { path: '/compare', file: 'compare.html', title: `Compare two countries | ${SITE}`, description: `Compare any two countries on quality of life, dimension by dimension and on each of ${indicators.length} published indicators.`, lean: true },
+  { path: '/', file: 'index.html', title: `${SITE}: quality of life, country by country`, description: defaultDescription, map: true },
+  { path: '/compare', file: 'compare.html', title: `Compare two countries | ${SITE}`, description: `Compare any two countries on quality of life, dimension by dimension and on each of ${indicators.length} published indicators.`, map: true, lean: true },
   { path: '/behind-the-rankings', file: 'behind-the-rankings.html', title: `Behind the rankings | ${SITE}`, description: `What each of the ${indicators.length} indices behind ${SITE} measures, where it falls short, and the traps in combining them.` },
   { path: '/about', file: 'about.html', title: `About | ${SITE}`, description: `What ${SITE} is, who runs it and how to contact us.` },
   { path: '/method', file: 'method.html', title: `Methodology | ${SITE}`, description: `How ${SITE} scores and combines ${indicators.length} published indicators, and the publisher, year and coverage of each.` },
@@ -100,7 +118,7 @@ function countryDescription(c) {
 
 const countryPages = list.filter(c => !c.isDependency).sort((a, b) => a.iso3.localeCompare(b.iso3));
 for (const c of countryPages) {
-  write(`country/${c.iso3}.html`, page({ path: `/country/${c.iso3}`, title: `${c.name} | ${SITE}`, description: countryDescription(c), lean: true }));
+  write(`country/${c.iso3}.html`, page({ path: `/country/${c.iso3}`, title: `${c.name} | ${SITE}`, description: countryDescription(c), map: true, lean: true }));
 }
 
 write('404.html', page({ path: '/404', title: `Page not found | ${SITE}`, description: defaultDescription, noindex: true }));
