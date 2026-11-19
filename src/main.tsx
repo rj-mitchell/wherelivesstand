@@ -6,7 +6,7 @@ import type { CountryData } from './types';
 import countriesUrl from './data/countries.json?url';
 import './index.css';
 
-// The country figures are a separate, long-cached file (about 1.1 MB before compression), fetched in parallel
+// The country figures are a separate, long-cached file (about 750 kB before compression), fetched in parallel
 // with the app rather than built into it. Until they arrive, the page shows its static HTML (scripts/postbuild.mjs,
 // src/prerender.tsx), which the app then replaces in the same layout.
 const container = document.getElementById('root')!;

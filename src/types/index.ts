@@ -27,6 +27,7 @@ export interface IndicatorMeta {
 }
 
 export interface IndicatorScore {
+  /** The publisher's value, for the tests; the copy the site serves leaves it out (scripts/postbuild.mjs). */
   raw: number;
   formatted: string;
   score: number; // 0 to 100, normalised
