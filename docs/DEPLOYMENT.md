@@ -10,7 +10,8 @@ and then `npm run check:a11y`. It does not deploy anything.
 
 `npm run test:build` (`test/build/`) checks `dist/`: that each country's page carries its name as its one h1 and
 the score, rank, standouts, neighbours and indicator values the app works out for the balanced weights; that the home
-page links to every country; and that no page has an inline style, which the content security policy would block.
+page links to every country; that no page has an inline style, which the content security policy would block; and
+the preloads, the sitemap's dates, the redirects and the structured data.
 
 `npm run check:a11y` (`scripts/a11y.mjs`) serves `dist/` as the Worker does, with its 404 page and the headers in
 `public/_headers`. It opens the home page, Norway's page, the comparison, Behind the rankings, About and Press in

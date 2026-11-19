@@ -20,6 +20,7 @@ over the map. Other forms are accepted and rewritten to it:
 | `/?country=GBR` | `/country/GBR` (rewritten in the browser) |
 | `/country/FRO`, a territory | `/country/DNK`, the country it belongs to (302): territories are not ranked separately |
 | `/country/CYN`, Northern Cyprus | `/country/CYP` (301): counted with Cyprus since 18 November 2026 ([DECISIONS.md](DECISIONS.md#16-boundaries-on-the-map)) |
+| `/country/GBR/`, `/about/`, any address with a trailing slash | The same without it (301, from the server) |
 | `/country/ZZZ`, a code the data does not have | "Page not found", status 404 |
 
 ## Links to sister sites
@@ -73,3 +74,10 @@ Each file carries that address's view as static HTML, rendered from the app at b
 the balanced weights and the whole world, which the app replaces once it has loaded. The server ignores the query,
 so `/country/FRA?preset=young-family` first shows France's figures under the balanced weights, saying so, and then
 the Young family figures. In the same way `/compare?a=ESP&b=NOR` first shows the comparison a bare `/compare` opens.
+
+`_redirects` sends lower-case codes, territories, Northern Cyprus and addresses with a trailing slash on as in the
+table above. Without its trailing-slash lines the server would answer `/about/` itself, with a 307.
+
+The sitemap dates each country's page, the map and the comparison by the data (`DATA_UPDATED` in
+`src/config.ts`), and each text page by the last commit to the files that hold its text, or not at all where the
+build's copy of the history doesn't reach that far.

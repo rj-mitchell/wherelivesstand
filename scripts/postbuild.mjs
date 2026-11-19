@@ -5,7 +5,7 @@
 // - dist/country/<ISO3>.html for each country, and dist/<page>.html for each page, each a copy of index.html with
 //   its own title, description and canonical address, and with the page's static HTML in #root: the app itself,
 //   rendered at build time for the balanced weights (src/prerender.tsx), which the app replaces once it has
-//   loaded. A country's description gives its score and rank;
+//   loaded. A country's description gives its score and rank, and its page has a BreadcrumbList;
 // - dist/404.html, the app's "page not found", served with status 404 for any other address;
 // - dist/sitemap.xml, dist/_redirects, and dist/favicon.ico (the family kit's, which browsers ask for at the root);
 // - on the map views only, a preload of the figures and the map, so they download alongside the app;
@@ -15,6 +15,7 @@
 // Plain Node with no dependencies beyond the app's own (React, for the static HTML), so it runs in Cloudflare's
 // build as well as locally.
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 
 const ORIGIN = 'https://wherelivesstand.com';
 const dist = new URL('../dist/', import.meta.url);
@@ -27,7 +28,7 @@ const write = (path, text) => {
 
 const ssrEntry = new URL('../dist-ssr/prerender.js', import.meta.url);
 if (!existsSync(ssrEntry)) throw new Error('postbuild: dist-ssr/prerender.js is missing; run `vite build --ssr src/prerender.tsx` first');
-const { render, rankings, ordinal, countries, indicators } = await import(ssrEntry);
+const { render, rankings, ordinal, countries, indicators, DATA_UPDATED } = await import(ssrEntry);
 const { list, rankedCount: ranked } = rankings;
 const index = read('index.html');
 
@@ -54,12 +55,13 @@ const figures = asset('countries-');
 write(`assets/${figures}`, JSON.stringify(JSON.parse(read(`assets/${figures}`)), (key, value) => (key === 'raw' && typeof value === 'number' ? undefined : value)));
 
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const jsonLd = value => `<script type="application/ld+json">${JSON.stringify(value).replace(/</g, '\\u003c')}</script>`;
 
 // What readers without JavaScript are told, above the page's static HTML
 const NOSCRIPT =
   '<noscript><p class="boot__inner boot__status">Without JavaScript, this page shows the figures under the balanced weights, every dimension at 50%. Choosing your own weights, the map and the search need JavaScript.</p></noscript>';
 
-function page({ path, title, description, noindex = false, map = false, lean = false }) {
+function page({ path, title, description, noindex = false, map = false, lean = false, head = '' }) {
   let html = index;
   const url = ORIGIN + path;
   const set = (re, value) => {
@@ -84,7 +86,7 @@ function page({ path, title, description, noindex = false, map = false, lean = f
   );
   // The preloads early in the head, before the stylesheets, so the browser asks for them at once
   set(/(<meta name="viewport"[^>]*>)/, `$1\n    ${[FONT_PRELOADS, map ? MAP_PRELOADS : ''].filter(Boolean).join('\n    ')}`);
-  return html;
+  return head ? html.replace('</head>', `  ${head}\n  </head>`) : html;
 }
 
 const SITE = 'Where Lives Stand';
@@ -118,17 +120,51 @@ function countryDescription(c) {
 
 const countryPages = list.filter(c => !c.isDependency).sort((a, b) => a.iso3.localeCompare(b.iso3));
 for (const c of countryPages) {
-  write(`country/${c.iso3}.html`, page({ path: `/country/${c.iso3}`, title: `${c.name} | ${SITE}`, description: countryDescription(c), map: true, lean: true }));
+  const path = `/country/${c.iso3}`;
+  const breadcrumbs = jsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: SITE, item: `${ORIGIN}/` },
+      { '@type': 'ListItem', position: 2, name: c.name, item: ORIGIN + path },
+    ],
+  });
+  write(`country/${c.iso3}.html`, page({ path, title: `${c.name} | ${SITE}`, description: countryDescription(c), map: true, lean: true, head: breadcrumbs }));
 }
 
 write('404.html', page({ path: '/404', title: `Page not found | ${SITE}`, description: defaultDescription, noindex: true }));
 
-const today = new Date().toISOString().slice(0, 10);
+// When each address last changed. The country pages, the map and the comparison show the figures, so they carry
+// the date the data was rebuilt (DATA_UPDATED in src/config.ts). The text pages carry the date of the last commit
+// to the files that hold their text, where the git history reaches that far; otherwise none, rather than a guess.
+const PAGE_SOURCES = {
+  '/behind-the-rankings': ['src/pages/BehindTheRankings.tsx', 'src/data/indexBiases.ts'],
+  '/method': ['src/pages/StandardPages.tsx', 'SOURCES.md'],
+};
+const repo = new URL('..', import.meta.url);
+const git = args => execFileSync('git', args, { cwd: repo, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+function committed(files) {
+  try {
+    const [hash, date] = git(['log', '-1', '--format=%H %cs', '--', ...files]).split(' ');
+    if (!hash) return null;
+    // In a shallow clone, the oldest commit fetched seems to change every file: its date says nothing
+    const shallow = git(['rev-parse', '--git-path', 'shallow']);
+    if (existsSync(new URL(shallow, repo)) && readFileSync(new URL(shallow, repo), 'utf8').includes(hash)) return null;
+    return date;
+  } catch {
+    return null;
+  }
+}
+const lastmod = path =>
+  path === '/' || path === '/compare' || path.startsWith('/country/') ? DATA_UPDATED : committed(PAGE_SOURCES[path] ?? ['src/pages/StandardPages.tsx']);
 const urls = [...pages.map(p => p.path), ...countryPages.map(c => `/country/${c.iso3}`)];
 write(
   'sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
-    .map(u => `  <url><loc>${ORIGIN}${u}</loc><lastmod>${today}</lastmod></url>`)
+    .map(u => {
+      const date = lastmod(u);
+      return `  <url><loc>${ORIGIN}${u}</loc>${date ? `<lastmod>${date}</lastmod>` : ''}</url>`;
+    })
     .join('\n')}\n</urlset>\n`,
 );
 
@@ -136,7 +172,8 @@ write(
 const MERGED = { CYN: 'CYP' };
 
 // Country addresses the server would otherwise not find: lower-case codes, the codes of territories, which go
-// to the country they belong to (their figures are not ranked separately), and the codes in MERGED.
+// to the country they belong to (302: their figures are not ranked separately, docs/URLS.md), and the codes in
+// MERGED. Then every page's address with a trailing slash, which would otherwise get the asset server's own 307.
 const redirects = [
   '# Generated by scripts/postbuild.mjs.',
   ...countryPages.map(c => `/country/${c.iso3.toLowerCase()} /country/${c.iso3} 301`),
@@ -144,6 +181,7 @@ const redirects = [
     .filter(c => c.isDependency && c.parentIso)
     .flatMap(c => [`/country/${c.iso3} /country/${c.parentIso} 302`, `/country/${c.iso3.toLowerCase()} /country/${c.parentIso} 302`]),
   ...Object.entries(MERGED).flatMap(([from, to]) => [`/country/${from} /country/${to} 301`, `/country/${from.toLowerCase()} /country/${to} 301`]),
+  ...urls.filter(u => u !== '/').map(u => `${u}/ ${u} 301`),
 ];
 write('_redirects', redirects.join('\n') + '\n');
 

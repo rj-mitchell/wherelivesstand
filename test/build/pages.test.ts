@@ -1,15 +1,17 @@
 // Checks the built site in dist/ (run after `npm run build`, as `npm run test:build`): that each page's static HTML
-// carries its heading and the figures the app works out for the balanced weights, and that it can be served under
-// the content security policy.
+// carries its heading and the figures the app works out for the balanced weights, that it can be served under the
+// content security policy, and the sitemap, redirects, preloads and structured data scripts/postbuild.mjs writes.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { countries, indicators, rank } from '../helpers.ts';
+import { DATA_UPDATED } from '../../src/config.ts';
 import { ordinal } from '../../src/lib/scoring.ts';
 
 const dist = new URL('../../dist/', import.meta.url);
 if (!existsSync(new URL('index.html', dist))) throw new Error('dist/ is missing: run npm run build first');
 const read = (path: string) => readFileSync(new URL(path, dist), 'utf8');
+const ORIGIN = 'https://wherelivesstand.com';
 
 const unescape = (html: string) => html.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 /** The text of some HTML, as a reader or a search engine without JavaScript gets it. */
@@ -17,6 +19,7 @@ const text = (html: string) =>
   unescape(html.replace(/<(script|style|noscript)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ');
 const h1s = (html: string) => [...html.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/g)].map(m => text(m[1]).trim());
 const meta = (html: string, name: string) => unescape(html.match(new RegExp(`<meta name="${name}" content="([^"]*)"`))?.[1] ?? '');
+const jsonLd = (html: string) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
 
 const balanced = rank();
 const withPages = Object.values(countries).filter(c => !c.isDependency);
@@ -51,6 +54,8 @@ test('every country page has its name as its one h1, and the score and rank the 
       assert.ok(page.includes(v ? v.formatted : 'No figure'), `${c.iso3}: ${ind.id}`);
     }
     assert.ok(html.includes('href="/method"'), c.iso3);
+    const crumbs = jsonLd(html).find(d => d['@type'] === 'BreadcrumbList');
+    assert.equal(crumbs?.itemListElement[1].item, `${ORIGIN}/country/${c.iso3}`, c.iso3);
   }
 });
 
@@ -95,10 +100,35 @@ test('only the map views preload the figures and the map; every page preloads th
   }
 });
 
-
 test('the figures the browser loads are the dataset without its raw values', () => {
   const file = read('index.html').match(/\/assets\/(countries-[^"]+\.json)/)![1];
   const served = JSON.parse(read(`assets/${file}`));
   const expected = JSON.parse(JSON.stringify(countries, (k, v) => (k === 'raw' && typeof v === 'number' ? undefined : v)));
   assert.deepEqual(served, expected);
+});
+
+test('the sitemap dates the country pages by the data, and no page by the build', () => {
+  const sitemap = read('sitemap.xml');
+  const entries = [...sitemap.matchAll(/<url><loc>([^<]+)<\/loc>(?:<lastmod>([^<]+)<\/lastmod>)?<\/url>/g)].map(m => [m[1], m[2]]);
+  assert.equal(entries.length, withPages.length + 10);
+  for (const [loc, date] of entries) {
+    if (loc.includes('/country/') || loc === `${ORIGIN}/` || loc === `${ORIGIN}/compare`) assert.equal(date, DATA_UPDATED, loc);
+    else if (date) assert.match(date, /^\d{4}-\d{2}-\d{2}$/, loc);
+  }
+});
+
+test('the redirects: lower-case codes and trailing slashes are permanent, territories go to their country', () => {
+  const lines = new Set(read('_redirects').split('\n'));
+  assert.ok(lines.has('/country/gbr /country/GBR 301'));
+  assert.ok(lines.has('/country/GBR/ /country/GBR 301'));
+  assert.ok(lines.has('/about/ /about 301'));
+  assert.ok(lines.has('/country/PRI /country/USA 302'));
+  assert.ok(lines.has('/country/CYN /country/CYP 301'));
+  for (const c of withPages) assert.ok(!lines.has(`/country/${c.iso3} /country/${c.parentIso} 302`), c.iso3);
+});
+
+test('the site is described as published by Where They Stand, under no other name', () => {
+  const site = jsonLd(read('index.html')).find(d => d['@type'] === 'WebSite');
+  assert.equal(site.alternateName, undefined);
+  assert.deepEqual(site.publisher, { '@type': 'Organization', '@id': 'https://wheretheystand.uk/#org', name: 'Where They Stand', url: 'https://wheretheystand.uk/' });
 });
