@@ -61,7 +61,7 @@ export const MACRO_THEMES: MacroCritiqueTheme[] = [
     title: 'Missing, modelled and dated data',
     points: [
       'Values come from different years (2015 to 2026), and some are model estimates: ILO unemployment, WHO road deaths, healthy life expectancy. Check the year and coverage beside each value before trusting a close comparison.',
-      'Nothing is filled in. A country needs 20 of 34 indicators to be ranked, and a dimension needs half its indicators, otherwise it shows n/a. Taiwan, Kosovo and most micro-states lack UN-system data, so they are not ranked.'
+      'Nothing is filled in. A country needs 20 of 34 indicators to be ranked, and a dimension needs half its indicators, otherwise it shows n/a. Taiwan, Kosovo, Macao and most micro-states have too little UN-system data to be ranked; their pages show the figures that do cover them.'
     ]
   },
   {

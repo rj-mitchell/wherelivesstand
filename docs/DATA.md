@@ -32,6 +32,13 @@ The scoring rules (the goalposts, the minimum number of indicators, how dimensio
 value) are set out in [SOURCES.md](../SOURCES.md), which `build_dataset.py` writes from the same constants it scores
 with. The browser then weights and ranks the scores (`src/lib/scoring.ts`).
 
+A place with too few indicators to be ranked keeps every figure that covers it, scored against the ranked
+countries' goalposts but with no world rank and no dimension scores, so that its page shows them without moving
+anyone else's figures. Places the publishers report separately, such as Taiwan, Kosovo and Macao, are matched under
+their own codes ([DECISIONS.md](DECISIONS.md#17-places-reported-separately)): `scripts/country_names.py` maps
+publishers' names and other codes to the site's, among them `KSV` (Transparency International) and `KOS` (the ILO)
+for Kosovo, `XKX`.
+
 Climate comfort is the one derived indicator. It is computed from WorldClim 2.1 monthly climate normals at every
 city of 15,000 or more people (GeoNames), weighted by population, so that it reflects the climate where people live.
 The comfort thresholds are in `scripts/derive_climate.py`.

@@ -98,4 +98,4 @@ Grouped by dimension. “Lower is better” marks an indicator turned round for 
 - The International Property Rights Index was left out because it is published by an advocacy group and largely repeats the World Bank's rule-of-law measure.
 - The ITUC Global Rights Index was left out because its website was offline when this dataset was built. The ILO's SDG indicator 8.8.2 was also left out, because the ILO says it “is not intended as a tool to compare compliance among ILO member States”.
 - Housing affordability, access to public transport and the KidsRights Index were left out because no source covers most countries.
-- Taiwan, Kosovo, Monaco, Liechtenstein and other small states are shown but not ranked: the UN-system sources (the World Bank, WHO and UNDP) do not report them, which leaves them short of the minimum number of indicators.
+- Taiwan, Kosovo, Macao, Monaco, Liechtenstein and other small places are shown, with every figure that covers them, but not ranked: the UN-system sources (the World Bank, WHO and UNDP) report them in part or not at all, which leaves them short of the minimum number of indicators.

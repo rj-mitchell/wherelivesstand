@@ -145,8 +145,6 @@ export default function App({ countries }: { countries: Record<string, CountryDa
     }
   };
 
-  const countriesWithData = list.filter(c => c.hasData !== false);
-
   // Beside the map (at desktop widths), the weights panel reaches down to the map's foot, so the two line up;
   // never shorter than its own content, which then scrolls inside it if the window is too short
   const panelRef = useRef<HTMLDivElement>(null);
@@ -181,7 +179,8 @@ export default function App({ countries }: { countries: Record<string, CountryDa
         compareOpen={Boolean(compare)}
         mapHref={mapHref}
         compareHref={compareHref()}
-        countries={countriesWithData}
+        // Every place with a page, ranked or not, so that one too small to pick out on the map, such as Macao, can be found
+        countries={list}
         onSelectCountry={iso => navigate(hrefFor(iso))}
       />
       <main id="main" tabIndex={-1} className="outline-hidden">
@@ -271,7 +270,7 @@ export default function App({ countries }: { countries: Record<string, CountryDa
         <CompareDialog
           a={compare[0]}
           b={compare[1]}
-          choices={countriesWithData}
+          choices={list}
           categories={categories}
           indicators={indicators}
           onChange={(a, b) => navigate(buildUrl({ ...mapState, compare: [a, b] }), { replace: true })}

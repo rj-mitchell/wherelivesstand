@@ -49,7 +49,8 @@ addresses (6 November 2026).
 Territories of another country (the Faroe Islands, Jersey, Puerto Rico and the like) are not ranked separately,
 because most sources report them under the country they belong to. On the map they are hatched and their hover card
 says "not ranked separately"; selecting one, or opening its address, goes to the country it belongs to
-(6 November 2026).
+(6 November 2026). Places that the publishers report separately, such as Hong Kong and Taiwan, are not territories
+in this sense: decision 17 covers them.
 
 ### 9. The colour scale
 
@@ -99,4 +100,16 @@ stay, as they do in that point of view; Aksai Chin, for example, is drawn as par
 Somaliland keep their own outlines but are counted with Cyprus and Somalia, so Northern Cyprus no longer has a page of
 its own (`/country/CYN` goes to `/country/CYP`). The map's caption and the methodology say that the boundaries are
 drawn for illustration and imply no view on the status of any territory or border. `scripts/build_map.mjs` builds the
-map ([DATA.md](DATA.md#the-map)) (18 November 2026; awaiting the owner's confirmation).
+map ([DATA.md](DATA.md#the-map)) (18 November 2026; confirmed by the owner on 19 November 2026).
+
+### 17. Places reported separately
+
+Places that the publishers report separately from the state that claims or governs them (Hong Kong, Macao, Taiwan,
+Kosovo and Palestine) are shown as places of their own, with their own page, and are ranked like any country when
+they have at least 20 of the 34 indicators (decision 12). A publisher's figure for one of them is used as the
+publisher gives it, and never taken from the row of the state that claims or governs it. This differs from decision
+8: territories such as the Faroe Islands, Jersey and Puerto Rico are reported by most publishers under the country
+they belong to, so they stay unranked and open that country, while these places are reported apart and so are
+treated apart. It follows how the publishers report and implies no view on any place's status, as with the map's
+boundaries (decision 16). A place with too few indicators to be ranked still shows every figure that covers it
+([DATA.md](DATA.md#method)) (19 November 2026).
