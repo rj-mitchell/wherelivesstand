@@ -26,11 +26,13 @@ interface Props {
   onRegion: (r: RegionId) => void;
   hrefFor: (iso3: string) => string;
   selectedIso: string | null;
+  /** The weights are the balanced ones, every dimension at 50%. */
+  balanced: boolean;
 }
 
 const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-export const RankingsTable: React.FC<Props> = ({ list, categories, region, onRegion, hrefFor, selectedIso }) => {
+export const RankingsTable: React.FC<Props> = ({ list, categories, region, onRegion, hrefFor, selectedIso, balanced }) => {
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: 'rank', desc: false });
   const [filter, setFilter] = useState('');
 
@@ -90,7 +92,8 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
           </h2>
           <p className="text-sm text-muted mt-1">
             {ranked.length} ranked {ranked.length === 1 ? 'country' : 'countries'}
-            {region !== 'global' ? ` in ${regionName}` : ''}, under your weights. Dimension scores are out of 100. Sort by any column.
+            {region !== 'global' ? ` in ${regionName}` : ''}, under {balanced ? 'the balanced weights' : 'your weights'}. Dimension scores are
+            out of 100. Sort by any column.
           </p>
         </div>
         <div className="flex flex-wrap gap-2 items-end no-print">
@@ -121,7 +124,9 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
         className="mt-4 overflow-x-auto scroll-fade-x table-pinned border-t border-ink"
         onScroll={e => e.currentTarget.toggleAttribute('data-scrolled', Math.abs(e.currentTarget.scrollLeft) > 0)}
       >
-        <table className="w-full text-sm border-collapse min-w-[44rem]">
+        {/* The rows' styles are set once on the table rather than on every cell, which keeps the home page's static
+            HTML (prerender.tsx), with every country in it, small. The selected country's row is tinted. */}
+        <table className="w-full text-sm border-collapse min-w-[44rem] [&_tbody_tr]:border-b [&_tbody_tr]:border-faint [&_tbody_tr]:bg-page [&_tbody_tr:not([data-selected])]:hover:bg-panel [&_tbody_tr[data-selected]]:bg-heather-tint [&_tbody_tr>*]:px-1.5 [&_tbody_tr>*]:py-1.5 [&_tbody_td]:text-right [&_tbody_td]:tabular-nums [&_tbody_th]:text-left [&_tbody_th]:font-normal [&_tbody_a]:text-ink">
           <caption className="visually-hidden">
             Overall and dimension scores for each ranked country{region !== 'global' ? ` in ${regionName}` : ''}, under the current weights
           </caption>
@@ -139,8 +144,8 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
           </thead>
           <tbody>
             {rows.map(c => (
-              <tr key={c.iso3} className={`border-b border-faint ${c.iso3 === selectedIso ? 'bg-heather-tint' : 'bg-page hover:bg-panel'}`}>
-                <td className="table-pin table-pin-rank px-1.5 py-1.5 text-right num text-muted">
+              <tr key={c.iso3} data-selected={c.iso3 === selectedIso || undefined}>
+                <td className="table-pin table-pin-rank text-muted">
                   {region !== 'global' ? (
                     <>
                       {regionRank.get(c.iso3)}
@@ -151,14 +156,12 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
                     c.rank
                   )}
                 </td>
-                <th scope="row" className="table-pin table-pin-name px-1.5 py-1.5 text-left font-normal">
-                  <Link href={hrefFor(c.iso3)} className="text-ink">
-                    {c.name}
-                  </Link>
+                <th scope="row" className="table-pin table-pin-name">
+                  <Link href={hrefFor(c.iso3)}>{c.name}</Link>
                 </th>
-                <td className="px-1.5 py-1.5 text-right num font-semibold">{c.compositeScore?.toFixed(1)}</td>
+                <td className="font-semibold">{c.compositeScore?.toFixed(1)}</td>
                 {categories.map(cat => (
-                  <td key={cat.id} className="px-1.5 py-1.5 text-right num">
+                  <td key={cat.id}>
                     {c.dimensions[cat.id] != null ? (c.dimensions[cat.id] as number).toFixed(1) : <span className="text-muted" title="Not enough data">n/a</span>}
                   </td>
                 ))}
@@ -166,7 +169,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={3 + categories.length} className="px-2 py-6 text-center text-muted">
+                <td colSpan={3 + categories.length} className="px-2! py-6! text-center! text-muted">
                   No ranked country matches “{filter}”.
                 </td>
               </tr>

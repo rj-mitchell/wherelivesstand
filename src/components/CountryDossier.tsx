@@ -1,9 +1,11 @@
 // A country's dossier: its score and rank under the current weights, what lifts and holds back that
-// score, its eight dimensions, every indicator with its value, year, rank and publisher, and key facts.
+// score, its eight dimensions, every indicator with its value, year, rank and publisher, key facts, and the
+// countries either side of it in the rankings. Its title is the page's h1: it is open only on /country/ addresses.
 import React, { useState } from 'react';
 import type { ComputedCountry, IndicatorMeta, MacroCategory, MacroCategoryConfig } from '../types';
 import { Dialog } from './Dialog';
 import { Link } from '../lib/nav';
+import { ordinal } from '../lib/scoring';
 import { Spine } from './family/Spine';
 
 interface Props {
@@ -12,7 +14,14 @@ interface Props {
   categories: MacroCategoryConfig[];
   indicators: IndicatorMeta[];
   macro: Record<MacroCategory, number>;
+  /** The weights are the balanced ones, every dimension at 50%, as a plain link to the page shows them. */
+  balanced: boolean;
+  /** The ranked countries just above and just below it, under the same weights. */
+  neighbours: { above?: ComputedCountry; below?: ComputedCountry };
+  hrefFor: (iso3: string) => string;
+  mapHref: string;
   compareHref: string;
+  still?: boolean;
   onClose: () => void;
 }
 
@@ -28,19 +37,41 @@ const COUNTRIES_SITE = { url: 'https://wherecountriesstand.com', cloth: '#1F5F8B
 // Change this to its country page once that exists (docs/URLS.md).
 const countriesHref = (name: string) => `${COUNTRIES_SITE.url}/?q=${encodeURIComponent(name)}&sources=1`;
 
-export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categories, indicators, macro, compareHref, onClose }) => {
+export const CountryDossier: React.FC<Props> = ({
+  country: c,
+  rankedCount,
+  categories,
+  indicators,
+  macro,
+  balanced,
+  neighbours,
+  hrefFor,
+  mapHref,
+  compareHref,
+  still,
+  onClose,
+}) => {
   const [kind, setKind] = useState<number | 'all'>('all');
   const ranked = c.rank != null && c.compositeScore != null;
   const shown = indicators.filter(i => kind === 'all' || i.tier === kind);
+  const { above, below } = neighbours;
+  const place = (n: ComputedCountry) => (
+    <>
+      <Link href={hrefFor(n.iso3)}>{n.name}</Link>, {ordinal(n.rank!)}
+    </>
+  );
 
   return (
-    <Dialog labelledBy="dossier-title" onClose={onClose} variant="sheet" closeLabel="Close the dossier">
-      <div className="flex-1 overflow-y-auto">
+    <Dialog labelledBy="dossier-title" onClose={onClose} closeHref={mapHref} variant="sheet" closeLabel="Close the dossier" still={still}>
+      {/* data-scroll: the static HTML's scroll position is carried over when the app takes over (main.tsx) */}
+      <div className="flex-1 overflow-y-auto" data-scroll="dossier">
         {/* A div: inside the dialog a header element would be read as a second banner landmark */}
         <div className="px-5 sm:px-7 pt-6 pb-5 bg-panel">
-          <h2 id="dossier-title" tabIndex={-1} className="text-3xl pr-12 outline-hidden">
+          <h1 id="dossier-title" tabIndex={-1} className="text-3xl pr-12 outline-hidden">
             {c.name}
-          </h2>
+            <span className="visually-hidden">: </span>
+            <span className="block mt-1 font-sans text-lg font-normal text-muted">Quality of life</span>
+          </h1>
           <p className="text-sm text-muted mt-1">
             {c.region}, country code <abbr title="ISO 3166 country code" className="no-underline">{c.iso3}</abbr>
           </p>
@@ -56,7 +87,11 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                 <span className="num text-3xl font-semibold">{c.rank}</span>
                 <span className="text-muted"> of {rankedCount}</span>
               </p>
-              <p className="text-sm text-muted basis-full">Under the weights you have set. Change them and these figures change.</p>
+              <p className="text-sm text-muted basis-full">
+                {balanced
+                  ? 'Under the balanced weights, every dimension at 50%, where the site starts. Set your own weights and these figures change.'
+                  : 'Under the weights you have set. Change them and these figures change.'}
+              </p>
             </div>
           ) : (
             <p className="mt-4">
@@ -73,12 +108,12 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
         <div className="px-5 sm:px-7 py-6 space-y-9">
           {ranked && (
             <section aria-labelledby="standouts-title">
-              <h3 id="standouts-title" className="text-xl">
+              <h2 id="standouts-title" className="text-xl">
                 Where it stands out
-              </h3>
+              </h2>
               <p className="text-sm text-muted mt-1">
                 The indicators that lift its score most and hold it back most, given its world rank on each and how much
-                each counts under your weights.
+                each counts under {balanced ? 'the balanced weights' : 'your weights'}.
               </p>
               <div className="mt-3 grid sm:grid-cols-2 gap-x-6 gap-y-4">
                 {[
@@ -86,7 +121,7 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                   { title: 'Holds it back most', facts: c.activeWeaknesses },
                 ].map(group => (
                   <div key={group.title}>
-                    <h4 className="font-sans text-base border-b border-rule pb-1">{group.title}</h4>
+                    <h3 className="font-sans text-base border-b border-rule pb-1">{group.title}</h3>
                     {group.facts.length === 0 ? (
                       <p className="text-sm text-muted mt-2">Nothing under these weights.</p>
                     ) : (
@@ -110,9 +145,9 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
 
           {c.hasData !== false && (
             <section aria-labelledby="dims-title">
-              <h3 id="dims-title" className="text-xl">
+              <h2 id="dims-title" className="text-xl">
                 Dimensions
-              </h3>
+              </h2>
               <table className="mt-3 w-full text-sm border-collapse">
                 <caption className="visually-hidden">Dimension scores, ranks and your weights for {c.name}</caption>
                 <thead>
@@ -132,9 +167,11 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                       <tr key={cat.id} className="border-b border-faint">
                         <th scope="row" className="py-1.5 pr-2 text-left font-normal">{cat.name}</th>
                         <td className="py-1.5 px-2" aria-hidden="true">
-                          <div className="keep-colours h-2 bg-faint">
-                            <div className="h-full bg-heather" style={{ width: `${v ?? 0}%` }} />
-                          </div>
+                          {/* Drawn in SVG rather than sized with a style, which the static HTML could not carry (prerender.tsx) */}
+                          <svg className="keep-colours block w-full h-2" focusable="false">
+                            <rect width="100%" height="100%" className="fill-faint" />
+                            <rect width={`${v ?? 0}%`} height="100%" className="fill-heather" />
+                          </svg>
                         </td>
                         <td className="py-1.5 px-2 text-right num font-semibold">{v != null ? v.toFixed(1) : <span className="text-muted font-normal">n/a</span>}</td>
                         <td className="py-1.5 px-2 text-right num whitespace-nowrap">{r ? `${r.rank} of ${r.total}` : ''}</td>
@@ -152,9 +189,9 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
 
           <section aria-labelledby="inds-title">
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <h3 id="inds-title" className="text-xl">
+              <h2 id="inds-title" className="text-xl">
                 Every indicator
-              </h3>
+              </h2>
               <div className="no-print">
                 <label htmlFor="ind-kind" className="block text-sm font-semibold">
                   Show
@@ -169,7 +206,9 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                 </select>
               </div>
             </div>
-            <table className="mt-3 w-full text-sm border-collapse">
+            {/* The rows' styles are set once on the table rather than on every cell, which keeps each country's static
+                page (prerender.tsx) small */}
+            <table className="mt-3 w-full text-sm border-collapse [&_tbody_tr+tr]:border-b [&_tbody_tr+tr]:border-faint [&_tbody_tr+tr]:align-top [&_tbody_tr+tr>*]:py-2 [&_tbody_th[scope=row]]:pr-2 [&_tbody_th[scope=row]]:text-left [&_tbody_th[scope=row]]:font-normal [&_tbody_td]:pl-2 [&_tbody_td:not(:last-child)]:pr-2 [&_tbody_td]:text-right [&_tbody_td]:tabular-nums [&_tbody_td:last-child]:whitespace-nowrap">
               <caption className="visually-hidden">Each indicator for {c.name}: its published value and year, its score out of 100, and its world rank</caption>
               <thead>
                 <tr className="border-b border-ink text-left">
@@ -192,16 +231,16 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
                     {rows.map(ind => {
                       const v = c.indicators[ind.id];
                       return (
-                        <tr key={ind.id} className="border-b border-faint align-top">
-                          <th scope="row" className="py-2 pr-2 text-left font-normal">
+                        <tr key={ind.id}>
+                          <th scope="row">
                             <span className="font-semibold">{ind.name}</span>
                             <span className="block text-muted">
                               {ind.sourceUrl ? <a href={ind.sourceUrl}>{ind.source}</a> : ind.source}
                             </span>
                           </th>
-                          <td className="py-2 px-2 text-right num">{v?.formatted ?? <span className="text-muted">No figure</span>}</td>
-                          <td className="py-2 px-2 text-right num font-semibold">{v?.score != null ? Math.round(v.score) : ''}</td>
-                          <td className="py-2 pl-2 text-right num whitespace-nowrap">{v?.rank != null ? `${v.rank} of ${v.total}` : ''}</td>
+                          <td>{v?.formatted ?? <span className="text-muted">No figure</span>}</td>
+                          <td className="font-semibold">{v?.score != null ? Math.round(v.score) : ''}</td>
+                          <td>{v?.rank != null ? `${v.rank} of ${v.total}` : ''}</td>
                         </tr>
                       );
                     })}
@@ -218,9 +257,9 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
 
           {c.rawFacts?.keyFacts && c.rawFacts.keyFacts.length > 0 && (
             <section aria-labelledby="facts-title">
-              <h3 id="facts-title" className="text-xl">
+              <h2 id="facts-title" className="text-xl">
                 Selected figures
-              </h3>
+              </h2>
               <dl className="mt-3 grid grid-cols-2 gap-x-6 text-sm">
                 {c.rawFacts.keyFacts.map(f => (
                   <div key={f.label} className="py-1.5 border-b border-faint">
@@ -237,10 +276,34 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
           )}
 
           <section aria-labelledby="more-title" className="border-t border-rule pt-5 no-print">
-            <h3 id="more-title" className="text-lg">
+            <h2 id="more-title" className="text-lg">
               More on {c.name}
-            </h3>
+            </h2>
             <ul className="mt-2 space-y-2 text-sm">
+              {ranked ? (
+                (above || below) && (
+                  <li>
+                    {above && below ? (
+                      <>
+                        Either side of it in the rankings: {place(above)}, and {place(below)}.
+                      </>
+                    ) : above ? (
+                      <>Just above it in the rankings: {place(above)}.</>
+                    ) : (
+                      <>Just below it in the rankings: {place(below!)}.</>
+                    )}
+                  </li>
+                )
+              ) : (
+                <li>
+                  It has no place in <Link href={mapHref}>the rankings</Link> of {rankedCount} countries, which need at
+                  least 20 of the {indicators.length} indicators each.
+                </li>
+              )}
+              <li>
+                <Link href="/method">Methodology</Link>: how the scores are worked out, and the publisher, years and
+                coverage of every indicator.
+              </li>
               <li>
                 <Link href="/behind-the-rankings">Behind the rankings</Link>: the limits of these indices, and why some
                 results look wrong.

@@ -23,7 +23,7 @@ export const MapLegend: React.FC<Props> = ({ scale, mode, regionName, hoverScore
           Overall score{scale.relative ? `, ${regionName}'s own range (${lo.toFixed(1)} to ${hi.toFixed(1)})` : ' under your weights, 0 to 100'}
         </p>
         {/* keep-colours: in forced colours the map keeps its shades, so the legend keeps them too */}
-        <div className="keep-colours relative h-3 border border-rule" style={{ background: legendGradient(mode) }}>
+        <div className="legend-scale keep-colours relative h-3 border border-rule" style={{ background: legendGradient(mode) }}>
           {hoverScore != null && (
             <span className="absolute -top-1 -bottom-1 w-[3px] -ml-[1.5px] bg-ink outline outline-2 outline-panel" style={{ left: pct(hoverScore) }} aria-hidden="true" />
           )}

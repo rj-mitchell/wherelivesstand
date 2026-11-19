@@ -1,20 +1,27 @@
 // A modal dialog: the dossier slides in from the right, the comparison sits in the middle. Escape and
 // the backdrop close it, Tab stays inside it, the page behind is inert (out of reach of the keyboard, a
 // screen reader's virtual cursor and the pointer), and focus goes back where it was when it closes.
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon';
+import { Prerendering } from '../lib/prerendering';
 
 interface Props {
   labelledBy: string;
   onClose: () => void;
+  /** Where closing leads: the close button is a link there in the static HTML (src/prerender.tsx). */
+  closeHref: string;
   variant: 'sheet' | 'centre';
   closeLabel: string;
+  /** No slide-in: the dialog was open when the page loaded, and its static HTML is already in place. */
+  still?: boolean;
   children: React.ReactNode;
 }
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea, [tabindex]:not([tabindex="-1"])';
 
-export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLabel, children }) => {
+export const Dialog: React.FC<Props> = ({ labelledBy, onClose, closeHref, variant, closeLabel, still = false, children }) => {
+  const prerendering = useContext(Prerendering);
+  const [slideIn] = useState(!still);
   const outer = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -70,16 +77,24 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, variant, closeLab
 
   const frame =
     variant === 'sheet'
-      ? 'fixed inset-y-0 right-0 w-full sm:w-[36rem] lg:w-[40rem] border-l border-rule sheet-in'
+      ? `fixed inset-y-0 right-0 w-full sm:w-[36rem] lg:w-[40rem] border-l border-rule${slideIn ? ' sheet-in' : ''}`
       : 'fixed inset-0 sm:inset-x-4 sm:inset-y-6 md:inset-y-10 mx-auto max-w-5xl sm:border border-rule';
+
+  const closeClass = 'absolute top-3 right-3 z-10 btn w-11 min-h-[44px] px-0';
 
   return (
     <div ref={outer} className="fixed inset-0 z-50">
       <div className="absolute inset-0 backdrop" onClick={onClose} aria-hidden="true" />
       <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`${frame} bg-page flex flex-col outline-hidden`}>
-        <button type="button" onClick={onClose} className="absolute top-3 right-3 z-10 btn w-11 min-h-[44px] px-0" aria-label={closeLabel} title={`${closeLabel} (Escape)`}>
-          <Icon name="close" className="w-5 h-5" />
-        </button>
+        {prerendering ? (
+          <a href={closeHref} className={closeClass} aria-label={closeLabel} title={closeLabel}>
+            <Icon name="close" className="w-5 h-5" />
+          </a>
+        ) : (
+          <button type="button" onClick={onClose} className={closeClass} aria-label={closeLabel} title={`${closeLabel} (Escape)`}>
+            <Icon name="close" className="w-5 h-5" />
+          </button>
+        )}
         {children}
       </div>
     </div>

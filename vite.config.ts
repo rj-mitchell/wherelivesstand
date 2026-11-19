@@ -21,9 +21,12 @@ function familyKit(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   // Absolute asset paths: pages such as /country/NOR must still find /assets/.
   base: '/',
   plugins: [react(), tailwindcss(), familyKit()],
   server: { port: 3000 },
-});
+  // `vite build --ssr src/prerender.tsx` builds the static HTML renderer for scripts/postbuild.mjs into dist-ssr/,
+  // outside dist/ so that it is not deployed
+  build: isSsrBuild ? { outDir: 'dist-ssr', copyPublicDir: false } : {},
+}));

@@ -1,8 +1,10 @@
 // The app: holds the view, the open dossier or comparison, the weights and the region, and keeps them
-// in the address bar (src/lib/url.ts, docs/URLS.md) so that every view can be linked to and Back works.
+// in the address bar (src/lib/url.ts, docs/URLS.md) so that every view can be linked to and Back works. The
+// build also renders it to static HTML for each address (src/prerender.tsx), which it replaces once loaded.
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CountryData, IndicatorMeta, MacroCategory, MacroCategoryConfig } from './types';
 import { computeRankings, defaultMacroWeights } from './lib/scoring';
+import { matchingPreset } from './data/presets';
 import { parseUrl, buildUrl, type UrlState, type View } from './lib/url';
 import { worldScale, regionScale } from './lib/colour';
 import { isCountryInRegion, type RegionId } from './data/regions';
@@ -35,7 +37,16 @@ const PAGE_TITLES: Record<Exclude<View, 'map'>, string> = {
   'not-found': 'Page not found',
 };
 
-export default function App({ countries }: { countries: Record<string, CountryData> }) {
+interface Props {
+  countries: Record<string, CountryData>;
+  /** The address to show, when rendering at build time; in the browser, the address bar's. */
+  location?: { pathname: string; search: string };
+  /** At build time, for a dossier or the comparison: the map's frame without the weights and the table behind
+      it, which the app fills in, so that the page stays small. */
+  lean?: boolean;
+}
+
+export default function App({ countries, location, lean = false }: Props) {
   const parseOpts = useMemo(
     () => ({ knownIso: new Set(Object.values(countries).filter(c => !c.isDependency).map(c => c.iso3)), indicatorIds: new Set(indicators.map(i => i.id)) }),
     [countries],
@@ -43,6 +54,7 @@ export default function App({ countries }: { countries: Record<string, CountryDa
   const read = useCallback(() => parseUrl(window.location.pathname, window.location.search, parseOpts), [parseOpts]);
 
   const [s, setS] = useState<UrlState>(() => {
+    if (location) return parseUrl(location.pathname, location.search, parseOpts);
     const first = read();
     if (first.canonical) history.replaceState(history.state, '', first.canonical + window.location.hash);
     return first;
@@ -125,6 +137,17 @@ export default function App({ countries }: { countries: Record<string, CountryDa
 
   const country = s.view === 'map' && s.country ? byIso[s.country] : null;
   const compare = s.view === 'map' && s.compare ? [byIso[s.compare[0]], byIso[s.compare[1]]] : null;
+  const balanced = !s.fine && matchingPreset(s.macro)?.id === 'balanced';
+  // An open dossier's or comparison's title is the page's h1, and the map's heading steps down to h2
+  const MapTitle = country || compare ? 'h2' : 'h1';
+
+  // The dossier or comparison open when the page loaded doesn't slide in: its static HTML was already there
+  const overlay = s.view === 'map' ? (s.compare ? 'compare' : s.country) : null;
+  const firstOverlay = useRef(overlay);
+  useEffect(() => {
+    if (overlay !== firstOverlay.current) firstOverlay.current = null;
+  }, [overlay]);
+  const still = overlay !== null && overlay === firstOverlay.current;
 
   useEffect(() => {
     const page = s.view !== 'map' ? PAGE_TITLES[s.view] : compare ? `${compare[0]?.name} and ${compare[1]?.name} compared` : country ? country.name : null;
@@ -187,9 +210,9 @@ export default function App({ countries }: { countries: Record<string, CountryDa
         {s.view === 'map' && (
           <div className="max-w-page mx-auto px-4 md:px-8 pt-3 md:pt-4">
             {/* The map comes first (docs/DECISIONS.md): the page's heading is for screen readers and the outline */}
-            <h1 id="map-title" tabIndex={-1} className="visually-hidden">
+            <MapTitle id="map-title" tabIndex={-1} className="visually-hidden">
               {TAGLINE}: the map and rankings
-            </h1>
+            </MapTitle>
             {/* The map comes first in the page, as on screen on a phone; at desktop widths the grid puts the weights to
                 its left (docs/DECISIONS.md) */}
             <div className="grid lg:grid-cols-[minmax(17rem,22rem)_1fr] gap-x-10 gap-y-8 items-start">
@@ -217,9 +240,19 @@ export default function App({ countries }: { countries: Record<string, CountryDa
                   </button>
                   <span role="status" className="text-ink">{copied ? 'Link copied.' : ''}</span>
                 </p>
-                <div className="mt-12">
-                  <RankingsTable list={list} categories={categories} region={s.region} onRegion={setRegion} hrefFor={hrefFor} selectedIso={country?.iso3 ?? null} />
-                </div>
+                {!lean && (
+                  <div className="mt-12">
+                    <RankingsTable
+                      list={list}
+                      categories={categories}
+                      region={s.region}
+                      onRegion={setRegion}
+                      hrefFor={hrefFor}
+                      selectedIso={country?.iso3 ?? null}
+                      balanced={balanced}
+                    />
+                  </div>
+                )}
               </div>
               <div
                 ref={panelRef}
@@ -228,16 +261,18 @@ export default function App({ countries }: { countries: Record<string, CountryDa
                 // leave room for a focused control's ring, which the scrolling would otherwise cut off
                 className="lg:col-start-1 lg:row-start-1 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-2 lg:pl-3 lg:-ml-3 lg:pt-1.5 lg:-mt-1.5 flex flex-col"
               >
-                <WeightsPanel
-                  categories={categories}
-                  indicators={indicators}
-                  macro={s.macro}
-                  sub={s.sub}
-                  onMacro={(cat: MacroCategory, v: number) => update({ macro: { ...s.macro, [cat]: v } })}
-                  onPreset={macro => update({ macro })}
-                  onSub={(id, v) => update({ sub: { ...s.sub, [id]: v }, fine: true })}
-                  onReset={() => update({ macro: defaultMacroWeights(), sub: {}, fine: false })}
-                />
+                {!lean && (
+                  <WeightsPanel
+                    categories={categories}
+                    indicators={indicators}
+                    macro={s.macro}
+                    sub={s.sub}
+                    onMacro={(cat: MacroCategory, v: number) => update({ macro: { ...s.macro, [cat]: v } })}
+                    onPreset={macro => update({ macro })}
+                    onSub={(id, v) => update({ sub: { ...s.sub, [id]: v }, fine: true })}
+                    onReset={() => update({ macro: defaultMacroWeights(), sub: {}, fine: false })}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -262,7 +297,15 @@ export default function App({ countries }: { countries: Record<string, CountryDa
           categories={categories}
           indicators={indicators}
           macro={s.macro}
+          balanced={balanced}
+          neighbours={{
+            above: country.rank != null && country.rank > 1 ? list[country.rank - 2] : undefined,
+            below: country.rank != null && list[country.rank]?.rank != null ? list[country.rank] : undefined,
+          }}
+          hrefFor={hrefFor}
+          mapHref={mapHref}
           compareHref={compareHref(country.iso3)}
+          still={still}
           onClose={closeOverlay}
         />
       )}
@@ -273,6 +316,9 @@ export default function App({ countries }: { countries: Record<string, CountryDa
           choices={list}
           categories={categories}
           indicators={indicators}
+          balanced={balanced}
+          closeHref={mapHref}
+          still={still}
           onChange={(a, b) => navigate(buildUrl({ ...mapState, compare: [a, b] }), { replace: true })}
           onClose={closeOverlay}
         />

@@ -3,14 +3,16 @@
 // Serves dist/ the way the Cloudflare Worker does (wrangler.jsonc): /about from about.html, /country/NOR from
 // country/NOR.html, dist/404.html with status 404 for anything else, and the headers in dist/_headers, so the
 // content security policy is the one the live site sends. Then, in Chromium, opens each page below at 1280 and
-// 390 pixels wide, in light and dark mode, and:
+// 390 pixels wide, in light and dark mode, both as the app and as the static HTML each page carries until the app
+// has loaded (with the app's script replaced by an empty one), and:
 //
 // - runs axe-core against WCAG 2.2 A and AA, failing on any serious or critical violation (moderate and minor
 //   ones are listed but do not fail the run);
 // - fails on a console error, an uncaught exception, a content-security-policy violation or a request to any
 //   other host;
 // - checks a few things axe cannot: an open dialog leaves the rest of the page inert; on the map, no country
-//   too small to see (under 2 pixels each way) is a Tab stop, and the map comes before the weights in the page.
+//   too small to see (under 2 pixels each way) is a Tab stop, and the map comes before the weights in the page (in
+//   the app only).
 //
 //   npm run check:a11y                    (after npm run build; needs `npx playwright install chromium`)
 //   CHROME_PATH=/usr/bin/google-chrome node scripts/a11y.mjs     to use an installed Chrome instead
@@ -105,74 +107,78 @@ let warnings = 0;
 
 for (const size of SIZES) {
   for (const scheme of SCHEMES) {
-    const { name: sizeName, ...options } = size;
-    const context = await browser.newContext({ ...options, colorScheme: scheme, reducedMotion: 'reduce' });
-    for (const p of PAGES) {
-      const label = `${p.name} ${sizeName} ${scheme}`;
-      const page = await context.newPage();
-      const problems = [];
-      page.on('console', m => {
-        if (m.type() === 'error') problems.push(`console error: ${m.text()}`);
-      });
-      page.on('pageerror', e => problems.push(`uncaught: ${e.message}`));
-      await page.route('**/*', route => {
-        const url = new URL(route.request().url());
-        if (url.origin === origin || url.protocol === 'data:') return route.continue();
-        problems.push(`request to another host: ${url.href}`);
-        return route.abort();
-      });
-      await page.addInitScript(() => {
-        document.addEventListener('securitypolicyviolation', e => {
-          console.error(`CSP violation: ${e.violatedDirective} ${e.blockedURI}`);
+    for (const js of [true, false]) {
+      const { name: sizeName, ...options } = size;
+      const context = await browser.newContext({ ...options, colorScheme: scheme, reducedMotion: 'reduce' });
+      for (const p of PAGES) {
+        const label = `${p.name} ${sizeName} ${scheme}${js ? '' : ' static'}`;
+        const page = await context.newPage();
+        const problems = [];
+        page.on('console', m => {
+          if (m.type() === 'error') problems.push(`console error: ${m.text()}`);
         });
-      });
+        page.on('pageerror', e => problems.push(`uncaught: ${e.message}`));
+        await page.route('**/*', route => {
+          const url = new URL(route.request().url());
+          // For the static HTML, the app never starts
+          if (!js && url.origin === origin && /^\/assets\/.*\.js$/.test(url.pathname)) return route.fulfill({ contentType: 'text/javascript', body: '' });
+          if (url.origin === origin || url.protocol === 'data:') return route.continue();
+          problems.push(`request to another host: ${url.href}`);
+          return route.abort();
+        });
+        await page.addInitScript(() => {
+          document.addEventListener('securitypolicyviolation', e => {
+            console.error(`CSP violation: ${e.violatedDirective} ${e.blockedURI}`);
+          });
+        });
 
-      const response = await page.goto(origin + p.path, { waitUntil: 'networkidle' });
-      if (response?.status() !== 200) problems.push(`status ${response?.status()}`);
-      await page.locator(p.ready).first().waitFor({ timeout: 15000 });
-      await page.waitForTimeout(300);
+        const response = await page.goto(origin + p.path, { waitUntil: 'networkidle' });
+        if (response?.status() !== 200) problems.push(`status ${response?.status()}`);
+        await page.locator(js ? p.ready : 'h1').first().waitFor({ state: js ? 'visible' : 'attached', timeout: 15000 });
+        await page.waitForTimeout(300);
 
-      const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
-      for (const v of results.violations) {
-        const where = v.nodes.slice(0, 3).map(n => n.target.join(' ')).join('; ');
-        const line = `${v.impact} ${v.id}: ${v.help} (${v.nodes.length}: ${where})`;
-        if (FAIL_ON.has(v.impact)) problems.push(line);
-        else {
-          warnings++;
-          console.log(`  note  ${label}: ${line}`);
+        const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+        for (const v of results.violations) {
+          const where = v.nodes.slice(0, 3).map(n => n.target.join(' ')).join('; ');
+          const line = `${v.impact} ${v.id}: ${v.help} (${v.nodes.length}: ${where})`;
+          if (FAIL_ON.has(v.impact)) problems.push(line);
+          else {
+            warnings++;
+            console.log(`  note  ${label}: ${line}`);
+          }
         }
-      }
-      problems.push(
-        ...(await page.evaluate(() => {
-          const found = [];
-          const dialog = document.querySelector('[role="dialog"]');
-          if (dialog) {
-            const awake = [...document.getElementById('root').children].filter(el => !el.contains(dialog) && !el.inert);
-            if (awake.length) found.push(`not inert behind the dialog: ${awake.map(el => el.tagName.toLowerCase()).join(', ')}`);
-          }
-          const frame = document.getElementById('map-frame');
-          if (frame && !dialog) {
-            const tiny = [...frame.querySelectorAll('path[tabindex="0"]')].filter(el => {
-              const r = el.getBoundingClientRect();
-              return Math.max(r.width, r.height) < 2;
-            });
-            if (tiny.length) found.push(`Tab stops too small to see on the map: ${tiny.map(el => el.getAttribute('aria-label')?.split(':')[0]).join(', ')}`);
-            const weights = document.getElementById('weights');
-            if (weights && !(frame.compareDocumentPosition(weights) & Node.DOCUMENT_POSITION_FOLLOWING)) found.push('the weights come before the map in the page');
-          }
-          return found;
-        })),
-      );
-      if (shots) await page.screenshot({ path: join(shots, `${p.name}-${sizeName}-${scheme}.png`) });
+        if (js) problems.push(
+          ...(await page.evaluate(() => {
+            const found = [];
+            const dialog = document.querySelector('[role="dialog"]');
+            if (dialog) {
+              const awake = [...document.getElementById('root').children].filter(el => !el.contains(dialog) && !el.inert);
+              if (awake.length) found.push(`not inert behind the dialog: ${awake.map(el => el.tagName.toLowerCase()).join(', ')}`);
+            }
+            const frame = document.getElementById('map-frame');
+            if (frame && !dialog) {
+              const tiny = [...frame.querySelectorAll('path[tabindex="0"]')].filter(el => {
+                const r = el.getBoundingClientRect();
+                return Math.max(r.width, r.height) < 2;
+              });
+              if (tiny.length) found.push(`Tab stops too small to see on the map: ${tiny.map(el => el.getAttribute('aria-label')?.split(':')[0]).join(', ')}`);
+              const weights = document.getElementById('weights');
+              if (weights && !(frame.compareDocumentPosition(weights) & Node.DOCUMENT_POSITION_FOLLOWING)) found.push('the weights come before the map in the page');
+            }
+            return found;
+          })),
+        );
+        if (shots) await page.screenshot({ path: join(shots, `${p.name}-${sizeName}-${scheme}${js ? '' : '-static'}.png`) });
 
-      if (problems.length) {
-        failures += problems.length;
-        console.log(`FAIL  ${label}`);
-        for (const line of problems) console.log(`      ${line}`);
-      } else console.log(`ok    ${label}`);
-      await page.close();
+        if (problems.length) {
+          failures += problems.length;
+          console.log(`FAIL  ${label}`);
+          for (const line of problems) console.log(`      ${line}`);
+        } else console.log(`ok    ${label}`);
+        await page.close();
+      }
+      await context.close();
     }
-    await context.close();
   }
 }
 

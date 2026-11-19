@@ -16,7 +16,8 @@ independent and is not affiliated with or endorsed by any of the publishers whos
 Beta, as of 17 November 2026: the site is live, but figures and methods may still change. Known limitations:
 
 - The publishers' terms for the files in `data/sources/` are still being checked.
-- The scores need JavaScript; without it, a page shows only its title and a link to the sources.
+- Choosing weights needs JavaScript; without it, a page shows its figures under the balanced weights, and the map
+  is blank.
 - Small territories are hard to pick out on the map, but they are all in the table and the search.
 - Data years differ between indicators (2015 to 2026), and some figures are modelled estimates.
 
@@ -38,7 +39,9 @@ each indicator from 0 to 100, and writes `src/data/*.json` and [SOURCES.md](SOUR
 
 The site is a static React app (Vite, TypeScript and Tailwind CSS). The browser does the weighting and ranking
 (`src/lib/scoring.ts`). After the Vite build, `scripts/postbuild.mjs` writes an HTML file for every address, a 404
-page and a sitemap. Cloudflare Workers serves the result as static assets, and every push to `main` deploys it. The
+page and a sitemap. Each page carries the app's own HTML for that address under the balanced weights, rendered at
+build time (`src/prerender.tsx`), so that search engines and readers without JavaScript get its text and figures;
+the app replaces it, in the same layout, once it has loaded. Cloudflare Workers serves the result as static assets, and every push to `main` deploys it. The
 header, footer, typefaces and icons come from the Where They Stand family kit, copied into `public/family/`.
 
 ## Quick start

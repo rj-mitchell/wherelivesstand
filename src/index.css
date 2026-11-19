@@ -635,7 +635,27 @@ tbody .table-pin {
   color: var(--rule);
 }
 
-/* Shown in the HTML until the app has loaded its figures: the header band, then the status */
+/* The static HTML each page carries until the app has loaded (scripts/postbuild.mjs): it cannot carry inline
+   styles (the content security policy, public/_headers), so the map legend's scale, which needs them, is hidden
+   until the app draws it. A problem loading the figures is reported in a bar at the foot of the window. */
+#root[data-prerendered] :is(.legend-scale, .legend-ticks) {
+  visibility: hidden;
+}
+.boot-status:empty {
+  display: none;
+}
+.boot-status {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 60;
+  margin: 0;
+  padding: 12px var(--wts-gutter);
+  background: var(--ink);
+  color: var(--page);
+}
+
+/* Shown in the HTML of `npm run dev` until the app has loaded its figures: the header band, then the status */
 .boot__band {
   background: var(--band);
   color: var(--on-band);
