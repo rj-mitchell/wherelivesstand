@@ -114,16 +114,21 @@ export const WeightsPanel: React.FC<Props> = ({ categories, indicators, macro, s
           return (
             <div key={cat.id} className="border-b border-faint">
               <Dial id={`w-${cat.id}`} label={cat.name} value={macro[cat.id]} onChange={v => onMacro(cat.id, v)} before={toggle} />
+              {/* Its contents only while open, which keeps the static HTML (prerender.tsx) small */}
               <div id={`w-${cat.id}-more`} hidden={!expanded} className="pb-2">
-                <p className="text-sm text-muted">{cat.description}</p>
-                {/* a dial for each indicator: moving one weights the indicators separately (App.tsx) */}
-                <ul className="mt-1.5 space-y-0.5">
-                  {inCat.map(ind => (
-                    <li key={ind.id} className="pl-5" title={ind.source}>
-                      <Dial id={`s-${ind.id}`} small label={ind.name} value={sub[ind.id] ?? 50} onChange={v => onSub(ind.id, v)} />
-                    </li>
-                  ))}
-                </ul>
+                {expanded && (
+                  <>
+                    <p className="text-sm text-muted">{cat.description}</p>
+                    {/* a dial for each indicator: moving one weights the indicators separately (App.tsx) */}
+                    <ul className="mt-1.5 space-y-0.5">
+                      {inCat.map(ind => (
+                        <li key={ind.id} className="pl-5" title={ind.source}>
+                          <Dial id={`s-${ind.id}`} small label={ind.name} value={sub[ind.id] ?? 50} onChange={v => onSub(ind.id, v)} />
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </div>
           );

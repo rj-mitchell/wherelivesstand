@@ -1,5 +1,6 @@
 // Two countries side by side: overall, by dimension and by indicator. A bar runs from the centre towards
-// whichever country leads, as far as its lead; the leader is also named in text.
+// whichever country leads, as far as its lead; the leader is also named in text. Its title is the page's h1: it
+// is open only on /compare.
 import React from 'react';
 import type { ComputedCountry, IndicatorMeta, MacroCategoryConfig } from '../types';
 import { Dialog } from './Dialog';
@@ -11,6 +12,10 @@ interface Props {
   choices: ComputedCountry[];
   categories: MacroCategoryConfig[];
   indicators: IndicatorMeta[];
+  /** The weights are the balanced ones, every dimension at 50%. */
+  balanced: boolean;
+  closeHref: string;
+  still?: boolean;
   onChange: (a: string, b: string) => void;
   onClose: () => void;
 }
@@ -25,10 +30,14 @@ const Lead: React.FC<{ a: number | null | undefined; b: number | null | undefine
   const width = Math.min(50, (Math.abs(d) / 50) * 50);
   return (
     <div>
-      <div className="keep-colours relative h-2.5 bg-faint" aria-hidden="true">
-        <span className="absolute inset-y-[-3px] left-1/2 w-px bg-ink" />
-        {d !== 0 && <span className={`absolute inset-y-0 ${d > 0 ? 'right-1/2 bg-compare-a' : 'left-1/2 bg-compare-b'}`} style={{ width: `${Math.max(width, 0.8)}%` }} />}
-      </div>
+      {/* Drawn in SVG rather than sized with a style, which the static HTML could not carry (prerender.tsx) */}
+      <svg className="keep-colours block w-full h-2.5 overflow-visible" aria-hidden="true" focusable="false">
+        <rect width="100%" height="100%" className="fill-faint" />
+        {d !== 0 && (
+          <rect x={d > 0 ? `${50 - Math.max(width, 0.8)}%` : '50%'} width={`${Math.max(width, 0.8)}%`} height="100%" className={d > 0 ? 'fill-compare-a' : 'fill-compare-b'} />
+        )}
+        <rect x="50%" y="-3" width="1" height="16" className="fill-ink" />
+      </svg>
       <p className={`text-xs mt-0.5 num ${d > 0 ? 'text-left' : d < 0 ? 'text-right' : 'text-center'}`}>
         {d === 0 ? 'Level' : `${d > 0 ? nameA : nameB} +${Math.abs(d).toFixed(1)}`}
       </p>
@@ -36,7 +45,8 @@ const Lead: React.FC<{ a: number | null | undefined; b: number | null | undefine
   );
 };
 
-export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indicators, onChange, onClose }) => {
+export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indicators, balanced, closeHref, still, onChange, onClose }) => {
+  const weights = balanced ? 'the balanced weights' : 'your weights';
   const both = a.compositeScore != null && b.compositeScore != null;
   const diff = both ? Math.round((a.compositeScore! - b.compositeScore!) * 10) / 10 : 0;
   let aheadA = 0;
@@ -84,13 +94,14 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
   );
 
   return (
-    <Dialog labelledBy="compare-title" onClose={onClose} variant="centre" closeLabel="Close the comparison">
-      <div className="flex-1 overflow-y-auto">
+    <Dialog labelledBy="compare-title" onClose={onClose} closeHref={closeHref} variant="centre" closeLabel="Close the comparison" still={still}>
+      {/* data-scroll: the static HTML's scroll position is carried over when the app takes over (main.tsx) */}
+      <div className="flex-1 overflow-y-auto" data-scroll="compare">
         {/* A div: inside the dialog a header element would be read as a second banner landmark */}
         <div className="px-5 sm:px-7 pt-6 pb-5 bg-panel">
-          <h2 id="compare-title" tabIndex={-1} className="text-2xl sm:text-3xl pr-12 outline-hidden">
+          <h1 id="compare-title" tabIndex={-1} className="text-2xl sm:text-3xl pr-12 outline-hidden">
             {a.name} and {b.name} compared
-          </h2>
+          </h1>
           <div className="mt-4 flex flex-wrap items-end gap-3 no-print">
             {picker('a', a.iso3)}
             <button type="button" className="btn" onClick={() => onChange(b.iso3, a.iso3)} aria-label="Swap the two countries">
@@ -102,8 +113,8 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
           <p className="mt-4 text-lg">
             {both
               ? diff === 0
-                ? `${a.name} and ${b.name} have the same overall score under your weights.`
-                : `${diff > 0 ? a.name : b.name} leads by ${Math.abs(diff).toFixed(1)} points overall under your weights (${fmt(a.compositeScore)} to ${fmt(b.compositeScore)}).`
+                ? `${a.name} and ${b.name} have the same overall score under ${weights}.`
+                : `${diff > 0 ? a.name : b.name} leads by ${Math.abs(diff).toFixed(1)} points overall under ${weights} (${fmt(a.compositeScore)} to ${fmt(b.compositeScore)}).`
               : `${a.compositeScore == null ? a.name : b.name} is not ranked, so there is no overall comparison.`}
           </p>
           <p className="text-sm text-muted mt-1">
@@ -114,9 +125,9 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
 
         <div className="px-5 sm:px-7 py-6 space-y-8">
           <section aria-labelledby="cmp-dims">
-            <h3 id="cmp-dims" className="text-xl">
+            <h2 id="cmp-dims" className="text-xl">
               By dimension
-            </h3>
+            </h2>
             <div className="overflow-x-auto">
               <p className="sm:hidden mt-3 flex justify-between text-sm font-semibold border-b border-ink pb-1" aria-hidden="true">
                 <span className="flex items-center gap-1.5"><span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
@@ -141,9 +152,9 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
           </section>
 
           <section aria-labelledby="cmp-inds">
-            <h3 id="cmp-inds" className="text-xl">
+            <h2 id="cmp-inds" className="text-xl">
               By indicator
-            </h3>
+            </h2>
             <p className="text-sm text-muted mt-1">Scores out of 100, with each publisher's own figure beneath.</p>
             <div className="overflow-x-auto">
               <p className="sm:hidden mt-3 flex justify-between text-sm font-semibold border-b border-ink pb-1" aria-hidden="true">

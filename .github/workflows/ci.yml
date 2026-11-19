@@ -35,6 +35,8 @@ jobs:
                    family/VERSION; do
             test -s "dist/$f" || { echo "dist/$f is missing"; exit 1; }
           done
+      - name: Each page's static HTML, the sitemap, the redirects and the preloads
+        run: npm run test:build
       - name: Install Chromium for the accessibility check
         run: npx playwright install --with-deps chromium
       - name: Accessibility (axe-core, WCAG 2.2 AA) and smoke check of the build

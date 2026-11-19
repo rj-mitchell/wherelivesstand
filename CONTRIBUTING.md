@@ -18,6 +18,7 @@ npm run typecheck     # TypeScript
 npm test              # scoring, addresses, the mark, the map geometry, and the figures quoted on Behind the rankings
 npm run check:family  # the family kit copy in public/family/ is present and unedited
 npm run build         # writes the site to dist/
+npm run test:build    # each page's static HTML and figures, the sitemap and the redirects in dist/
 npm run check:a11y    # accessibility and smoke checks of dist/ in Chromium
 ```
 

@@ -5,14 +5,19 @@ What CI checks, what the maintainer checks before merging, and how the site reac
 ## Continuous integration
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull request. It runs `npm ci`, the type-check,
-the tests, `npm run check:family` and the build, checks that the build wrote every page, and then runs
-`npm run check:a11y`. It does not deploy anything.
+the tests, `npm run check:family` and the build, checks that the build wrote every page, runs `npm run test:build`
+and then `npm run check:a11y`. It does not deploy anything.
+
+`npm run test:build` (`test/build/`) checks `dist/`: that each country's page carries its name as its one h1 and
+the score, rank, standouts, neighbours and indicator values the app works out for the balanced weights; that the home
+page links to every country; and that no page has an inline style, which the content security policy would block.
 
 `npm run check:a11y` (`scripts/a11y.mjs`) serves `dist/` as the Worker does, with its 404 page and the headers in
 `public/_headers`. It opens the home page, Norway's page, the comparison, Behind the rankings, About and Press in
-Chromium, at 1280 and 390 pixels wide, in light and dark mode. It runs axe-core against WCAG 2.2 A and AA and fails
-on any serious or critical finding, and on any console error, content security policy violation or request to
-another host. `--shots <dir>` also saves a screenshot of each page.
+Chromium, at 1280 and 390 pixels wide, in light and dark mode, both as the app and as the static HTML
+each page carries until the app has loaded (with the app's script left out). It runs axe-core against WCAG 2.2 A and AA and fails on any serious
+or critical finding, and on any console error, content security policy violation or request to another host.
+`--shots <dir>` also saves a screenshot of each page.
 
 `npm run check:family` checks the family kit copy in `public/family/` on its own: that `VERSION` is present, built
 for this site, from the kit version the build expects (`KIT` in `scripts/check-family.mjs`), and that no file has been
@@ -26,7 +31,7 @@ beside it:
 
 ```bash
 node ../wheretheystand-charity/family/kit/sync.mjs --site lives --out public/family --check
-npm run typecheck && npm test && npm run check:family && npm run build && npm run check:a11y
+npm run typecheck && npm test && npm run check:family && npm run build && npm run test:build && npm run check:a11y
 npx wrangler dev   # serves dist/ as Cloudflare does; look at the changed pages, light and dark, desktop and phone
 ```
 

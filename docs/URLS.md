@@ -68,3 +68,8 @@ to the map restores them.
 `country/NOR.html` and so on), plus `404.html`, `_redirects` and `sitemap.xml`. `wrangler.jsonc` serves
 `404.html` with status 404 for anything without a file (`not_found_handling: "404-page"`), instead of the app with
 status 200.
+
+Each file carries that address's view as static HTML, rendered from the app at build time (`src/prerender.tsx`) for
+the balanced weights and the whole world, which the app replaces once it has loaded. The server ignores the query,
+so `/country/FRA?preset=young-family` first shows France's figures under the balanced weights, saying so, and then
+the Young family figures. In the same way `/compare?a=ESP&b=NOR` first shows the comparison a bare `/compare` opens.

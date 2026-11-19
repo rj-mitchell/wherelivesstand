@@ -31,6 +31,8 @@
   </head>
   <body class="wts-headings">
     <div id="root">
+      <!-- In the build, scripts/postbuild.mjs puts each page's static HTML here, in place of this loading screen -->
+      <!-- app -->
       <div class="boot">
         <div class="boot__band">
           <div class="boot__inner">
@@ -41,6 +43,7 @@
         <p id="boot-status" class="boot__inner boot__status" role="status">Loading the figures.</p>
         <noscript><p class="boot__inner boot__status">This site needs JavaScript to work out the scores. The method and every source are listed in <a href="https://github.com/rj-mitchell/wherelivesstand/blob/main/SOURCES.md">SOURCES.md</a>.</p></noscript>
       </div>
+      <!-- /app -->
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
