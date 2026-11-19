@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'data', 'sources')
 OUT = os.path.join(ROOT, 'src', 'data')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from country_names import to_iso3
+from country_names import CODE_ALIAS, to_iso3
 
 MIN_INDICATORS = 20  # countries with fewer indicator values are shown as "insufficient data"
 MIN_YEAR = 2015      # older observations are treated as missing
@@ -370,36 +370,48 @@ def main():
 
     raw = {}
     for d in I:
-        data = d['_loader']()
+        data = {}
+        for k, v in d['_loader']().items():
+            iso = CODE_ALIAS.get(k, k)
+            if iso in data:
+                raise SystemExit(f"{d['id']}: two values for {iso}")
+            data[iso] = v
         raw[d['id']] = {k: v for k, v in data.items() if k in meta and v[0] is not None and not (isinstance(v[0], float) and math.isnan(v[0]))
                         and (v[1] is None or v[1] >= MIN_YEAR)}
 
     eligible = {k for k, m in meta.items() if not m.get('isDependency')
                 and sum(1 for d in I if k in raw[d['id']]) >= MIN_INDICATORS}
 
-    # Scores
+    # Scores. The goalposts come from the ranked countries alone; a place that is shown but not ranked is scored
+    # against them too (in unranked_scores), so that its page can show its figures without moving anyone else's
     scores = {d['id']: {} for d in I}
+    unranked_scores = {d['id']: {} for d in I}
+    shown = {k for k, m in meta.items() if not m.get('isDependency') and k not in eligible}
     for d in I:
         vals = {k: v for k, (v, _) in raw[d['id']].items() if k in eligible}
+        others = {k: v for k, (v, _) in raw[d['id']].items() if k in shown}
         if d['id'] == 'climate_comfort':
             scores[d['id']] = {k: round(v, 1) for k, v in vals.items()}
+            unranked_scores[d['id']] = {k: round(v, 1) for k, v in others.items()}
             d['goalposts'] = [0, 100]
             continue
         tf = (lambda x: math.log10(max(x, 1e-3))) if d['_transform'] == 'log' else (lambda x: x)
         if d['_transform'] == 'band':
             lo, hi = d['_band']
-            for k, v in vals.items():
-                s = (v - lo) / (hi - lo)
-                scores[d['id']][k] = round((1 - max(0.0, min(1.0, s)) if d['inverted'] else max(0.0, min(1.0, s))) * 100, 1)
+            for out, group in ((scores, vals), (unranked_scores, others)):
+                for k, v in group.items():
+                    s = (v - lo) / (hi - lo)
+                    out[d['id']][k] = round((1 - max(0.0, min(1.0, s)) if d['inverted'] else max(0.0, min(1.0, s))) * 100, 1)
             d['goalposts'] = list(d['_band'])
             continue
         t = {k: tf(v) for k, v in vals.items()}
         lo, hi = percentile(t.values(), 0.025), percentile(t.values(), 0.975)
-        for k, x in t.items():
-            s = max(0.0, min(1.0, (x - lo) / (hi - lo)))
-            if d['inverted']:
-                s = 1 - s
-            scores[d['id']][k] = round(s * 100, 1)
+        for out, group in ((scores, t), (unranked_scores, {k: tf(v) for k, v in others.items()})):
+            for k, x in group.items():
+                s = max(0.0, min(1.0, (x - lo) / (hi - lo)))
+                if d['inverted']:
+                    s = 1 - s
+                out[d['id']][k] = round(s * 100, 1)
         inv = (lambda x: 10 ** x) if d['_transform'] == 'log' else (lambda x: x)
         d['goalposts'] = [round(inv(lo), 3), round(inv(hi), 3)]
 
@@ -428,12 +440,19 @@ def main():
                 r, n = ranks[d['id']]
                 c['indicators'][d['id']] = {'raw': round(v, 4), 'formatted': d['_fmt'](v) + (f' ({y})' if y else ''),
                                             'score': scores[d['id']][k], 'rank': r[k], 'total': n}
+        elif k in shown:
+            # Every figure a publisher reports for a place too few indices cover, with no world rank
+            for d in I:
+                if k in unranked_scores[d['id']]:
+                    v, y = raw[d['id']][k]
+                    c['indicators'][d['id']] = {'raw': round(v, 4), 'formatted': d['_fmt'](v) + (f' ({y})' if y else ''),
+                                                'score': unranked_scores[d['id']][k]}
         c['hasData'] = k in eligible
         c['dimensions'] = {}
         for cid, ids in cat_inds.items():
             # Missing indicators are skipped, but a dimension backed by too few of them is left out entirely,
-            # so a single value can't stand in for the whole dimension
-            vals = [c['indicators'][i]['score'] for i in ids if i in c['indicators']]
+            # so a single value can't stand in for the whole dimension. Unranked places have none.
+            vals = [c['indicators'][i]['score'] for i in ids if i in c['indicators']] if k in eligible else []
             c['dimensions'][cid] = round(sum(vals) / len(vals), 1) if vals and len(vals) >= MIN_DIM_SHARE * len(ids) else None
         c['coverage'] = f"{sum(1 for d in I if k in raw[d['id']])}/{len(I)}"
         countries[k] = c
@@ -542,9 +561,9 @@ def write_sources_md(inds, cats, n_ranked):
               'a tool to compare compliance among ILO member States”.',
               '- Housing affordability, access to public transport and the KidsRights Index were left out because no '
               'source covers most countries.',
-              '- Taiwan, Kosovo, Monaco, Liechtenstein and other small states are shown but not ranked: the '
-              'UN-system sources (the World Bank, WHO and UNDP) do not report them, which leaves them short of the '
-              'minimum number of indicators.', '']
+              '- Taiwan, Kosovo, Macao, Monaco, Liechtenstein and other small places are shown, with every figure '
+              'that covers them, but not ranked: the UN-system sources (the World Bank, WHO and UNDP) report them in '
+              'part or not at all, which leaves them short of the minimum number of indicators.', '']
     open(os.path.join(ROOT, 'SOURCES.md'), 'w').write('\n'.join(lines))
 
 if __name__ == '__main__':

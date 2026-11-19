@@ -129,6 +129,15 @@ export const Method: React.FC = () => (
       them. Elsewhere the lines are Natural Earth's: Aksai Chin, for example, is drawn as part of China, as it is in
       the version for the United Kingdom too. Boundaries are drawn for illustration and imply no view on the status of any territory or border.
     </p>
+    <h2 id="places">Places and territories</h2>
+    <p>
+      Places that the publishers report apart from the state that claims or governs them, such as Hong Kong, Macao,
+      Taiwan, Kosovo and Palestine, are shown as places of their own and ranked like any country when at least 20 of
+      the indicators cover them. This follows how the publishers report them and implies no view on their status.
+      Territories that most publishers report under the country they belong to, such as the Faroe Islands, Jersey and
+      Puerto Rico, are not ranked separately, and selecting one opens that country. A place too few indices cover is
+      not ranked, but its page shows every figure that does cover it.
+    </p>
     <div className="method-sources">{renderMarkdown(sourcesMd, { skipTitle: true })}</div>
   </Page>
 );
@@ -291,7 +300,12 @@ export const Corrections: React.FC = () => (
       {formatDate(DATA_UPDATED)}. The full history of changes is in the <a href={`${REPO_URL}/commits/main`}>project's history on GitHub</a>.
     </p>
     <h2>Corrections made</h2>
-    <p>None recorded yet.</p>
+    <p>
+      19 November 2026: Kosovo's Corruption Perceptions Index score and average working hours were left out, because
+      Transparency International and the ILO give Kosovo a different code from the one the site uses. Both are now
+      included, so 18 of the 34 indicators cover Kosovo, still too few to rank it. The pages of places that are not
+      ranked, such as Taiwan, Kosovo and Macao, also now show the figures that cover them.
+    </p>
   </Page>
 );
 

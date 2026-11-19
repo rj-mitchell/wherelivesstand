@@ -211,7 +211,8 @@ export const CountryDossier: React.FC<Props> = ({ country: c, rankedCount, categ
             </table>
             <p className="text-sm text-muted mt-2">
               Score: the published value rescaled from 0 (2.5th percentile of countries) to 100 (97.5th), flipped where
-              lower is better. Ranks are among the countries each publisher covers. See the <Link href="/method">methodology</Link>.
+              lower is better. Ranks are among the ranked countries each publisher covers
+              {ranked ? '' : `; ${c.name} is not ranked, so its figures have no world rank`}. See the <Link href="/method">methodology</Link>.
             </p>
           </section>
 

@@ -10,5 +10,5 @@ An index of the project's documents, with what each covers and who it is for. St
 | [DATA.md](DATA.md) | The scoring method, and how to rebuild the dataset or download the sources again | The maintainer, and anyone changing the data |
 | [URLS.md](URLS.md) | The address of every view, the query parameters, and how sister sites link to a country | Developers, and sister sites linking here |
 | [DESIGN.md](DESIGN.md) | The family kit, the mark, type, colour, the layout of the map view, and the map | Anyone changing how the site looks |
-| [DECISIONS.md](DECISIONS.md) | Product decisions, with the reason and date for each, and those awaiting the owner's confirmation | The owner and the maintainer |
+| [DECISIONS.md](DECISIONS.md) | Product decisions, with the reason and date for each | The owner and the maintainer |
 | [DEPLOYMENT.md](DEPLOYMENT.md) | What CI checks, the checks before merging, and how Cloudflare deploys the site and branch previews | The maintainer |

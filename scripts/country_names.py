@@ -12,8 +12,13 @@ ALIAS = {
  'sao tome and principe':'STP','egypt':'EGY','egypt, arab rep.':'EGY','yemen':'YEM','yemen, rep.':'YEM','bahamas':'BHS','bahamas, the':'BHS','gambia, the':'GMB',
  'central african republic':'CAF','car':'CAF','guinea bissau':'GNB','guinea-bissau':'GNB','myanmar':'MMR','burma':'MMR','slovak republic':'SVK','slovakia':'SVK',
  'israel':'ISR','palestinian territories':'PSE','palestine/ gaza':'PSE','iran, islamic rep.':'IRN','venezuela, rb':'VEN','micronesia, fed. sts.':'FSM','netherlands':'NLD',
+ 'taiwan, china':'TWN','taiwan province of china':'TWN','taiwan, province of china':'TWN','chinese taipei':'TWN','macao sar, china':'MAC','macau sar':'MAC',
+ 'china, macao sar':'MAC','hong kong, china (sar)':'HKG','china, hong kong sar':'HKG','kosovo (under unscr 1244)':'XKX',
  'korea, dpr':'PRK','micronesia (federated states of)':'FSM','trinidad & tobago':'TTO','antigua & barbuda':'ATG','st kitts and nevis':'KNA','st vincent and the grenadines':'VCT','sao tome & principe':'STP','solomon islands':'SLB',
 }
+# Codes some publishers use for a place in place of the one the site uses: Transparency International writes KSV
+# for Kosovo, the ILO KOS, and others RKS or XKO
+CODE_ALIAS = {'KSV': 'XKX', 'KOS': 'XKX', 'RKS': 'XKX', 'XKO': 'XKX'}
 def norm(s):
     s = unicodedata.normalize('NFKD', str(s)).encode('ascii','ignore').decode().lower().strip()
     s = s.replace('’',"'").replace('&','and') if '&' in s and s not in ALIAS else s.replace('’',"'")
