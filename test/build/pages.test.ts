@@ -132,3 +132,18 @@ test('the site is described as published by Where They Stand, under no other nam
   assert.equal(site.alternateName, undefined);
   assert.deepEqual(site.publisher, { '@type': 'Organization', '@id': 'https://wheretheystand.uk/#org', name: 'Where They Stand', url: 'https://wheretheystand.uk/' });
 });
+
+test("every page's footer has the family's six links, and Corrections and About lead to \"If you're named\"", () => {
+  const links = (html: string) =>
+    [...html.match(/<nav aria-label="About this site">([\s\S]*?)<\/nav>/)![1].matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(m => [m[1], m[2]]);
+  for (const page of [...TEXT_PAGES, 'index', 'compare', '404', ...withPages.map(c => `country/${c.iso3}`)]) {
+    assert.deepEqual(links(read(`${page}.html`)).slice(0, 5), [
+      ['/about', 'About'], ['/method', 'Methodology'], ['/corrections', 'Corrections'],
+      ['/accessibility', 'Accessibility'], ['/privacy', 'Privacy'],
+    ], page);
+    assert.equal(links(read(`${page}.html`))[5][1], 'Source code', page);
+  }
+  // The site names no people, so "If you're named" is a section of Corrections (docs/DECISIONS.md, 18)
+  assert.match(read('corrections.html'), /<h2 id="named">If you(&#x27;|')re named<\/h2>/);
+  assert.ok(unescape(read('about.html')).includes(`<a href="/corrections#named">If you're named on this site</a>`));
+});
