@@ -113,3 +113,12 @@ they belong to, so they stay unranked and open that country, while these places 
 treated apart. It follows how the publishers report and implies no view on any place's status, as with the map's
 boundaries (decision 16). A place with too few indicators to be ranked still shows every figure that covers it
 ([DATA.md](DATA.md#method)) (19 November 2026).
+
+### 18. If you're named
+
+The site names no people: it names countries and the publishers whose figures it uses. So it has no separate "If
+you're named" page. The family glossary's page is a section of the Corrections page, headed "If you're named"
+(`/corrections#named`), with the routes "Errors" and "Unfair descriptions" and the response times in the glossary's
+words, and About links to it as "If you're named on this site". The footer keeps the family's six links, so every
+page reaches About, Methodology, Corrections, Accessibility and Privacy directly, and "If you're named" through
+Corrections (the charity's review plan of 21 November 2026, C4) (21 November 2026).

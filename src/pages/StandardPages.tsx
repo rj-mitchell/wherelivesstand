@@ -77,6 +77,10 @@ export const About: React.FC<{ rankedCount: number; indicatorCount: number }> = 
       For corrections, problems and questions, write to <Email />. See <Link href="/corrections">Corrections</Link>{' '}
       for what to include.
     </p>
+    <p>
+      Governments and publishers this site names, and people acting for them, can read{' '}
+      <Link href="/corrections#named">If you're named on this site</Link>.
+    </p>
     <h2>Licence</h2>
     <p>
       The code is open source under the GNU Affero General Public License 3.0, at <a href={REPO_URL}>GitHub</a>, and
@@ -295,9 +299,32 @@ export const Corrections: React.FC = () => (
       record the correction here. Where the publisher's figure is what is wrong, we tell the publisher and leave the
       figure as they published it until they correct it, so the site stays a faithful record of their releases.
     </p>
+    <p>We reply within 5 working days, and decide within 20 working days.</p>
     <p>
       Every figure is rebuilt from the publishers' files when the data is refreshed. The data was last refreshed on{' '}
       {formatDate(DATA_UPDATED)}. The full history of changes is in the <a href={`${REPO_URL}/commits/main`}>project's history on GitHub</a>.
+    </p>
+    {/* The family glossary's "If you're named" page, which this site has as a section here: it names no people, only
+        countries and the publishers whose figures it uses (docs/DECISIONS.md, 18) */}
+    <h2 id="named">If you're named</h2>
+    <p>
+      Where Lives Stand names no people. It names countries and the publishers whose figures it uses, so it has no
+      separate page for those it names: this section is that page. If you act for a country's government or for a
+      publisher, write to <Email /> about either of these.
+    </p>
+    <h3>Errors</h3>
+    <p>
+      A figure, a name, a year or a source is shown wrongly. We put it right as described above, and record it under
+      Corrections made.
+    </p>
+    <h3>Unfair descriptions</h3>
+    <p>
+      The figures are right, but the site's own words aren't fair. We check them against the charity's{' '}
+      <a href="https://wheretheystand.uk/right-of-reply">impartiality policy</a> and, if they break it, put them right
+      in the same way.
+    </p>
+    <p>
+      We never change a publisher's figure. If you think one is wrong, please tell the publisher too.
     </p>
     <h2>Corrections made</h2>
     <p>
