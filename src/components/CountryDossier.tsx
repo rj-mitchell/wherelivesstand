@@ -7,6 +7,7 @@ import { Dialog } from './Dialog';
 import { Link } from '../lib/nav';
 import { ordinal } from '../lib/scoring';
 import { Spine } from './family/Spine';
+import { unPageHref } from '../data/unPages';
 
 interface Props {
   country: ComputedCountry;
@@ -32,10 +33,8 @@ const KINDS: Record<number, string> = {
   4: 'Derived from measurements',
 };
 
-const COUNTRIES_SITE = { url: 'https://wherecountriesstand.com', cloth: '#1F5F8B' };
-// A sources-only search for the country's name on Where Countries Stand (its app reads ?q= and ?sources=1).
-// Change this to its country page once that exists (docs/URLS.md).
-const countriesHref = (name: string) => `${COUNTRIES_SITE.url}/?q=${encodeURIComponent(name)}&sources=1`;
+// Where Countries Stand's cloth, for its spine beside the link to a place's page there (src/data/unPages.ts)
+const COUNTRIES_CLOTH = '#1F5F8B';
 
 export const CountryDossier: React.FC<Props> = ({
   country: c,
@@ -53,6 +52,7 @@ export const CountryDossier: React.FC<Props> = ({
 }) => {
   const [kind, setKind] = useState<number | 'all'>('all');
   const ranked = c.rank != null && c.compositeScore != null;
+  const unHref = unPageHref(c.iso3);
   const shown = indicators.filter(i => kind === 'all' || i.tier === kind);
   const { above, below } = neighbours;
   const place = (n: ComputedCountry) => (
@@ -314,14 +314,15 @@ export const CountryDossier: React.FC<Props> = ({
                 <Link href="/behind-the-rankings">Behind the rankings</Link>: the limits of these indices, and why some
                 results look wrong.
               </li>
-              <li className="flex items-center gap-2">
-                <Spine cloth={COUNTRIES_SITE.cloth} className="w-6 h-6" />
-                <span>
-                  <a href={countriesHref(c.name)}>Statements by {c.name} at the UN, on Where Countries Stand</a>, a
-                  sister site. It has no page for each country yet, so this opens a search of its UN records for{' '}
-                  {c.name}.
-                </span>
-              </li>
+              {unHref && (
+                <li className="flex items-center gap-2">
+                  <Spine cloth={COUNTRIES_CLOTH} className="w-6 h-6" />
+                  <span>
+                    <a href={unHref}>Its statements and votes at the United Nations</a>, on Where Countries Stand, a
+                    sister site.
+                  </span>
+                </li>
+              )}
             </ul>
           </section>
         </div>

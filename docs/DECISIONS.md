@@ -139,3 +139,15 @@ indicator's publisher in a country's dossier, and each index's publisher on Behi
 in the kit's shelf. Nothing else: no page views, and never the weights or the countries looked at. The country and
 comparison dialogs make the page behind them inert, so the banner moves to the top of an open dialog
 (`data-wts-measure-slot`): a reader who lands on a country page can still reach it (21 November 2026).
+
+### 20. Links to a place's page on Where Countries Stand
+
+Where Countries Stand gave a page to each place in the UN's record on 22 November 2026 (its decision 29): the UN's
+193 Member States, its two non-member observer States (the State of Palestine and the Holy See) and Kosovo. A place's
+page here links to its page there, "Its statements and votes at the United Nations", in words that name no country,
+because the two sites name some places differently (this site follows the publishers, "Palestine", "Vatican City";
+that one the UN, "State of Palestine", "Holy See"). Places this site shows apart because the publishers report them
+apart (decision 17) but that the UN's record does not treat as speakers (Hong Kong, Macao, Taiwan, Western Sahara),
+and the Cook Islands and Niue, have no page there and so no link; before, every page linked to a search there for its
+name, which on those pages promised statements that do not exist. Neither site's choice implies a view on any place's
+status (22 November 2026).
