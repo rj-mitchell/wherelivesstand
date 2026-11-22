@@ -12,6 +12,7 @@ import {
   DATA_UPDATED,
   ACCESSIBILITY_CHECKED,
   formatDate,
+  measureTag,
   REPO_URL,
   SOURCES_URL,
   SITE_URL,
@@ -146,7 +147,11 @@ export const Method: React.FC = () => (
   </Page>
 );
 
-export const Privacy: React.FC = () => (
+// While measurement is on (src/config.ts, ADS; docs/DECISIONS.md, 19), the privacy notice is the measurement
+// version below, and only then
+export const Privacy: React.FC = () => (measureTag() ? <PrivacyMeasurement /> : <PrivacyToday />);
+
+const PrivacyToday: React.FC = () => (
   <Page title="Privacy notice">
     <p className="text-lg">Where Lives Stand does not use cookies, analytics or advertising, and does not ask for any personal details.</p>
     <h2>Visiting the site</h2>
@@ -170,6 +175,82 @@ export const Privacy: React.FC = () => (
       Where Lives Stand is a Where They Stand project. {RUNS_THE_SITES} You can ask what we hold about you, or
       complain to the Information Commissioner's Office (ico.org.uk).
     </p>
+  </Page>
+);
+
+// The privacy notice for when measurement is on. A draft until the charity is registered: before turning measurement
+// on, put the charity number in place of NNNNNNN and change the date (scripts/postbuild.mjs refuses to build it
+// with either still a placeholder).
+const PRIVACY_MEASUREMENT_UPDATED = 'Last updated 21 November 2026 (draft, for when measurement is turned on).';
+
+const PrivacyMeasurement: React.FC = () => (
+  <Page title="Privacy notice">
+    <p className="text-lg">
+      Where Lives Stand sets no cookies, measures nothing unless you agree, never shows advertising and does not ask for
+      any personal details.
+    </p>
+    <h2>Visiting the site</h2>
+    <p>
+      The site is served by Cloudflare, Inc., which handles every request. Like any web server, Cloudflare receives your
+      IP address and the details your browser sends (such as the page asked for and the browser's name), to deliver
+      the page and to protect the site from attack. Cloudflare's privacy policy describes how it treats that
+      information. We do not add analytics, and Where They Stand does not receive or keep a record of visits.
+    </p>
+    <p>
+      The typefaces, the map and the figures all come from this site. Unless you agree to measurement (below), nothing
+      is loaded from Google or any other third party. Your weights and the country you are looking at are held in the
+      page's address and nowhere else.
+    </p>
+    <h2 id="measurement">Measuring visits for Google's advertising grant</h2>
+    <p>
+      Where They Stand advertises its sites on Google Search with Google Ad Grants, free advertising that Google gives
+      charities. To keep the grant, it has to show Google that the ads lead people to use the sites. So, only if you
+      agree, this site uses the Google tag to tell Google when you open a publisher's source or follow the Donate link.
+      That is all it tells Google about: no list of the pages you read, and nothing about your weights or the countries
+      you look at.
+    </p>
+    <p>
+      Nothing is loaded from Google until you choose. A box at the top of the page asks you, with “Accept” and
+      “Reject”. If you reject, or don't choose, nothing is loaded from Google and no cookie is set. If you accept, your
+      browser loads the Google tag from Google, which sets cookies whose names start “_gcl_” on this site, and sends
+      Google your IP address, details of your browser, the address of the page and the action. Google uses them to
+      count how many visits from its ads led to that action.
+    </p>
+    <p>
+      Google receives this information as an independent controller, for its own purposes, under the{' '}
+      <a href="https://business.safety.google/adscontrollerterms/">Google Ads Controller-Controller Data Protection Terms</a>.
+      How it uses it is set out in <a href="https://policies.google.com/privacy">Google's privacy policy</a> and on its{' '}
+      <a href="https://business.safety.google/privacy/">Business Data Responsibility</a> page. Google says its “_gcl_”
+      cookies last for 90 days (<a href="https://policies.google.com/technologies/cookies">how Google uses cookies</a>),
+      and explains how long it keeps what it collects in{' '}
+      <a href="https://policies.google.com/technologies/retention">how Google retains data</a>.
+    </p>
+    <p>
+      The legal basis is your consent. We keep only your choice, and the day you made it, in your own browser (in its
+      local storage, not in a cookie), and we never receive it. After a year you are asked again.
+    </p>
+    <p>
+      To change your mind, use “Measurement choices” at the foot of any page. Choosing “Reject” after accepting deletes
+      Google's cookies on this site and reloads the page with nothing from Google. Clearing this site's data in your
+      browser also removes them, and your choice.
+    </p>
+    <p>
+      No ads are ever shown on this site or on the charity's other sites, and nothing on them is personalised. The
+      Google tag is told not to use your visit to personalise ads.
+    </p>
+    <h2>Emails</h2>
+    <p>
+      If you email <Email />, we keep your message and address only as long as we need them to deal with what you
+      raised, and do not pass them on.
+    </p>
+    <h2>The data controller</h2>
+    <p>
+      Where Lives Stand is a Where They Stand project. Where They Stand, a charitable incorporated organisation
+      registered in England and Wales (charity number NNNNNNN), is the data controller. You can ask what we hold about
+      you, ask for it to be corrected or deleted, withdraw your consent to measurement at any time as above, or
+      complain to the Information Commissioner's Office (ico.org.uk).
+    </p>
+    <p className="text-sm text-muted">{PRIVACY_MEASUREMENT_UPDATED}</p>
   </Page>
 );
 

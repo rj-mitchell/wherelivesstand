@@ -10,12 +10,16 @@
 // - dist/sitemap.xml, dist/_redirects, and dist/favicon.ico (the family kit's, which browsers ask for at the root);
 // - on the map views only, a preload of the figures and the map, so they download alongside the app;
 // - the figures the browser loads (dist/assets/countries-*.json) without the whitespace and the publishers' raw
-//   values, which the app does not use (the scores, ranks and formatted values stay).
+//   values, which the app does not use (the scores, ranks and formatted values stay);
+// - while measurement is on (src/config.ts, ADS; docs/DECISIONS.md, 19), and only then: the family kit's measure.js
+//   in every page's head, the Google tag's hosts in dist/_headers' content security policy, and the privacy page's
+//   description to match its measurement version, which must be finished (scripts/measure.mjs).
 //
 // Plain Node with no dependencies beyond the app's own (React, for the static HTML), so it runs in Cloudflare's
 // build as well as locally.
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { draftProblems, measuredHeaders, withMeasure } from './measure.mjs';
 
 const ORIGIN = 'https://wherelivesstand.com';
 const dist = new URL('../dist/', import.meta.url);
@@ -28,7 +32,7 @@ const write = (path, text) => {
 
 const ssrEntry = new URL('../dist-ssr/prerender.js', import.meta.url);
 if (!existsSync(ssrEntry)) throw new Error('postbuild: dist-ssr/prerender.js is missing; run `vite build --ssr src/prerender.tsx` first');
-const { render, rankings, ordinal, countries, indicators, DATA_UPDATED } = await import(ssrEntry);
+const { render, rankings, ordinal, countries, indicators, DATA_UPDATED, MEASURE_TAG, MEASURES } = await import(ssrEntry);
 const { list, rankedCount: ranked } = rankings;
 const index = read('index.html');
 
@@ -86,7 +90,8 @@ function page({ path, title, description, noindex = false, map = false, lean = f
   );
   // The preloads early in the head, before the stylesheets, so the browser asks for them at once
   set(/(<meta name="viewport"[^>]*>)/, `$1\n    ${[FONT_PRELOADS, map ? MAP_PRELOADS : ''].filter(Boolean).join('\n    ')}`);
-  return head ? html.replace('</head>', `  ${head}\n  </head>`) : html;
+  if (head) html = html.replace('</head>', `  ${head}\n  </head>`);
+  return MEASURE_TAG ? withMeasure(html, MEASURE_TAG, MEASURES) : html;
 }
 
 const SITE = 'Where Lives Stand';
@@ -98,13 +103,18 @@ const pages = [
   { path: '/behind-the-rankings', file: 'behind-the-rankings.html', title: `Behind the rankings | ${SITE}`, description: `What each of the ${indicators.length} indices behind ${SITE} measures, where it falls short, and the traps in combining them.` },
   { path: '/about', file: 'about.html', title: `About | ${SITE}`, description: `What ${SITE} is, who runs it and how to contact us.` },
   { path: '/method', file: 'method.html', title: `Methodology | ${SITE}`, description: `How ${SITE} scores and combines ${indicators.length} published indicators, and the publisher, year and coverage of each.` },
-  { path: '/privacy', file: 'privacy.html', title: `Privacy notice | ${SITE}`, description: `${SITE} uses no cookies, analytics or advertising.` },
+  { path: '/privacy', file: 'privacy.html', title: `Privacy notice | ${SITE}`, description: MEASURE_TAG ? `${SITE} sets no cookies and measures nothing unless you agree, and never shows advertising.` : `${SITE} uses no cookies, analytics or advertising.` },
   { path: '/terms', file: 'terms.html', title: `Terms of use | ${SITE}`, description: `The terms for using ${SITE} and reusing its work: the code, the site's own text and the publishers' figures.` },
   { path: '/accessibility', file: 'accessibility.html', title: `Accessibility statement | ${SITE}`, description: `The accessibility of ${SITE}: what works, the testing done, and its known limits.` },
   { path: '/press', file: 'press.html', title: `Press and citing | ${SITE}`, description: `Contact, how to cite ${SITE} and its figures, the site in brief, and its logo files.` },
   { path: '/corrections', file: 'corrections.html', title: `Corrections and problems | ${SITE}`, description: `How to report a problem with ${SITE}, and the corrections made.` },
 ];
 for (const p of pages) write(p.file, page(p));
+if (MEASURE_TAG) {
+  const problems = draftProblems(read('privacy.html'));
+  if (problems.length) throw new Error(`postbuild: measurement is on, but the privacy notice isn't ready: ${problems.join('; ')} (src/pages/StandardPages.tsx)`);
+  write('_headers', measuredHeaders(read('_headers'), JSON.parse(read('family/measure-csp.json'))));
+}
 
 /** A country's description: its score, rank and standouts under the balanced weights, as its static HTML shows. */
 function countryDescription(c) {

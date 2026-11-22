@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from '../lib/nav';
 import { shelf } from 'virtual:family';
-import { DATA_UPDATED, formatDate, REPO_URL } from '../config';
+import { DATA_UPDATED, formatDate, measureTag, REPO_URL } from '../config';
 
 export const SiteFooter: React.FC = () => (
   <footer className="mt-16 no-print">
@@ -27,6 +27,15 @@ export const SiteFooter: React.FC = () => (
           BY 4.0, and each figure under its publisher's terms. Country names and map boundaries are those of the sources
           and of Natural Earth, and imply no view on the status of any territory or border.
         </p>
+        {/* While measuring (src/config.ts, ADS), a control that opens the family kit's banner again: not one of the six
+            pages the footer links, so a line of its own (docs/DECISIONS.md, 19) */}
+        {measureTag() ? (
+          <p className="mt-2 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6 [&_a]:text-ink">
+            <a href="/privacy#measurement" data-wts-measure-open="">
+              Measurement choices
+            </a>
+          </p>
+        ) : null}
       </div>
     </div>
   </footer>

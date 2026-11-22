@@ -18,7 +18,7 @@ import { CountryDossier } from './components/CountryDossier';
 import { CompareDialog } from './components/CompareDialog';
 import { BehindTheRankings } from './pages/BehindTheRankings';
 import { About, Method, Privacy, Terms, Accessibility, Corrections, Press, NotFound } from './pages/StandardPages';
-import { DATA_UPDATED, formatDate, SITE_NAME, TAGLINE } from './config';
+import { DATA_UPDATED, formatDate, measureTag, SITE_NAME, TAGLINE } from './config';
 import rawIndicators from './data/indicators.json';
 import rawCategories from './data/categories.json';
 
@@ -207,6 +207,9 @@ export default function App({ countries, location, lean = false }: Props) {
         onSelectCountry={iso => navigate(hrefFor(iso))}
       />
       <main id="main" tabIndex={-1} className="outline-hidden">
+        {/* While measuring (src/config.ts, ADS), where the family kit's banner goes: in the page's column, at the top
+            of the main content (docs/DECISIONS.md, 19) */}
+        {measureTag() ? <div data-wts-measure-slot="" className="max-w-page mx-auto px-4 md:px-8" /> : null}
         {s.view === 'map' && (
           <div className="max-w-page mx-auto px-4 md:px-8 pt-3 md:pt-4">
             {/* The map comes first (docs/DECISIONS.md): the page's heading is for screen readers and the outline */}

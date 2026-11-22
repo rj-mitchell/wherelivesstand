@@ -4,6 +4,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon';
 import { Prerendering } from '../lib/prerendering';
+import { measureTag } from '../config';
 
 interface Props {
   labelledBy: string;
@@ -95,6 +96,9 @@ export const Dialog: React.FC<Props> = ({ labelledBy, onClose, closeHref, varian
             <Icon name="close" className="w-5 h-5" />
           </button>
         )}
+        {/* While measuring (src/config.ts, ADS), the family kit's banner moves here while the dialog is open, since
+            the page behind is inert; empty, it takes no room (the kit's family.css) (docs/DECISIONS.md, 19) */}
+        {measureTag() ? <div data-wts-measure-slot="" className="shrink-0 px-5 sm:px-7 pt-12" /> : null}
         {children}
       </div>
     </div>
