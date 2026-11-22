@@ -25,10 +25,11 @@ over the map. Other forms are accepted and rewritten to it:
 
 ## Links to sister sites
 
-Each country's page links to that country on Where Countries Stand. That site has no country pages (17 November
-2026), so the link is a sources-only search for the country's name (`countriesHref` in
-`src/components/CountryDossier.tsx`). When Where Countries Stand has country pages, the maintainer points the link
-at them.
+A place's page links to its page on Where Countries Stand, `https://wherecountriesstand.com/countries/<code in lower
+case>.html`, when it has one there: the UN's Member States, the State of Palestine, the Holy See and Kosovo
+(`src/data/unPages.ts`; decision 20). Places with no page there (Hong Kong, Macao, Taiwan, Western Sahara, the Cook
+Islands, Niue) carry no link. Before 22 November 2026, when that site had no country pages, the link was a
+sources-only search for the country's name.
 
 ## Pages
 
