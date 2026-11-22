@@ -12,7 +12,7 @@ export const SiteFooter: React.FC = () => (
     <div className="bg-panel text-muted text-sm">
       <div className="max-w-page mx-auto px-4 md:px-8 pb-7">
         <nav aria-label="About this site">
-          <ul className="flex flex-wrap gap-x-5 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6 [&_a]:text-ink">
+          <ul className="flex flex-wrap gap-x-5 gap-y-1 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6 [&_a]:text-ink">
             <li><Link href="/about">About</Link></li>
             <li><Link href="/method">Methodology</Link></li>
             <li><Link href="/corrections">Corrections</Link></li>
