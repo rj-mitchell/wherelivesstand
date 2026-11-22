@@ -72,7 +72,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
           type="button"
           onClick={() => setSort(s => ({ key, desc: s.key === key ? !s.desc : false }))}
           title={title ? `Sort by ${title}` : undefined}
-          className={`inline-flex items-center gap-0.5 min-h-6 font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
+          className={`inline-flex items-center gap-0.5 min-h-6 align-bottom font-semibold cursor-pointer hover:text-heather ${key === 'name' ? '' : 'flex-row-reverse text-right'} ${active ? 'text-ink' : 'text-muted'}`}
         >
           <span>{label}</span>
           <Icon name={active ? (sort.desc ? 'up' : 'down') : 'sort'} className={`w-3.5 h-3.5 ${active ? '' : 'opacity-50'}`} />
@@ -96,12 +96,13 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
             out of 100. Sort by any column.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 items-end no-print">
+        {/* On a phone the two controls share the row equally */}
+        <div className="flex flex-wrap gap-2 items-end no-print max-sm:w-full max-sm:[&>div]:flex-1 max-sm:[&>div]:min-w-[9rem]">
           <div>
             <label htmlFor="table-region" className="block text-sm font-semibold">
               Region
             </label>
-            <select id="table-region" value={region} onChange={e => onRegion(e.target.value as RegionId)} className="field w-44">
+            <select id="table-region" value={region} onChange={e => onRegion(e.target.value as RegionId)} className="field sm:w-44">
               {REGIONS.map(r => (
                 <option key={r.id} value={r.id}>
                   {r.name}
@@ -113,7 +114,7 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
             <label htmlFor="table-filter" className="block text-sm font-semibold">
               Filter by name
             </label>
-            <input id="table-filter" type="search" value={filter} onChange={e => setFilter(e.target.value)} className="field w-52" autoComplete="off" />
+            <input id="table-filter" type="search" value={filter} onChange={e => setFilter(e.target.value)} className="field sm:w-52" autoComplete="off" />
           </div>
         </div>
       </div>
@@ -135,7 +136,8 @@ export const RankingsTable: React.FC<Props> = ({ list, categories, region, onReg
               {header('rank', 'Rank', 'rank')}
               {header('name', 'Country', 'name')}
               <th scope="col" className="px-1.5 py-2 text-right align-bottom font-semibold">
-                Score
+                {/* The same box as the sortable headings' buttons, so that every label sits on one line */}
+                <span className="inline-flex items-center min-h-6 align-bottom">Score</span>
               </th>
               {categories.map(c => (
                 <React.Fragment key={c.id}>{header(c.id, <abbr title={c.name} className="no-underline">{SHORT[c.id]}</abbr>, c.name)}</React.Fragment>

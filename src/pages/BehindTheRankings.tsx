@@ -47,7 +47,7 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
         </p>
         <nav aria-label="On this page" className="bg-panel px-5 py-4 mt-4 lg:mt-0 font-sans text-[0.9375rem]">
           <p className="!my-0 font-semibold">On this page</p>
-          <ul className="!my-1 !pl-0 !list-none [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6">
+          <ul className="!my-1 !pl-0 !list-none grid gap-1 [&_a]:inline-flex [&_a]:items-center [&_a]:min-h-6">
             <li className="!my-0"><a href="#traps">Traps in country rankings</a></li>
             <li className="!my-0"><a href="#odd-results">Results that look wrong</a></li>
             <li className="!my-0"><a href="#every-index">Every index</a></li>
@@ -132,8 +132,10 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
         <div className="mt-4 border-t border-ink">
           {shown.map(c => (
             <details key={c.id} className="border-b border-rule group" open={query.length > 0}>
-              <summary className="py-3 cursor-pointer list-none flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <span className="flex gap-2">
+              {/* Indented by the chevron and pulled back by as much, so that where the risk of bias wraps under the
+                  name it lines up with the name rather than the chevron */}
+              <summary className="py-3 pl-6 cursor-pointer list-none flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <span className="flex gap-2 -ml-6">
                   <Icon name="chevron" className="w-4 h-4 mt-1 shrink-0 motion-safe:transition-transform group-open:rotate-90 text-heather" />
                   <span>
                     <span className="font-semibold group-open:text-heather">{c.meta.name}</span>

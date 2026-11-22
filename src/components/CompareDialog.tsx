@@ -84,12 +84,14 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
     </div>
   );
 
+  // The same column widths in both tables, so that the bars line up from one to the next; on a phone each row is a
+  // grid, with the same columns in both
   const head = (
     <tr className="border-b border-ink text-left max-sm:hidden">
-      <th scope="col" className="py-1.5 pr-2 font-semibold w-[34%]"><span className="visually-hidden">Measure</span></th>
-      <th scope="col" className="py-1.5 px-2 font-semibold text-right">{a.name}</th>
+      <th scope="col" className="py-1.5 pr-2 font-semibold w-[30%]"><span className="visually-hidden">Measure</span></th>
+      <th scope="col" className="py-1.5 px-2 font-semibold text-right w-[20%]">{a.name}</th>
       <th scope="col" className="py-1.5 px-2 font-semibold text-center w-[30%]">Who leads, and by how much</th>
-      <th scope="col" className="py-1.5 pl-2 font-semibold">{b.name}</th>
+      <th scope="col" className="py-1.5 pl-2 font-semibold w-[20%]">{b.name}</th>
     </tr>
   );
 
@@ -133,11 +135,11 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
                 <span className="flex items-center gap-1.5"><span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
                 <span className="flex items-center gap-1.5">{b.name}<span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-b" /></span>
               </p>
-              <table className="mt-3 w-full text-sm border-collapse sm:min-w-[34rem]">
+              <table className="mt-3 w-full text-sm border-collapse sm:min-w-[33rem] sm:table-fixed">
                 <thead>{head}</thead>
                 <tbody>
                   {categories.map(cat => (
-                    <tr key={cat.id} className="border-b border-faint max-sm:grid max-sm:grid-cols-[3.5rem_1fr_3.5rem] max-sm:items-start">
+                    <tr key={cat.id} className="border-b border-faint max-sm:grid max-sm:grid-cols-[5.5rem_1fr_5.5rem] max-sm:items-start">
                       <th scope="row" className="py-2 pr-2 text-left font-normal max-sm:col-span-3 max-sm:pb-0">{cat.name}</th>
                       <td className="py-2 px-2 text-right num font-semibold max-sm:text-left max-sm:px-0">{fmt(a.dimensions[cat.id])}</td>
                       <td className="py-2 px-2">
@@ -161,7 +163,7 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
                 <span className="flex items-center gap-1.5"><span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-a" />{a.name}</span>
                 <span className="flex items-center gap-1.5">{b.name}<span className="keep-colours inline-block w-2.5 h-2.5 bg-compare-b" /></span>
               </p>
-              <table className="mt-3 w-full text-sm border-collapse sm:min-w-[34rem]">
+              <table className="mt-3 w-full text-sm border-collapse sm:min-w-[33rem] sm:table-fixed">
                 <thead>{head}</thead>
                 {categories.map(cat => (
                   <tbody key={cat.id}>
@@ -176,7 +178,7 @@ export const CompareDialog: React.FC<Props> = ({ a, b, choices, categories, indi
                         const va = a.indicators[ind.id];
                         const vb = b.indicators[ind.id];
                         return (
-                          <tr key={ind.id} className="border-b border-faint align-top max-sm:grid max-sm:grid-cols-[4.5rem_1fr_4.5rem]">
+                          <tr key={ind.id} className="border-b border-faint align-top max-sm:grid max-sm:grid-cols-[5.5rem_1fr_5.5rem]">
                             <th scope="row" className="py-2 pr-2 text-left font-normal max-sm:col-span-3 max-sm:pb-0">
                               {ind.name}
                               <span className="block text-muted">{ind.source}</span>

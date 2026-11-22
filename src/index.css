@@ -554,20 +554,34 @@ input[type='range']::-moz-range-thumb {
 .table-pin-name {
   inset-inline-start: var(--pin-rank);
 }
-/* A pinned cell's background covers the row's rule under it, so the cell draws that rule itself */
+/* A pinned cell's background can cover the row's rule under it, so the cell draws that rule itself, just below
+   its box where the row's rule is, so that the two coincide rather than doubling */
 tbody .table-pin {
-  box-shadow: inset 0 -1px 0 var(--rule-faint);
+  box-shadow: 0 1px 0 var(--rule-faint);
 }
 .table-pinned[data-scrolled] .table-pin-name {
   box-shadow: inset -1px 0 0 var(--rule);
 }
 .table-pinned[data-scrolled] tbody .table-pin-name {
-  box-shadow: inset -1px 0 0 var(--rule), inset 0 -1px 0 var(--rule-faint);
+  box-shadow: inset -1px 0 0 var(--rule), 0 1px 0 var(--rule-faint);
 }
 @supports (animation-timeline: scroll()) {
   .scroll-fade-x.table-pinned {
     mask-image: linear-gradient(to right, #000 calc(100% - var(--fade-end)), transparent);
   }
+}
+
+/* The methodology's tables of indicators, one per dimension (SOURCES.md): the same columns in every table, so
+   that they line up from one table to the next rather than each table sizing its own. The data years, the count
+   and "lower is better" take set widths, the first wide enough for "2015 to 2025" on one line; the indicator,
+   the publisher and the goalposts share the rest equally. */
+.method-sources table:has(thead th:nth-child(6):last-child) {
+  table-layout: fixed;
+  /* where it scrolls sideways (below 768 pixels), wide enough that the text columns are not squeezed */
+  min-width: 43rem;
+  & th:nth-child(3) { width: 6rem; }
+  & th:nth-child(4) { width: 5rem; }
+  & th:nth-child(5) { width: 5.5rem; }
 }
 
 /* The legend's minor ticks (30 and 80) only where the bar is wide enough for them not to run into their
