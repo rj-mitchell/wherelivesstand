@@ -39,6 +39,18 @@ npx wrangler dev   # serves dist/ as Cloudflare does; look at the changed pages,
 If the kit check fails, sync the kit ([DESIGN.md](DESIGN.md#the-family-kit)), commit the copies, and update `KIT` in
 `scripts/check-family.mjs` if the kit's version has changed.
 
+## Measurement
+
+Measurement for Google Ad Grants ([DECISIONS.md](DECISIONS.md), 19; the charity's `family/MEASUREMENT.md`) is off:
+`ADS` in `src/config.ts` is `{ measurement: false, tag: '' }`. Turn it on only once the charity is registered and
+its Google Ads account has the conversions set up, in one pull request: finish `PrivacyMeasurement` in
+`src/pages/StandardPages.tsx` (the charity number for `NNNNNNN`, and the date), set `ADS` to
+`{ measurement: true, tag: 'AW-…' }`, run the checks above, and merge. The build then adds the kit's `measure.js` to
+every page and the Google tag's hosts to `dist/_headers`, and refuses while the notice is unfinished. Cloudflare
+serves the policy in `_headers` itself, so nothing else changes on the live side. Check in a private window: the
+banner shows; "Reject" leaves no request to Google; "Accept" loads the tag; "Measurement choices" at the foot of a
+page opens the banner again. To turn it off, set `ADS` back and merge.
+
 ## Deploying
 
 Cloudflare Workers Builds is connected to this repository; GitHub Actions takes no part. Every push to `main` runs

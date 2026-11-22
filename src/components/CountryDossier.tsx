@@ -235,7 +235,13 @@ export const CountryDossier: React.FC<Props> = ({
                           <th scope="row">
                             <span className="font-semibold">{ind.name}</span>
                             <span className="block text-muted">
-                              {ind.sourceUrl ? <a href={ind.sourceUrl}>{ind.source}</a> : ind.source}
+                              {ind.sourceUrl ? (
+                                <a href={ind.sourceUrl} data-wts-conversion="source_opened">
+                                  {ind.source}
+                                </a>
+                              ) : (
+                                ind.source
+                              )}
                             </span>
                           </th>
                           <td>{v?.formatted ?? <span className="text-muted">No figure</span>}</td>

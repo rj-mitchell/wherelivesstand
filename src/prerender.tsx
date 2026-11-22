@@ -7,7 +7,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import App from './App';
 import { Prerendering } from './lib/prerendering';
 import { computeRankings, defaultWeights } from './lib/scoring';
-import { DATA_UPDATED } from './config';
+import { DATA_UPDATED, MEASURES, measureTag } from './config';
 import type { CountryData, IndicatorMeta } from './types';
 import rawCountries from './data/countries.json';
 import rawIndicators from './data/indicators.json';
@@ -17,7 +17,9 @@ const indicators = rawIndicators as unknown as IndicatorMeta[];
 
 /** The scores and ranks the static HTML shows: the balanced weights, as a plain link to any page has them. */
 export const rankings = computeRankings(countries, indicators, defaultWeights());
-export { countries, indicators, DATA_UPDATED };
+export { countries, indicators, DATA_UPDATED, MEASURES };
+/** The measurement switch as this build has it (src/config.ts, ADS): the Google tag's ID, or '' when off. */
+export const MEASURE_TAG = measureTag();
 export { ordinal } from './lib/scoring';
 
 /**

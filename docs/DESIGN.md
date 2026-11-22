@@ -27,6 +27,11 @@ node ../wheretheystand-charity/family/kit/sync.mjs --site lives --out public/fam
   from the virtual module `virtual:family`.
 - `<body class="wts-headings">` sets headings in Source Serif 4. `scripts/postbuild.mjs` copies
   `family/favicon.ico` to `/favicon.ico`.
+- `measure.js` and `measure-csp.json` are the family's consent banner and Google tag loader, and the hosts the
+  content security policy adds for it. While measurement is off, as it ships (`ADS` in `src/config.ts`;
+  [DECISIONS.md](DECISIONS.md), 19), no page loads them. On, the banner sits at the top of the main content, or at
+  the top of an open country or comparison dialog (`data-wts-measure-slot`), since the page behind a dialog is
+  inert.
 
 ## The mark
 

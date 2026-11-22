@@ -147,3 +147,20 @@ test("every page's footer has the family's six links, and Corrections and About 
   assert.match(read('corrections.html'), /<h2 id="named">If you(&#x27;|')re named<\/h2>/);
   assert.ok(unescape(read('about.html')).includes(`<a href="/corrections#named">If you're named on this site</a>`));
 });
+
+test('with measurement off, as it ships, no page loads measure.js or anything from Google, and the policy names no Google host', () => {
+  // src/config.ts, ADS (docs/DECISIONS.md, 19); test/measure.test.ts checks what the build does when it is on
+  const pages = ['index.html', '404.html', 'compare.html', ...TEXT_PAGES.map(p => `${p}.html`), ...withPages.map(c => `country/${c.iso3}.html`)];
+  for (const page of pages) {
+    const html = read(page);
+    assert.doesNotMatch(html, /measure\.js|googletagmanager|data-wts-measure-open|Measurement choices/, page);
+  }
+  assert.doesNotMatch(read('_headers'), /google|doubleclick/i);
+  const privacy = text(read('privacy.html'));
+  assert.ok(privacy.includes('Where Lives Stand does not use cookies, analytics or advertising'));
+  assert.ok(!privacy.includes('Measuring visits'));
+  // the inert marks measure.js would read: the Donate link in the kit's shelf, and each publisher's source
+  assert.match(read('country/NOR.html'), /data-wts-conversion="source_opened"/);
+  assert.match(read('behind-the-rankings.html'), /data-wts-conversion="source_opened"/);
+  assert.match(read('about.html'), /data-wts-conversion="donate_click">Donate<\/a>/);
+});

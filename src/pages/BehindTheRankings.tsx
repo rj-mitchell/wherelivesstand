@@ -152,7 +152,9 @@ export const BehindTheRankings: React.FC<Props> = ({ categories, indicators, hre
                   {c.meta.sourceUrl && (
                     <>
                       {' '}
-                      <a href={c.meta.sourceUrl}>The publisher's page</a>
+                      <a href={c.meta.sourceUrl} data-wts-conversion="source_opened">
+                        The publisher's page
+                      </a>
                     </>
                   )}
                 </p>

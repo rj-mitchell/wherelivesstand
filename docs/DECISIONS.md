@@ -122,3 +122,20 @@ you're named" page. The family glossary's page is a section of the Corrections p
 words, and About links to it as "If you're named on this site". The footer keeps the family's six links, so every
 page reaches About, Methodology, Corrections, Accessibility and Privacy directly, and "If you're named" through
 Corrections (the charity's review plan of 21 November 2026, C4) (21 November 2026).
+
+### 19. Measurement for Google Ad Grants, built and switched off
+
+The charity will apply for Google Ad Grants once it is registered, which needs the Google tag on the sites to count
+conversions (the charity's review plan, Part D; its `family/MEASUREMENT.md`). It is built now and off, so the site is
+what it was until the owner turns it on. The switch is `ADS` in `src/config.ts`, set at build time and changed in a
+pull request, rather than an environment variable in Cloudflare's build settings, so that what is live is always
+what the repository says. Off, the pages differ from before only in the kit's version and its inert
+`data-wts-conversion` marks, and `public/_headers` is unchanged. On, `scripts/postbuild.mjs` adds the kit's
+`measure.js` to every page's head and the kit's Google hosts to the policy in `dist/_headers`; the footer gains
+"Measurement choices" on a line of its own after the notices (a control, not a page, so the footer keeps the
+family's six links); the privacy page is the measurement version in the glossary's "once registered" words, which
+the build refuses while it still says `NNNNNNN` or "(draft". What is measured: a publisher's source opened (an
+indicator's publisher in a country's dossier, and each index's publisher on Behind the rankings) and the Donate link
+in the kit's shelf. Nothing else: no page views, and never the weights or the countries looked at. The country and
+comparison dialogs make the page behind them inert, so the banner moves to the top of an open dialog
+(`data-wts-measure-slot`): a reader who lands on a country page can still reach it (21 November 2026).
